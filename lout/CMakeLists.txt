@@ -20,9 +20,8 @@ include_directories("${CMAKE_CURRENT_LIST_DIR}/dist/include")
 include_directories("${CMAKE_CURRENT_LIST_DIR}/src")
 
 
-set(SOURCE_FILES
-		ILoutPrinter.cpp
-		)
+#set(SOURCE_FILES
+#		)
 
 # Create a static library
 #add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})

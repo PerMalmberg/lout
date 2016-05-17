@@ -5,7 +5,7 @@
 #define CATCH_CONFIG_MAIN
 
 #include "../externals/Catch/include/catch.hpp"
-#include <memory>
+#include "output/FileOutput.h"
 #include "lout.h"
 
 using namespace com::codezeal::logging;
@@ -16,8 +16,9 @@ enum class MyOwnLogLevel
 	Warning
 };
 
-using ILogPrinter = ILoutPrinter<MyOwnLogLevel>;
+using ILogPrinter = ILoutOutput<MyOwnLogLevel>;
 using Logger = Lout<MyOwnLogLevel>;
+using FileOutput = com::codezeal::logging::printer::FileOutput<MyOwnLogLevel>;
 
 class StdOutPrinter : public ILogPrinter
 {
@@ -32,7 +33,7 @@ public:
 		std::cout << "[" << static_cast<int>(level) << "][" << tag << "]" << msg << std::endl;
 	}
 
-	void Flush() override
+	void Flush() noexcept override
 	{
 		std::cout.flush();
 	}
@@ -64,7 +65,7 @@ SCENARIO( "Adding a printer" )
 		WHEN("A printer is added")
 		{
 			std::shared_ptr<ILogPrinter> p = std::make_shared<StdOutPrinter>();
-			Logger::Get().AddPrinter( p );
+			Logger::Get().AddOutput( p );
 
 			THEN( "Printer count is increased" )
 			{
@@ -79,7 +80,7 @@ SCENARIO("Regular logging")
 	GIVEN("A logger with a printer")
 	{
 		std::shared_ptr<ILogPrinter> p = std::make_shared<StdOutPrinter>();
-		Logger::Get().AddPrinter( p );
+		Logger::Get().AddOutput( p );
 		Logger::Get().SetLevel( MyOwnLogLevel::Info );
 
 		WHEN("Logging on too high level") {
@@ -116,7 +117,7 @@ SCENARIO("Logging with tag")
 	GIVEN("A logger with a printer")
 	{
 		std::shared_ptr<ILogPrinter> p = std::make_shared<StdOutPrinter>();
-		Logger::Get().AddPrinter( p );
+		Logger::Get().AddOutput( p );
 		Logger::Get().SetLevel( MyOwnLogLevel::Warning );
 
 		WHEN("Logging called without activating tag") {
@@ -132,6 +133,25 @@ SCENARIO("Logging with tag")
 
 			THEN("Output performed") {
 				REQUIRE((*p).GetMessageCount() == 1 );
+			}
+		}
+	}
+}
+
+SCENARIO("Using FileOutput")
+{
+	GIVEN("A logger with a file output  writer")
+	{
+		std::shared_ptr<ILogPrinter> p = std::make_shared<FileOutput>( "output.log" );
+		Logger::Get().RemoveAllOutputs();
+		Logger::Get().AddOutput( p );
+		Logger::Get().SetLevel( MyOwnLogLevel::Warning );
+
+		WHEN("Log with enabled level")
+		{
+			for( int i = 0; i < 1000; ++i)
+			{
+				Logger::Get().Log( MyOwnLogLevel::Info, "Goes to file" + std::to_string( i ) );
 			}
 		}
 	}

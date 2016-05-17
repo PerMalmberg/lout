@@ -4,10 +4,10 @@
 
 #pragma once
 
-#include <ostream>
+#include <memory>
 #include <vector>
 #include <exception>
-#include "ILoutPrinter.h"
+#include "ILoutOutput.h"
 
 namespace com {
 namespace codezeal {
@@ -27,7 +27,9 @@ public:
 		return instance;
 	}
 
-	void AddPrinter(std::shared_ptr<ILoutPrinter<TLogLevel>> printer);
+	void AddOutput(std::shared_ptr<ILoutOutput < TLogLevel>> output );
+
+	void RemoveAllOutputs();
 
 	void Log(TLogLevel level, const std::string& msg);
 
@@ -41,7 +43,7 @@ public:
 	void ActivateTag(const std::string& tag);
 
 	size_t GetPrinterCount() const
-	{ return myPrinter.size(); }
+	{ return myOutput.size(); }
 
 	Lout<TLogLevel>(const Lout<TLogLevel>&) = delete;
 
@@ -49,7 +51,7 @@ public:
 
 private:
 	TLogLevel myCurrentLevel;
-	std::vector<std::shared_ptr<ILoutPrinter<TLogLevel>>> myPrinter;
+	std::vector<std::shared_ptr<ILoutOutput < TLogLevel>>> myOutput;
 	std::set<std::string> myActiveTags;
 
 	bool IsLevelActive(TLogLevel level)
@@ -57,6 +59,8 @@ private:
 		// We allow logging up to and including the currently set level.
 		return level <= myCurrentLevel;
 	}
+
+	void FlushAll();
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -77,23 +81,7 @@ Lout<TLogLevel>::Lout()
 template<typename TLogLevel>
 Lout<TLogLevel>::~Lout()
 {
-	for( auto& p : myPrinter )
-	{
-		try
-		{
-			(*p).Flush();
-		}
-		catch( std::exception& e )
-		{
-			std::cerr << e.what() << std::endl;
-		}
-		catch( ... )
-		{
-			std::cerr << "Unknown error while flushing" << std::endl;
-		}
-	}
-
-	myPrinter.erase(myPrinter.begin(), myPrinter.end());
+	RemoveAllOutputs();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -113,7 +101,7 @@ void Lout<TLogLevel>::SetLevel(TLogLevel newLevel)
 template<typename TLogLevel>
 void Lout<TLogLevel>::ActivateTag(const std::string& tag)
 {
-	myActiveTags.emplace(tag);
+	myActiveTags.emplace( tag );
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -121,12 +109,21 @@ void Lout<TLogLevel>::ActivateTag(const std::string& tag)
 //
 //////////////////////////////////////////////////////////////////////////
 template<typename TLogLevel>
-void Lout<TLogLevel>::AddPrinter(std::shared_ptr<ILoutPrinter<TLogLevel>> printer)
-{
-	if( printer )
-	{
-		myPrinter.push_back( std::move( printer ) );
+void Lout<TLogLevel>::AddOutput(std::shared_ptr< ILoutOutput<TLogLevel> > output) {
+	if( output ) {
+		myOutput.push_back( std::move(output) );
 	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//////////////////////////////////////////////////////////////////////////
+template<typename TLogLevel>
+void Lout<TLogLevel>::RemoveAllOutputs()
+{
+	FlushAll();
+	myOutput.erase( myOutput.begin(), myOutput.end() );
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -138,7 +135,7 @@ void Lout<TLogLevel>::Log(TLogLevel level, const std::string& msg)
 {
 	if( IsLevelActive( level ) )
 	{
-		for( auto& p : myPrinter )
+		for( auto& p : myOutput )
 		{
 			try
 			{
@@ -165,7 +162,7 @@ void Lout<TLogLevel>::LogWithTag(TLogLevel level, const std::string& tag, const 
 {
 	if( IsLevelActive( level ) && myActiveTags.find( tag ) != myActiveTags.end() )
 	{
-		for( auto& p : myPrinter )
+		for( auto& p : myOutput )
 		{
 			try
 			{
@@ -179,6 +176,30 @@ void Lout<TLogLevel>::LogWithTag(TLogLevel level, const std::string& tag, const 
 			{
 				std::cerr << "Unknown error while logging" << std::endl;
 			}
+		}
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//////////////////////////////////////////////////////////////////////////
+template<typename TLogLevel>
+void Lout<TLogLevel>::FlushAll()
+{
+	for( auto& p : myOutput )
+	{
+		try
+		{
+			(*p).Flush();
+		}
+		catch( std::exception& e )
+		{
+			std::cerr << e.what() << std::endl;
+		}
+		catch( ... )
+		{
+			std::cerr << "Unknown error while flushing" << std::endl;
 		}
 	}
 }
