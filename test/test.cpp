@@ -1,5 +1,5 @@
 //
-// Created by perma on 2016-05-06.
+// Created by Per Malmberg on 2016-05-06.
 //
 
 #define CATCH_CONFIG_MAIN
@@ -23,6 +23,9 @@ using FileOutput = com::codezeal::logging::printer::FileOutput<MyOwnLogLevel>;
 class StdOutPrinter : public ILogPrinter
 {
 public:
+	StdOutPrinter() :
+		ILoutOutput<MyOwnLogLevel>( &std::cerr ) {}
+
 	void LogActual(MyOwnLogLevel level, const std::string& msg) override
 	{
 		std::cout << "[" << static_cast<int>(level) << "]" << msg << std::endl;
@@ -103,7 +106,7 @@ SCENARIO("Regular logging")
 			THEN("We can log on that level too") {
 				std::string s = "Warning message";
 				char buff[50];
-				s.append( itoa( __LINE__, buff, 10 ));
+				s.append( _itoa( __LINE__, buff, 10 ));
 
 				Logger::Get().Log( MyOwnLogLevel::Warning, s );
 				REQUIRE((*p).GetMessageCount() == 1 );

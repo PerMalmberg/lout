@@ -16,13 +16,16 @@ template<typename TLogLevel>
 class FileOutput : public ILoutOutput<TLogLevel>
 {
 public:
-	FileOutput( const std::string& pathToFile );
+	FileOutput(const std::string& pathToFile);
+
 	~FileOutput();
 
 	void Flush() noexcept override;
+
 	virtual void LogActual(TLogLevel level, const std::string& msg) override;
 
 	virtual void LogWithTagActual(TLogLevel level, const std::string& tag, const std::string& msg) override;
+
 private:
 	std::ofstream myFile;
 };
@@ -33,6 +36,7 @@ private:
 //////////////////////////////////////////////////////////////////////////
 template<typename TLogLevel>
 FileOutput<TLogLevel>::FileOutput(const std::string& pathToFile)
+		: ILoutOutput<TLogLevel>( &std::cerr )
 {
 	// Open for output and append mode
 	myFile.open( pathToFile.c_str(), std::ios_base::out | std::ios_base::app );
@@ -81,7 +85,8 @@ void FileOutput<TLogLevel>::Flush() noexcept
 template<typename TLogLevel>
 void FileOutput<TLogLevel>::LogActual(TLogLevel level, const std::string& msg)
 {
-	if( myFile.is_open() ) {
+	if( myFile.is_open() )
+	{
 		myFile << "[" << static_cast<int>( level ) << "]" << msg << std::endl;
 	}
 }

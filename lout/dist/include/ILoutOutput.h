@@ -1,5 +1,5 @@
 //
-// Created by perma on 2016-05-08.
+// Created by Per Malmberg on 2016-05-08.
 //
 
 #pragma once
@@ -21,6 +21,12 @@ template<typename TLogLevel>
 class ILoutOutput
 {
 public:
+
+	ILoutOutput(std::ostream* fallback)
+			: myFallbackErrorStream( fallback )
+	{
+	}
+
 	virtual ~ILoutOutput()
 	{
 	}
@@ -42,8 +48,11 @@ protected:
 
 	virtual void LogWithTagActual(TLogLevel level, const std::string& tag, const std::string& msg) = 0;
 
+	void FallbackLog(TLogLevel level, const std::string& tag, const std::string& msg);
+
 private:
 	uint64_t myMessageCount = 0;
+	std::ostream* myFallbackErrorStream = nullptr;
 };
 
 template<typename TLogLevel>
@@ -57,11 +66,12 @@ ILoutOutput<TLogLevel>::Log(TLogLevel level, const std::string& msg) noexcept
 	}
 	catch( std::exception& e )
 	{
-		// TODO: Provide IFC to where these errors are to be logged
+		FallbackLog( level, "", e.what() );
+		FallbackLog( level, "", msg );
 	}
 	catch( ... )
 	{
-		// TODO: Provide IFC to where these errors are to be logged
+		FallbackLog( level, "", msg );
 	}
 }
 
@@ -76,11 +86,34 @@ ILoutOutput<TLogLevel>::LogWithTag(TLogLevel level, const std::string& tag, cons
 	}
 	catch( std::exception& e )
 	{
-		// TODO: Provide IFC to where these errors are to be logged
+		FallbackLog( level, tag, e.what() );
+		FallbackLog( level, tag, msg );
 	}
 	catch( ... )
 	{
-		// TODO: Provide IFC to where these errors are to be logged
+		FallbackLog( level, tag, msg );
+	}
+}
+
+template<typename TLogLevel>
+void
+ILoutOutput<TLogLevel>::FallbackLog(TLogLevel level, const std::string& tag, const std::string& msg)
+{
+	try
+	{
+		if( myFallbackErrorStream && myFallbackErrorStream->good() )
+		{
+			*myFallbackErrorStream << "[" << static_cast<int>( level) << "]";
+			if( !tag.empty() )
+			{
+				*myFallbackErrorStream << "[" << tag << "]";
+			}
+			*myFallbackErrorStream << msg << std::endl;
+		}
+	}
+	catch( ... )
+	{
+		// If we're having issues this deep down, we can't do anything about it.
 	}
 }
 

@@ -27,7 +27,7 @@ public:
 		return instance;
 	}
 
-	void AddOutput(std::shared_ptr<ILoutOutput < TLogLevel>> output );
+	void AddOutput(std::shared_ptr<ILoutOutput<TLogLevel>> output );
 
 	void RemoveAllOutputs();
 
