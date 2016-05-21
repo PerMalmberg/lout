@@ -3,34 +3,34 @@
 //
 
 #define CATCH_CONFIG_MAIN
+
 #include "../externals/Catch/include/catch.hpp"
 
 #include <output/StdOutput.h>
 #include "output/FileOutput.h"
-#include "lout.h"
+#include "Lout.h"
 #include "loglevel/defaultLevels.h"
 
 using namespace lout;
 using namespace lout::loglevel;
 using namespace lout::output;
 
-using FileOutput = lout::output::FileOutput;
+#define L Lout::Get()
 
 SCENARIO( "Setting up a logger" )
 {
 	GIVEN( "A clean slate" )
 	{
-		Lout& a = Lout::Get();
-
+		L.Reset();
 		THEN( "Program compiles" )
 		{
-			REQUIRE( a.GetLevel().GetLevel() == 0 );
-			a.Log( Verbose(), "Goes nowhere" );
+			REQUIRE( L.GetThreshold().GetLevel() == 0 );
+			L.Log( Verbose(), "Goes nowhere" );
 		}
 		AND_THEN( "Can set log level" )
 		{
-			a.SetLevel( Warning() );
-			REQUIRE( a.GetLevel() == Warning() );
+			L.SetThreshold( Warning() );
+			REQUIRE( L.GetThreshold() == Warning() );
 		}
 	}
 }
@@ -39,9 +39,11 @@ SCENARIO( "Adding a printer" )
 {
 	GIVEN( "A clean slate" )
 	{
-		WHEN("A printer is added")
+		L.Reset();
+
+		WHEN( "A printer is added" )
 		{
-			std::shared_ptr<ILoutOutput> p = std::make_shared<StdOutPrinter>();
+			std::shared_ptr<IOutput> p = std::make_shared<StdOutPrinter>();
 			Lout::Get().AddOutput( p );
 
 			THEN( "Printer count is increased" )
@@ -52,83 +54,177 @@ SCENARIO( "Adding a printer" )
 	}
 }
 
-SCENARIO("Regular logging")
+SCENARIO( "Regular logging" )
 {
-	GIVEN("A logger with a printer")
+	GIVEN( "A logger with a printer" )
 	{
-		std::shared_ptr<ILoutOutput> p = std::make_shared<StdOutPrinter>();
+		L.Reset();
+		std::shared_ptr<IOutput> p = std::make_shared<StdOutPrinter>();
 		Lout::Get().AddOutput( p );
-		Lout::Get().SetLevel( Info() );
+		Lout::Get().SetThreshold( Info() );
 
-		WHEN("Logging on too high level") {
-			Lout::Get().Log( Warning(), "Log message");
+		WHEN( "Logging on too high level" )
+		{
+			Lout::Get().Log( Warning(), "Log message" );
 
-			THEN( "No output performed") {
-				REQUIRE(p.get()->GetMessageCount() == 0 );
+			THEN( "No output performed" )
+			{
+				REQUIRE( p.get()->GetMessageCount() == 0 );
 			}
 		}
-		WHEN("Logging on correct level") {
-			Lout::Get().Log( Info(), "Log message");
+		WHEN( "Logging on correct level" )
+		{
+			Lout::Get().Log( Info(), "Log message" );
 
-			THEN("Output performed") {
-				REQUIRE((*p).GetMessageCount() == 1 );
+			THEN( "Output performed" )
+			{
+				REQUIRE( (*p).GetMessageCount() == 1 );
 			}
 		}
-		WHEN("Increasing log level") {
-			Lout::Get().SetLevel( Warning() );
+		WHEN( "Increasing log level" )
+		{
+			Lout::Get().SetThreshold( Warning() );
 
-			THEN("We can log on that level too") {
+			THEN( "We can log on that level too" )
+			{
 				std::string s = "Warning message";
-				char buff[50];
-				s.append( _itoa( __LINE__, buff, 10 ));
-
-				Lout::Get().Log( Warning(), s );
-				REQUIRE((*p).GetMessageCount() == 1 );
+				L.Log( Warning(), s );
+				REQUIRE( (*p).GetMessageCount() == 1 );
 			}
 		}
 	}
 }
 
-SCENARIO("Logging with tag")
+SCENARIO( "Logging with tag" )
 {
-	GIVEN("A logger with a printer")
+	GIVEN( "A logger with a printer" )
 	{
-		std::shared_ptr<ILoutOutput> p = std::make_shared<StdOutPrinter>();
+		L.Reset();
+		std::shared_ptr<IOutput> p = std::make_shared<StdOutPrinter>();
 		Lout::Get().AddOutput( p );
-		Lout::Get().SetLevel( Warning() );
+		Lout::Get().SetThreshold( Warning() );
 
-		WHEN("Logging called without activating tag") {
-			Lout::Get().LogWithTag( Info(), "NonActiveTag", "Log message");
+		WHEN( "Logging called without activating tag" )
+		{
+			Lout::Get().LogWithTag( Info(), "NonActiveTag", "Log message" );
 
-			THEN( "No output performed") {
-				REQUIRE((*p).GetMessageCount() == 0 );
+			THEN( "No output performed" )
+			{
+				REQUIRE( (*p).GetMessageCount() == 0 );
 			}
 		}
-		AND_WHEN("Tag activated") {
-			Lout::Get().ActivateTag( "ActiveTag");
-			Lout::Get().LogWithTag( Info(), "ActiveTag", "Log message");
+		AND_WHEN( "Tag activated" )
+		{
+			Lout::Get().ActivateTag( "ActiveTag" );
+			Lout::Get().LogWithTag( Info(), "ActiveTag", "Log message" );
 
-			THEN("Output performed") {
-				REQUIRE((*p).GetMessageCount() == 1 );
+			THEN( "Output performed" )
+			{
+				REQUIRE( (*p).GetMessageCount() == 1 );
 			}
 		}
 	}
 }
 
-SCENARIO("Using FileOutput")
+SCENARIO( "Using FileOutput" )
 {
-	GIVEN("A logger with a file output  writer")
+	GIVEN( "A logger with a file output  writer" )
 	{
-		std::shared_ptr<ILoutOutput> p = std::make_shared<FileOutput>( "output.log" );
+		L.Reset();
+		std::shared_ptr<IOutput> p = std::make_shared<FileOutput>( "output.log" );
 		Lout::Get().RemoveAllOutputs();
 		Lout::Get().AddOutput( p );
-		Lout::Get().SetLevel( Warning() );
+		Lout::Get().SetThreshold( Warning() );
 
-		WHEN("Log with enabled level")
+		WHEN( "Log with enabled level" )
 		{
-			for( int i = 0; i < 1000; ++i)
+			for( int i = 0; i < 1000; ++i )
 			{
 				Lout::Get().Log( Info(), "Goes to file" + std::to_string( i ) );
+			}
+		}
+	}
+}
+
+SCENARIO( "Using operator to set log level" )
+{
+	GIVEN( "A newly created Lout" )
+	{
+		L.Reset();
+		std::shared_ptr<IOutput> p = std::make_shared<StdOutPrinter>();
+		L.AddOutput( p );
+
+		WHEN( "Level is not set" )
+		{
+			THEN( "Log level is 0" )
+			{
+				REQUIRE( L.GetThreshold().GetLevel() == 0 );
+			}
+		}
+		AND_WHEN( "Level is set" )
+		{
+			L.SetThreshold( Warning() );
+			THEN( "Level matches set level" )
+			{
+				REQUIRE( L.GetThreshold() == Warning() );
+			}
+			AND_THEN( "Logging to a higher level, doesn't give an output" )
+			{
+				L.Log( Error(), "Error message" );
+				REQUIRE( p->GetMessageCount() == 0 );
+			}
+			AND_THEN( "We can log to that level" )
+			{
+				L << Warning() << "This is logged as a warning message";
+				REQUIRE( p->GetMessageCount() == 1 );
+			}
+		}
+		AND_WHEN("We set log level to Error and log to Verbose" )
+		{
+			L.SetThreshold( Error() );
+			THEN("nothing is printed")
+			{
+				L << Verbose() << "A verbose message";
+				REQUIRE( p->GetMessageCount() == 0 );
+			}
+		}
+		AND_WHEN( "We set log level to verbose" )
+		{
+			L.SetThreshold( Verbose() );
+			THEN("and log to the same level")
+			{
+				L << Verbose() << "A verbose message";
+				REQUIRE( p->GetMessageCount() == 1 );
+			}
+		}
+	}
+}
+
+
+SCENARIO("Mandatory tags")
+{
+	GIVEN( "A logger with one output" )
+	{
+		L.Reset();
+		std::shared_ptr<IOutput> p = std::make_shared<StdOutPrinter>();
+		Lout::Get().AddOutput( p );
+		L.SetThreshold( Info() );
+
+		WHEN( "Log with too high level")
+		{
+			L << Warning()  << "Warning message";
+			THEN( "No output")
+			{
+				REQUIRE(p->GetMessageCount() == 0);
+			}
+		}
+		AND_WHEN("A mandatory tag is used")
+		{
+			L.ActivateMandatoryTag("MandatoryTag");
+			THEN("Message is logged")
+			{
+				L.LogWithTag(Verbose(), "MandatoryTag", "Mandatory message");
+				REQUIRE(p->GetMessageCount() == 1);
 			}
 		}
 	}

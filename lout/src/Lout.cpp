@@ -12,7 +12,10 @@ namespace lout {
 //
 //////////////////////////////////////////////////////////////////////////
 Lout::Lout()
-		: myCurrentLevel( 0, "NoLevel" ), myActiveTags()
+		: myCurrentThreshold( 0, "NoLevel" ),
+		  myCurrentLoggingLevel( -1, "NoLevel" ),
+		  myActiveTags(),
+		  myMandatoryTags()
 {
 }
 
@@ -29,9 +32,9 @@ Lout::~Lout()
 //
 //
 //////////////////////////////////////////////////////////////////////////
-void Lout::SetLevel(const loglevel::ILogLevel& newLevel)
+void Lout::SetThreshold(const loglevel::ILogLevel& newLevel)
 {
-	myCurrentLevel = newLevel;
+	myCurrentThreshold = newLevel;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -47,7 +50,16 @@ void Lout::ActivateTag(const std::string& tag)
 //
 //
 //////////////////////////////////////////////////////////////////////////
-void Lout::AddOutput(std::shared_ptr<output::ILoutOutput> output)
+void Lout::ActivateMandatoryTag(const std::string& tag)
+{
+	myMandatoryTags.emplace( tag );
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//////////////////////////////////////////////////////////////////////////
+void Lout::AddOutput(std::shared_ptr<output::IOutput> output)
 {
 	if( output )
 	{
@@ -97,7 +109,12 @@ void Lout::Log(const loglevel::ILogLevel& level, const std::string& msg)
 //////////////////////////////////////////////////////////////////////////
 void Lout::LogWithTag(const loglevel::ILogLevel& level, const std::string& tag, const std::string& msg)
 {
-	if( IsLevelActive( level ) && myActiveTags.find( tag ) != myActiveTags.end() )
+	// First check level and normal tags
+	bool shallLog = IsLevelActive( level ) && myActiveTags.find( tag ) != myActiveTags.end();
+	// Now check mandatory tags
+	shallLog |= myMandatoryTags.find( tag ) != myMandatoryTags.end();
+
+	if( shallLog )
 	{
 		for( auto& p : myOutput )
 		{
@@ -138,6 +155,26 @@ void Lout::FlushAll()
 			std::cerr << "Unknown error while flushing" << std::endl;
 		}
 	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//////////////////////////////////////////////////////////////////////////
+Lout& Lout::operator<<(const loglevel::ILogLevel& level)
+{
+	myCurrentLoggingLevel = level;
+	return *this;
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//////////////////////////////////////////////////////////////////////////
+Lout& Lout::operator<<(const std::string& msg)
+{
+	Log( myCurrentLoggingLevel, msg );
+	return *this;
 }
 
 } // END namespace lout

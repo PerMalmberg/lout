@@ -21,8 +21,8 @@ include_directories("${CMAKE_CURRENT_LIST_DIR}/src")
 
 
 set(SOURCE_FILES
-		src/lout.cpp
-		src/output/ILoutOutput.cpp
+		src/Lout.cpp
+		src/output/IOutput.cpp
 		src/output/StdOutput.cpp
 		src/loglevel/ILogLevel.cpp
 		)

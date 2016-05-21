@@ -4,13 +4,13 @@
 
 #pragma once
 
-#include "ILoutOutput.h"
+#include "IOutput.h"
 #include <fstream>
 
 namespace lout {
 namespace output {
 
-class FileOutput : public ILoutOutput
+class FileOutput : public IOutput
 {
 public:
 	FileOutput(const std::string& pathToFile);
@@ -32,7 +32,7 @@ private:
 //
 //////////////////////////////////////////////////////////////////////////
 FileOutput::FileOutput(const std::string& pathToFile)
-		: ILoutOutput( &std::cerr )
+		: IOutput( &std::cerr )
 {
 	// Open for output and append mode
 	myFile.open( pathToFile.c_str(), std::ios_base::out | std::ios_base::app );

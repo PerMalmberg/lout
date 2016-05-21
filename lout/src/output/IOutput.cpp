@@ -10,7 +10,7 @@ namespace lout {
 namespace output {
 
 void
-ILoutOutput::Log(const loglevel::ILogLevel& level, const std::string& msg) noexcept
+IOutput::Log(const loglevel::ILogLevel& level, const std::string& msg) noexcept
 {
 	try
 	{
@@ -29,7 +29,7 @@ ILoutOutput::Log(const loglevel::ILogLevel& level, const std::string& msg) noexc
 }
 
 void
-ILoutOutput::LogWithTag(const loglevel::ILogLevel& level, const std::string& tag, const std::string& msg) noexcept
+IOutput::LogWithTag(const loglevel::ILogLevel& level, const std::string& tag, const std::string& msg) noexcept
 {
 	try
 	{
@@ -48,7 +48,7 @@ ILoutOutput::LogWithTag(const loglevel::ILogLevel& level, const std::string& tag
 }
 
 void
-ILoutOutput::FallbackLog(const loglevel::ILogLevel& level, const std::string& tag, const std::string& msg)
+IOutput::FallbackLog(const loglevel::ILogLevel& level, const std::string& tag, const std::string& msg)
 {
 	try
 	{

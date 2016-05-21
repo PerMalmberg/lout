@@ -4,13 +4,13 @@
 
 #pragma once
 
-#include "ILoutOutput.h"
+#include "IOutput.h"
 #include <fstream>
 
 namespace lout {
 namespace output {
 
-class StdOutPrinter : public ILoutOutput
+class StdOutPrinter : public IOutput
 {
 public:
 	StdOutPrinter();

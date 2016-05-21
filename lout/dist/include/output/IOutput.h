@@ -16,16 +16,16 @@ namespace output {
 // do not leak exceptions. Leaking means std::terminate will be called.
 //
 ///////////////////////////////////////////////////////////////////////////////
-class ILoutOutput
+class IOutput
 {
 public:
 
-	ILoutOutput(std::ostream* fallback)
+	IOutput(std::ostream* fallback)
 			: myFallbackErrorStream( fallback )
 	{
 	}
 
-	virtual ~ILoutOutput()
+	virtual ~IOutput()
 	{
 	}
 

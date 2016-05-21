@@ -10,7 +10,7 @@ namespace lout {
 namespace output {
 
 StdOutPrinter::StdOutPrinter() :
-		ILoutOutput( &std::cerr )
+		IOutput( &std::cerr )
 { }
 
 void StdOutPrinter::LogActual(const loglevel::ILogLevel& level, const std::string& msg)
