@@ -8,4 +8,4 @@ add_subdirectory("test")
 
 
 #test depends on lout
-#add_dependencies( Test lout )
+add_dependencies( Test lout )

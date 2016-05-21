@@ -19,7 +19,7 @@ set( SOURCE_FILES
 		)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-#target_link_libraries(${PROJECT_NAME} lout)
+target_link_libraries(${PROJECT_NAME} lout)
 
 # Output final binaries in the dist folder so they easily can be distributed together with the header files.
 set_target_properties(${PROJECT_NAME}

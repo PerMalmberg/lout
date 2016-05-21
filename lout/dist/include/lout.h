@@ -7,13 +7,12 @@
 #include <memory>
 #include <vector>
 #include <exception>
-#include "ILoutOutput.h"
+#include <set>
+#include "output/ILoutOutput.h"
+#include "loglevel/ILogLevel.h"
 
-namespace com {
-namespace codezeal {
-namespace logging {
+namespace lout {
 
-template<typename TLogLevel>
 class Lout
 {
 public:
@@ -21,23 +20,23 @@ public:
 
 	virtual ~Lout();
 
-	static Lout<TLogLevel>& Get()
+	static Lout& Get()
 	{
-		static Lout<TLogLevel> instance;
+		static Lout instance;
 		return instance;
 	}
 
-	void AddOutput(std::shared_ptr<ILoutOutput<TLogLevel>> output );
+	void AddOutput(std::shared_ptr<output::ILoutOutput> output );
 
 	void RemoveAllOutputs();
 
-	void Log(TLogLevel level, const std::string& msg);
+	void Log(const loglevel::ILogLevel& level, const std::string& msg);
 
-	void LogWithTag(TLogLevel level, const std::string& tag, const std::string& msg);
+	void LogWithTag(const loglevel::ILogLevel& level, const std::string& tag, const std::string& msg);
 
-	void SetLevel(TLogLevel newLevel);
+	void SetLevel(const loglevel::ILogLevel& newLevel);
 
-	TLogLevel GetLevel() const
+	const loglevel::ILogLevel& GetLevel() const
 	{ return myCurrentLevel; }
 
 	void ActivateTag(const std::string& tag);
@@ -45,16 +44,15 @@ public:
 	size_t GetPrinterCount() const
 	{ return myOutput.size(); }
 
-	Lout<TLogLevel>(const Lout<TLogLevel>&) = delete;
-
-	Lout<TLogLevel>& operator=(Lout<TLogLevel>&) = delete;
+	Lout(const Lout&) = delete;
+	Lout& operator=(Lout&) = delete;
 
 private:
-	TLogLevel myCurrentLevel;
-	std::vector<std::shared_ptr<ILoutOutput < TLogLevel>>> myOutput;
+	loglevel::ILogLevel myCurrentLevel;
+	std::vector<std::shared_ptr<output::ILoutOutput>> myOutput;
 	std::set<std::string> myActiveTags;
 
-	bool IsLevelActive(TLogLevel level)
+	bool IsLevelActive(const loglevel::ILogLevel& level)
 	{
 		// We allow logging up to and including the currently set level.
 		return level <= myCurrentLevel;
@@ -63,147 +61,4 @@ private:
 	void FlushAll();
 };
 
-//////////////////////////////////////////////////////////////////////////
-//
-//
-//////////////////////////////////////////////////////////////////////////
-template<typename TLogLevel>
-Lout<TLogLevel>::Lout()
-		: myCurrentLevel(), myActiveTags()
-{
-
-}
-
-//////////////////////////////////////////////////////////////////////////
-//
-//
-//////////////////////////////////////////////////////////////////////////
-template<typename TLogLevel>
-Lout<TLogLevel>::~Lout()
-{
-	RemoveAllOutputs();
-}
-
-//////////////////////////////////////////////////////////////////////////
-//
-//
-//////////////////////////////////////////////////////////////////////////
-template<typename TLogLevel>
-void Lout<TLogLevel>::SetLevel(TLogLevel newLevel)
-{
-	myCurrentLevel = newLevel;
-}
-
-//////////////////////////////////////////////////////////////////////////
-//
-//
-//////////////////////////////////////////////////////////////////////////
-template<typename TLogLevel>
-void Lout<TLogLevel>::ActivateTag(const std::string& tag)
-{
-	myActiveTags.emplace( tag );
-}
-
-//////////////////////////////////////////////////////////////////////////
-//
-//
-//////////////////////////////////////////////////////////////////////////
-template<typename TLogLevel>
-void Lout<TLogLevel>::AddOutput(std::shared_ptr< ILoutOutput<TLogLevel> > output) {
-	if( output ) {
-		myOutput.push_back( std::move(output) );
-	}
-}
-
-//////////////////////////////////////////////////////////////////////////
-//
-//
-//////////////////////////////////////////////////////////////////////////
-template<typename TLogLevel>
-void Lout<TLogLevel>::RemoveAllOutputs()
-{
-	FlushAll();
-	myOutput.erase( myOutput.begin(), myOutput.end() );
-}
-
-//////////////////////////////////////////////////////////////////////////
-//
-//
-//////////////////////////////////////////////////////////////////////////
-template<typename TLogLevel>
-void Lout<TLogLevel>::Log(TLogLevel level, const std::string& msg)
-{
-	if( IsLevelActive( level ) )
-	{
-		for( auto& p : myOutput )
-		{
-			try
-			{
-				p.get()->Log( level, msg );
-			}
-			catch( std::exception& e )
-			{
-				std::cerr << e.what() << std::endl;
-			}
-			catch( ... )
-			{
-				std::cerr << "Unknown error while logging" << std::endl;
-			}
-		}
-	}
-}
-
-//////////////////////////////////////////////////////////////////////////
-//
-//
-//////////////////////////////////////////////////////////////////////////
-template<typename TLogLevel>
-void Lout<TLogLevel>::LogWithTag(TLogLevel level, const std::string& tag, const std::string& msg)
-{
-	if( IsLevelActive( level ) && myActiveTags.find( tag ) != myActiveTags.end() )
-	{
-		for( auto& p : myOutput )
-		{
-			try
-			{
-				p.get()->LogWithTag( level, tag, msg );
-			}
-			catch( std::exception& e )
-			{
-				std::cerr << e.what() << std::endl;
-			}
-			catch( ... )
-			{
-				std::cerr << "Unknown error while logging" << std::endl;
-			}
-		}
-	}
-}
-
-//////////////////////////////////////////////////////////////////////////
-//
-//
-//////////////////////////////////////////////////////////////////////////
-template<typename TLogLevel>
-void Lout<TLogLevel>::FlushAll()
-{
-	for( auto& p : myOutput )
-	{
-		try
-		{
-			(*p).Flush();
-		}
-		catch( std::exception& e )
-		{
-			std::cerr << e.what() << std::endl;
-		}
-		catch( ... )
-		{
-			std::cerr << "Unknown error while flushing" << std::endl;
-		}
-	}
-}
-
-}
-}
 }

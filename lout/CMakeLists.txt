@@ -20,16 +20,20 @@ include_directories("${CMAKE_CURRENT_LIST_DIR}/dist/include")
 include_directories("${CMAKE_CURRENT_LIST_DIR}/src")
 
 
-#set(SOURCE_FILES
-#		)
+set(SOURCE_FILES
+		src/lout.cpp
+		src/output/ILoutOutput.cpp
+		src/output/StdOutput.cpp
+		src/loglevel/ILogLevel.cpp
+		)
 
 # Create a static library
-#add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
+add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
 
 # Output final binaries in the dist folder so they easily can be distributed together with the header files.
-#set_target_properties(${PROJECT_NAME}
-#		PROPERTIES
-#		ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/dist/bin/${CMAKE_BUILD_TYPE}"
-#		LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/dist/bin/${CMAKE_BUILD_TYPE}"
-#		RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/dist/bin/${CMAKE_BUILD_TYPE}"
-#		)
+set_target_properties(${PROJECT_NAME}
+		PROPERTIES
+		ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/dist/bin/${CMAKE_BUILD_TYPE}"
+		LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/dist/bin/${CMAKE_BUILD_TYPE}"
+		RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/dist/bin/${CMAKE_BUILD_TYPE}"
+		)

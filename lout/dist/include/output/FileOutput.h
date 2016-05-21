@@ -7,13 +7,10 @@
 #include "ILoutOutput.h"
 #include <fstream>
 
-namespace com {
-namespace codezeal {
-namespace logging {
-namespace printer {
+namespace lout {
+namespace output {
 
-template<typename TLogLevel>
-class FileOutput : public ILoutOutput<TLogLevel>
+class FileOutput : public ILoutOutput
 {
 public:
 	FileOutput(const std::string& pathToFile);
@@ -22,9 +19,9 @@ public:
 
 	void Flush() noexcept override;
 
-	virtual void LogActual(TLogLevel level, const std::string& msg) override;
+	virtual void LogActual(const loglevel::ILogLevel& level, const std::string& msg) override;
 
-	virtual void LogWithTagActual(TLogLevel level, const std::string& tag, const std::string& msg) override;
+	virtual void LogWithTagActual(const loglevel::ILogLevel& level, const std::string& tag, const std::string& msg) override;
 
 private:
 	std::ofstream myFile;
@@ -34,9 +31,8 @@ private:
 //
 //
 //////////////////////////////////////////////////////////////////////////
-template<typename TLogLevel>
-FileOutput<TLogLevel>::FileOutput(const std::string& pathToFile)
-		: ILoutOutput<TLogLevel>( &std::cerr )
+FileOutput::FileOutput(const std::string& pathToFile)
+		: ILoutOutput( &std::cerr )
 {
 	// Open for output and append mode
 	myFile.open( pathToFile.c_str(), std::ios_base::out | std::ios_base::app );
@@ -46,8 +42,7 @@ FileOutput<TLogLevel>::FileOutput(const std::string& pathToFile)
 //
 //
 //////////////////////////////////////////////////////////////////////////
-template<typename TLogLevel>
-FileOutput<TLogLevel>::~FileOutput()
+FileOutput::~FileOutput()
 {
 	try
 	{
@@ -64,8 +59,7 @@ FileOutput<TLogLevel>::~FileOutput()
 //
 //
 //////////////////////////////////////////////////////////////////////////
-template<typename TLogLevel>
-void FileOutput<TLogLevel>::Flush() noexcept
+void FileOutput::Flush() noexcept
 {
 	try
 	{
@@ -82,12 +76,11 @@ void FileOutput<TLogLevel>::Flush() noexcept
 //
 //
 //////////////////////////////////////////////////////////////////////////
-template<typename TLogLevel>
-void FileOutput<TLogLevel>::LogActual(TLogLevel level, const std::string& msg)
+void FileOutput::LogActual(const loglevel::ILogLevel& level, const std::string& msg)
 {
 	if( myFile.is_open() )
 	{
-		myFile << "[" << static_cast<int>( level ) << "]" << msg << std::endl;
+		myFile << "[" << level << "]" << msg << std::endl;
 	}
 }
 
@@ -95,13 +88,10 @@ void FileOutput<TLogLevel>::LogActual(TLogLevel level, const std::string& msg)
 //
 //
 //////////////////////////////////////////////////////////////////////////
-template<typename TLogLevel>
-void FileOutput<TLogLevel>::LogWithTagActual(TLogLevel level, const std::string& tag, const std::string& msg)
+void FileOutput::LogWithTagActual(const loglevel::ILogLevel& level, const std::string& tag, const std::string& msg)
 {
 	LogActual( level, tag + msg );
 }
 
-}
-}
 }
 }
