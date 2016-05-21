@@ -2,7 +2,7 @@
 // Created by Per Malmberg on 2016-05-21.
 //
 
-#include <lout.h>
+#include <Lout.h>
 #include <c++/iostream>
 
 namespace lout {
@@ -14,7 +14,6 @@ namespace lout {
 Lout::Lout()
 		: myCurrentLevel( 0, "NoLevel" ), myActiveTags()
 {
-
 }
 
 //////////////////////////////////////////////////////////////////////////

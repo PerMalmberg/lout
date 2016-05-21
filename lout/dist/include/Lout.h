@@ -8,7 +8,7 @@
 #include <vector>
 #include <exception>
 #include <set>
-#include "output/ILoutOutput.h"
+#include "output/IOutput.h"
 #include "loglevel/ILogLevel.h"
 
 namespace lout {
@@ -43,6 +43,9 @@ public:
 
 	size_t GetPrinterCount() const
 	{ return myOutput.size(); }
+
+	Lout& operator<<(const ILogLevel& level);
+
 
 	Lout(const Lout&) = delete;
 	Lout& operator=(Lout&) = delete;

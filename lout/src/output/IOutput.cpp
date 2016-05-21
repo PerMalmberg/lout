@@ -4,7 +4,7 @@
 
 #include <string>
 #include <loglevel/ILogLevel.h>
-#include <output/ILoutOutput.h>
+#include <output/IOutput.h>
 
 namespace lout {
 namespace output {
