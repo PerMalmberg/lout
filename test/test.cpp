@@ -3,9 +3,9 @@
 //
 
 #define CATCH_CONFIG_MAIN
+#include "../externals/Catch/include/catch.hpp"
 
 #include <output/StdOutput.h>
-#include "../externals/Catch/include/catch.hpp"
 #include "output/FileOutput.h"
 #include "lout.h"
 #include "loglevel/defaultLevels.h"

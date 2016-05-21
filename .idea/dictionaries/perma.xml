@@ -2,6 +2,7 @@
   <dictionary name="perma">
     <words>
       <w>codezeal</w>
+      <w>loglevel</w>
     </words>
   </dictionary>
 </component>

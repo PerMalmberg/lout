@@ -1,5 +1,5 @@
 //
-// Created by perma on 2016-05-21.
+// Created by Per Malmberg on 2016-05-21.
 //
 
 #include <ostream>
