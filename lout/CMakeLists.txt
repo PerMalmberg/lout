@@ -22,6 +22,7 @@ include_directories("${CMAKE_CURRENT_LIST_DIR}/src")
 
 set(SOURCE_FILES
 		src/Lout.cpp
+		src/LoutLogger.cpp
 		src/output/IOutput.cpp
 		src/output/StdOutput.cpp
 		src/output/FileOutput.cpp

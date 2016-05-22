@@ -79,42 +79,6 @@ public:
 		return myOutput.size();
 	}
 
-	// Sets the log level used for operator <<(const std::string&)
-	Lout& operator<<(const loglevel::ILogLevel& level)
-	{
-		myCurrentLoggingLevel = level;
-		return *this;
-	}
-
-	// Logs the provided message using the log level set using operator<<(const loglevel::ILogLevel&)
-	Lout& operator<<(const std::string& msg)
-	{
-		Log( myCurrentLoggingLevel, msg );
-		return *this;
-	}
-
-	Lout& operator<<(int8_t value);
-
-	Lout& operator<<(int16_t value);
-
-	Lout& operator<<(int32_t value);
-
-	Lout& operator<<(int64_t value);
-
-	Lout& operator<<(uint8_t value);
-
-	Lout& operator<<(uint16_t value);
-
-	Lout& operator<<(uint32_t value);
-
-	Lout& operator<<(uint64_t value);
-
-	Lout& operator<<(double value);
-
-	Lout& operator<<(long double value);
-
-	Lout& operator<<(float value);
-
 	Lout(const Lout&) = delete;
 
 	Lout& operator=(Lout&) = delete;
@@ -132,7 +96,6 @@ protected:
 
 private:
 	loglevel::ILogLevel myCurrentThreshold;
-	loglevel::ILogLevel myCurrentLoggingLevel;
 	std::vector<std::shared_ptr<output::IOutput>> myOutput;
 	std::set<std::string> myActiveCategories;
 	std::set<std::string> myPriorityCategories;
@@ -147,20 +110,5 @@ private:
 	void FlushAll();
 };
 
-
-
-
-
-
-//////////////////////////////////////////////////////////////////////////
-//
-//
-//////////////////////////////////////////////////////////////////////////
-/*template<>
-Lout& Lout::operator<<(const char* msg)
-{
-	Log( myCurrentLoggingLevel, msg );
-	return *this;
-}*/
 
 }

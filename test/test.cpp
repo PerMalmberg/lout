@@ -9,7 +9,7 @@
 #include <output/StdOutput.h>
 #include <thread>
 #include "output/FileOutput.h"
-#include "Lout.h"
+#include "LoutLogger.h"
 #include "loglevel/defaultLevels.h"
 
 using namespace lout;
@@ -17,6 +17,7 @@ using namespace lout::loglevel;
 using namespace lout::output;
 
 #define L Lout::Get()
+#define LL LoutLogger()
 
 SCENARIO( "Setting up a logger" )
 {
@@ -176,7 +177,7 @@ SCENARIO( "Using operator to set log level" )
 			}
 			AND_THEN( "We can log to that level" )
 			{
-				L << Warning() << "This is logged as a warning message";
+				LL << Warning() << "This is logged as a warning message";
 				REQUIRE( p->GetMessageCount() == 1 );
 			}
 		}
@@ -185,7 +186,7 @@ SCENARIO( "Using operator to set log level" )
 			L.SetThreshold( Error() );
 			THEN("nothing is printed")
 			{
-				L << Verbose() << "A verbose message";
+				LL << Verbose() << "A verbose message";
 				REQUIRE( p->GetMessageCount() == 0 );
 			}
 		}
@@ -194,7 +195,7 @@ SCENARIO( "Using operator to set log level" )
 			L.SetThreshold( Verbose() );
 			THEN("and log to the same level")
 			{
-				L << Verbose() << "A verbose message";
+				LL << Verbose() << "A verbose message";
 				REQUIRE( p->GetMessageCount() == 1 );
 			}
 		}
@@ -213,7 +214,7 @@ SCENARIO("Mandatory tags")
 
 		WHEN( "Log with too high level")
 		{
-			L << Warning()  << "Warning message";
+			LL << Warning()  << "Warning message";
 			THEN( "No output")
 			{
 				REQUIRE(p->GetMessageCount() == 0);
@@ -242,12 +243,13 @@ SCENARIO("Using operator overloads to log numbers")
 
 		WHEN( "Using operator overload")
 		{
-			L << Info() << 1;
-			L << 1.2F;
-			L << 13.4L;
-			L << "message";
-			L << int8_t(4);
-
+			{
+				LL << Info() << 1;
+				LL << Info() << 1.2F << " " << "This text goes on the same line as \"1.2\"";
+				LL << Info() << 13.4L << " This text goes on the same line as \"13.4\"";
+				LL << Info() << "Only this text on this line";
+				LL << Info() << int8_t( 4 ) << " only a 4 before this text";
+			}
 			THEN( "Output performed")
 			{
 				REQUIRE(p->GetMessageCount() == 5);
@@ -264,22 +266,26 @@ SCENARIO("Multi threading")
 		L.SetLocker(std::make_shared<threading::Lock>());
 		std::shared_ptr<IOutput> p = std::make_shared<StdOutPrinter>();
 		Lout::Get().AddOutput( p );
-		L.SetThreshold( Info() );
-
-		L << Info() << "Multithread test starting";
+		L.SetThreshold( Warning() );
 
 		WHEN( "Multiple threads are running")
 		{
 			std::vector<std::thread> threads;
 
+			int iterations = 100;
+
 			auto worker_task = [ & ](int id) {
-				for( int i = 0; i < 10; ++i )
+				for( int i = 0; i < iterations; ++i )
 				{
-					L << Info() << id << "Text" << "Text2";
+					LL << Info() << "Thread: " << id << " sample test" << " Iteraton: " << i;
 				}
+
+				LL << Warning() << "Thread id: " << id << " terminating";
 			};
 
-			for( int i = 0; i < 2; ++i )
+			int threadCount = 100;
+
+			for( int i = 0; i < threadCount; ++i )
 			{
 				threads.emplace_back( worker_task, i );
 			}
@@ -289,13 +295,10 @@ SCENARIO("Multi threading")
 				thread.join();
 			}
 
-			THEN("Foo")
+			THEN("All outputs accounted for")
 			{
-
+				REQUIRE(p->GetMessageCount() == ( threadCount * iterations ) + threadCount);
 			}
 		}
-
-
-		L << Info() << "Multithread test ending";
 	}
 }
