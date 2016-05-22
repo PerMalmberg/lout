@@ -247,7 +247,7 @@ SCENARIO("Using operator overloads to log numbers")
 			L << "message";
 			L << int8_t(4);
 
-			THEN( "No output")
+			THEN( "Output performed")
 			{
 				REQUIRE(p->GetMessageCount() == 5);
 			}
