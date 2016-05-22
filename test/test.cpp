@@ -229,3 +229,28 @@ SCENARIO("Mandatory tags")
 		}
 	}
 }
+
+SCENARIO("Using operator overloads to log numbers")
+{
+	GIVEN( "A logger with one output" )
+	{
+		L.Reset();
+		std::shared_ptr<IOutput> p = std::make_shared<StdOutPrinter>();
+		Lout::Get().AddOutput( p );
+		L.SetThreshold( Info() );
+
+		WHEN( "Using operator overload")
+		{
+			L << Info() << 1;
+			L << 1.2F;
+			L << 13.4L;
+			L << "message";
+			L << int8_t(4);
+
+			THEN( "No output")
+			{
+				REQUIRE(p->GetMessageCount() == 5);
+			}
+		}
+	}
+}
