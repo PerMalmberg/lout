@@ -10,6 +10,7 @@
 #include <set>
 #include "output/IOutput.h"
 #include "loglevel/ILogLevel.h"
+#include "threading/Lock.h"
 
 namespace lout {
 
@@ -32,6 +33,8 @@ public:
 	// Gets the singleton instance
 	static Lout& Get()
 	{
+		// This is thread safe in C++11, §6.7.4
+		// http://preshing.com/20130930/double-checked-locking-is-fixed-in-cpp11/
 		static Lout instance;
 		return instance;
 	}
@@ -50,6 +53,12 @@ public:
 
 	// Sets the log level threshold. No level higher than the one set will be allowed.
 	void SetThreshold(const loglevel::ILogLevel& newLevel);
+
+	// Sets the locker used by Lout.
+	// Note: Must be called before multiple threads uses the Lout instance.
+	void SetLocker( std::shared_ptr<threading::ILock> lock ) {
+		myLock = lock;
+	}
 
 	// Gets the current threshold level
 	const loglevel::ILogLevel& GetThreshold() const
@@ -110,12 +119,24 @@ public:
 
 	Lout& operator=(Lout&) = delete;
 
+protected:
+	class Locker
+	{
+	public:
+		Locker(std::shared_ptr<threading::ILock>);
+
+		~Locker();
+	private:
+		std::shared_ptr<threading::ILock> myLock;
+	};
+
 private:
 	loglevel::ILogLevel myCurrentThreshold;
 	loglevel::ILogLevel myCurrentLoggingLevel;
 	std::vector<std::shared_ptr<output::IOutput>> myOutput;
 	std::set<std::string> myActiveCategories;
 	std::set<std::string> myPriorityCategories;
+	std::shared_ptr<threading::ILock> myLock;
 
 	bool IsLevelActive(const loglevel::ILogLevel& level)
 	{

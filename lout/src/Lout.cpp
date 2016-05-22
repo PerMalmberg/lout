@@ -3,7 +3,7 @@
 //
 
 #include <Lout.h>
-#include <c++/iostream>
+#include <iostream>
 
 namespace lout {
 
@@ -15,7 +15,8 @@ Lout::Lout()
 		: myCurrentThreshold( 0, "NoLevel" ),
 		  myCurrentLoggingLevel( -1, "NoLevel" ),
 		  myActiveCategories(),
-		  myPriorityCategories()
+		  myPriorityCategories(),
+		  myLock( std::make_shared<threading::NoLock>() )
 {
 }
 
@@ -73,6 +74,7 @@ void Lout::AddOutput(std::shared_ptr<output::IOutput> output)
 //////////////////////////////////////////////////////////////////////////
 void Lout::RemoveAllOutputs()
 {
+	Locker lock(myLock);
 	FlushAll();
 	myOutput.erase( myOutput.begin(), myOutput.end() );
 }
@@ -83,6 +85,8 @@ void Lout::RemoveAllOutputs()
 //////////////////////////////////////////////////////////////////////////
 void Lout::Log(const loglevel::ILogLevel& level, const std::string& msg)
 {
+	Locker lock(myLock);
+
 	if( IsLevelActive( level ) )
 	{
 		for( auto& p : myOutput )
@@ -109,6 +113,8 @@ void Lout::Log(const loglevel::ILogLevel& level, const std::string& msg)
 //////////////////////////////////////////////////////////////////////////
 void Lout::LogWithCategory(const loglevel::ILogLevel& level, const std::string& category, const std::string& msg)
 {
+	Locker lock(myLock);
+
 	// First check level and normal Categorys
 	bool shallLog = IsLevelActive( level ) && myActiveCategories.find( category ) != myActiveCategories.end();
 	// Now check mandatory Categorys
@@ -140,6 +146,7 @@ void Lout::LogWithCategory(const loglevel::ILogLevel& level, const std::string& 
 //////////////////////////////////////////////////////////////////////////
 void Lout::FlushAll()
 {
+	Locker lock(myLock);
 	for( auto& p : myOutput )
 	{
 		try
@@ -267,6 +274,31 @@ Lout& Lout::operator<<(float value)
 {
 	Log( myCurrentLoggingLevel, std::to_string( value ) );
 	return *this;
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//////////////////////////////////////////////////////////////////////////
+Lout::Locker::Locker(std::shared_ptr<threading::ILock> lock)
+		: myLock( lock )
+{
+	if( myLock )
+	{
+		myLock->Acquire();
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//////////////////////////////////////////////////////////////////////////
+Lout::Locker::~Locker()
+{
+	if( myLock )
+	{
+		myLock->Release();
+	}
 }
 
 

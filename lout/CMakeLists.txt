@@ -26,7 +26,7 @@ set(SOURCE_FILES
 		src/output/StdOutput.cpp
 		src/output/FileOutput.cpp
 		src/loglevel/ILogLevel.cpp
-		)
+		src/threading/Lock.cpp)
 
 # Create a static library
 add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})

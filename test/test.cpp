@@ -7,6 +7,7 @@
 #include "../externals/Catch/include/catch.hpp"
 
 #include <output/StdOutput.h>
+#include <thread>
 #include "output/FileOutput.h"
 #include "Lout.h"
 #include "loglevel/defaultLevels.h"
@@ -252,5 +253,49 @@ SCENARIO("Using operator overloads to log numbers")
 				REQUIRE(p->GetMessageCount() == 5);
 			}
 		}
+	}
+}
+
+SCENARIO("Multi threading")
+{
+	GIVEN("A properly setup Lout and multiple threads")
+	{
+		L.Reset();
+		L.SetLocker(std::make_shared<threading::Lock>());
+		std::shared_ptr<IOutput> p = std::make_shared<StdOutPrinter>();
+		Lout::Get().AddOutput( p );
+		L.SetThreshold( Info() );
+
+		L << Info() << "Multithread test starting";
+
+		WHEN( "Multiple threads are running")
+		{
+			std::vector<std::thread> threads;
+
+			auto worker_task = [ & ](int id) {
+				for( int i = 0; i < 10; ++i )
+				{
+					L << Info() << id << "Text" << "Text2";
+				}
+			};
+
+			for( int i = 0; i < 2; ++i )
+			{
+				threads.emplace_back( worker_task, i );
+			}
+
+			for( auto& thread : threads )
+			{
+				thread.join();
+			}
+
+			THEN("Foo")
+			{
+
+			}
+		}
+
+
+		L << Info() << "Multithread test ending";
 	}
 }
