@@ -11,7 +11,7 @@ namespace output {
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Interface for all Lout output printers.
+// Interface/base class for all Lout outputs.
 // Note the noexcept on the methods - it is imperative that these functions
 // do not leak exceptions. Leaking means std::terminate will be called.
 //
@@ -35,8 +35,8 @@ public:
 	// Logs the message using the provided log level
 	void Log(const loglevel::ILogLevel& level, const std::string& msg) noexcept;
 
-	// Logs the message using the provided log level
-	void LogWithTag(const loglevel::ILogLevel& level, const std::string& tag, const std::string& msg) noexcept;
+	// Logs the message using the provided category and log level
+	void LogWithCategory(const loglevel::ILogLevel& level, const std::string& category, const std::string& msg) noexcept;
 
 	uint64_t GetMessageCount() const
 	{ return myMessageCount; }
@@ -44,9 +44,9 @@ public:
 protected:
 	virtual void LogActual(const loglevel::ILogLevel& level, const std::string& msg) = 0;
 
-	virtual void LogWithTagActual(const loglevel::ILogLevel& level, const std::string& tag, const std::string& msg) = 0;
+	virtual void LogWithCategoryActual(const loglevel::ILogLevel& level, const std::string& category, const std::string& msg) = 0;
 
-	void FallbackLog(const loglevel::ILogLevel& level, const std::string& tag, const std::string& msg);
+	void FallbackLog(const loglevel::ILogLevel& level, const std::string& category, const std::string& msg) noexcept;
 
 private:
 	uint64_t myMessageCount = 0;

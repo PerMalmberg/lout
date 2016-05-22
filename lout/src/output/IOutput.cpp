@@ -29,26 +29,26 @@ IOutput::Log(const loglevel::ILogLevel& level, const std::string& msg) noexcept
 }
 
 void
-IOutput::LogWithTag(const loglevel::ILogLevel& level, const std::string& tag, const std::string& msg) noexcept
+IOutput::LogWithCategory(const loglevel::ILogLevel& level, const std::string& category, const std::string& msg) noexcept
 {
 	try
 	{
 		++myMessageCount;
-		LogWithTagActual( level, tag, msg );
+		LogWithCategoryActual( level, category, msg );
 	}
 	catch( std::exception& e )
 	{
-		FallbackLog( level, tag, e.what() );
-		FallbackLog( level, tag, msg );
+		FallbackLog( level, category, e.what() );
+		FallbackLog( level, category, msg );
 	}
 	catch( ... )
 	{
-		FallbackLog( level, tag, msg );
+		FallbackLog( level, category, msg );
 	}
 }
 
 void
-IOutput::FallbackLog(const loglevel::ILogLevel& level, const std::string& tag, const std::string& msg)
+IOutput::FallbackLog(const loglevel::ILogLevel& level, const std::string& tag, const std::string& msg) noexcept
 {
 	try
 	{

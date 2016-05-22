@@ -1,13 +1,13 @@
-# lout
+# Lout
 A lightweight logging framework
 
-****Work in progress****
+**Work in progress**
 
-## Design goals
-* No predefined log-levels (translation to human readable text via interface provided by user)
-* Pluggable, i.e. able to log to several different channels (std::err, file, stream etc.)
-* Thread-safe
-* Low memory footprint
+## Features
+* Customizable log-levels
+  * Active levels can be adjusted at run-time.
+* Support for custom output channels (simply inherit from `output::IOutput`)
+* Filtering - log messages can be categorized with a custom string which enables filtering on that category.
+  * Priority categories - if a message is tagged with a priority category, it will be logged regardless of active level.
+* Operator overloading for short-hand logging.
 
-## Notes
-* Log rotation etc. are the responsibility of output printers, if applicable.

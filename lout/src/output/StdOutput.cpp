@@ -18,9 +18,9 @@ void StdOutPrinter::LogActual(const loglevel::ILogLevel& level, const std::strin
 	std::cout << "[" << level << "]" << msg << std::endl;
 }
 
-void StdOutPrinter::LogWithTagActual(const loglevel::ILogLevel& level, const std::string& tag, const std::string& msg)
-{
-	std::cout << "[" << level << "][" << tag << "]" << msg << std::endl;
+void StdOutPrinter::LogWithCategoryActual(const loglevel::ILogLevel& level, const std::string& category,
+                                          const std::string& msg){
+	std::cout << "[" << level << "/" << category << "]" << msg << std::endl;
 }
 
 void StdOutPrinter::Flush() noexcept

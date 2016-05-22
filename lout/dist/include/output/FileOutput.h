@@ -21,77 +21,14 @@ public:
 
 	virtual void LogActual(const loglevel::ILogLevel& level, const std::string& msg) override;
 
-	virtual void LogWithTagActual(const loglevel::ILogLevel& level, const std::string& tag, const std::string& msg) override;
+	virtual void LogWithCategoryActual(const loglevel::ILogLevel& level, const std::string& category, const std::string& msg) override;
 
 private:
 	std::ofstream myFile;
+
+	std::string FormatForOutput( const loglevel::ILogLevel& level, const std::string& category, const std::string& msg);
+	void Write( const std::string& data);
 };
-
-//////////////////////////////////////////////////////////////////////////
-//
-//
-//////////////////////////////////////////////////////////////////////////
-FileOutput::FileOutput(const std::string& pathToFile)
-		: IOutput( &std::cerr )
-{
-	// Open for output and append mode
-	myFile.open( pathToFile.c_str(), std::ios_base::out | std::ios_base::app );
-}
-
-//////////////////////////////////////////////////////////////////////////
-//
-//
-//////////////////////////////////////////////////////////////////////////
-FileOutput::~FileOutput()
-{
-	try
-	{
-		if( myFile.is_open() )
-		{
-			myFile.close();
-		}
-	}
-	catch( ... )
-	{ }
-}
-
-//////////////////////////////////////////////////////////////////////////
-//
-//
-//////////////////////////////////////////////////////////////////////////
-void FileOutput::Flush() noexcept
-{
-	try
-	{
-		if( myFile.is_open() )
-		{
-			myFile.flush();
-		}
-	}
-	catch( ... )
-	{ }
-}
-
-//////////////////////////////////////////////////////////////////////////
-//
-//
-//////////////////////////////////////////////////////////////////////////
-void FileOutput::LogActual(const loglevel::ILogLevel& level, const std::string& msg)
-{
-	if( myFile.is_open() )
-	{
-		myFile << "[" << level << "]" << msg << std::endl;
-	}
-}
-
-//////////////////////////////////////////////////////////////////////////
-//
-//
-//////////////////////////////////////////////////////////////////////////
-void FileOutput::LogWithTagActual(const loglevel::ILogLevel& level, const std::string& tag, const std::string& msg)
-{
-	LogActual( level, tag + msg );
-}
 
 }
 }

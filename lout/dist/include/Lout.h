@@ -25,8 +25,8 @@ public:
 	{
 		RemoveAllOutputs();
 		SetThreshold( loglevel::ILogLevel( 0, "NoLevel" ) );
-		myActiveTags.clear();
-		myMandatoryTags.clear();
+		myActiveCategories.clear();
+		myPriorityCategories.clear();
 	}
 
 	// Gets the singleton instance
@@ -45,8 +45,8 @@ public:
 	// Logs using the provided level
 	void Log(const loglevel::ILogLevel& level, const std::string& msg);
 
-	// Logs using the provided level and tag. Only tags that have been activated will be logged.
-	void LogWithTag(const loglevel::ILogLevel& level, const std::string& tag, const std::string& msg);
+	// Logs using the provided level and category. Only categories that have been activated will be logged.
+	void LogWithCategory(const loglevel::ILogLevel& level, const std::string& category, const std::string& msg);
 
 	// Sets the log level threshold. No level higher than the one set will be allowed.
 	void SetThreshold(const loglevel::ILogLevel& newLevel);
@@ -57,11 +57,12 @@ public:
 		return myCurrentThreshold;
 	}
 
-	// Activates a tag
-	void ActivateTag(const std::string& tag);
+	// Activates a category
+	void ActivateCategory(const std::string& category);
 
-	// Activates a mandatory tag, meaning that any log message with this tag will be logged regardless of level.
-	void ActivateMandatoryTag(const std::string& tag);
+	// Activates a mandatory category, meaning that any log message with this category will be logged
+	// regardless of level threshold.
+	void ActivatePriorityCategory(const std::string& category);
 
 	// Returns the number of outputs currently in use
 	size_t GetPrinterCount() const
@@ -83,8 +84,8 @@ private:
 	loglevel::ILogLevel myCurrentThreshold;
 	loglevel::ILogLevel myCurrentLoggingLevel;
 	std::vector<std::shared_ptr<output::IOutput>> myOutput;
-	std::set<std::string> myActiveTags;
-	std::set<std::string> myMandatoryTags;
+	std::set<std::string> myActiveCategories;
+	std::set<std::string> myPriorityCategories;
 
 	bool IsLevelActive(const loglevel::ILogLevel& level)
 	{

@@ -106,7 +106,7 @@ SCENARIO( "Logging with tag" )
 
 		WHEN( "Logging called without activating tag" )
 		{
-			Lout::Get().LogWithTag( Info(), "NonActiveTag", "Log message" );
+			Lout::Get().LogWithCategory( Info(), "NonActiveTag", "Log message" );
 
 			THEN( "No output performed" )
 			{
@@ -115,8 +115,8 @@ SCENARIO( "Logging with tag" )
 		}
 		AND_WHEN( "Tag activated" )
 		{
-			Lout::Get().ActivateTag( "ActiveTag" );
-			Lout::Get().LogWithTag( Info(), "ActiveTag", "Log message" );
+			Lout::Get().ActivateCategory( "ActiveTag" );
+			Lout::Get().LogWithCategory( Info(), "ActiveTag", "Log message" );
 
 			THEN( "Output performed" )
 			{
@@ -220,10 +220,10 @@ SCENARIO("Mandatory tags")
 		}
 		AND_WHEN("A mandatory tag is used")
 		{
-			L.ActivateMandatoryTag("MandatoryTag");
+			L.ActivatePriorityCategory( "MandatoryTag" );
 			THEN("Message is logged")
 			{
-				L.LogWithTag(Verbose(), "MandatoryTag", "Mandatory message");
+				L.LogWithCategory(Verbose(), "MandatoryTag", "Mandatory message");
 				REQUIRE(p->GetMessageCount() == 1);
 			}
 		}

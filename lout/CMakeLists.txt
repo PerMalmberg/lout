@@ -24,6 +24,7 @@ set(SOURCE_FILES
 		src/Lout.cpp
 		src/output/IOutput.cpp
 		src/output/StdOutput.cpp
+		src/output/FileOutput.cpp
 		src/loglevel/ILogLevel.cpp
 		)
 

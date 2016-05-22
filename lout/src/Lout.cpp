@@ -14,8 +14,8 @@ namespace lout {
 Lout::Lout()
 		: myCurrentThreshold( 0, "NoLevel" ),
 		  myCurrentLoggingLevel( -1, "NoLevel" ),
-		  myActiveTags(),
-		  myMandatoryTags()
+		  myActiveCategories(),
+		  myPriorityCategories()
 {
 }
 
@@ -41,18 +41,18 @@ void Lout::SetThreshold(const loglevel::ILogLevel& newLevel)
 //
 //
 //////////////////////////////////////////////////////////////////////////
-void Lout::ActivateTag(const std::string& tag)
+void Lout::ActivateCategory(const std::string& category)
 {
-	myActiveTags.emplace( tag );
+	myActiveCategories.emplace( category );
 }
 
 //////////////////////////////////////////////////////////////////////////
 //
 //
 //////////////////////////////////////////////////////////////////////////
-void Lout::ActivateMandatoryTag(const std::string& tag)
+void Lout::ActivatePriorityCategory(const std::string& category)
 {
-	myMandatoryTags.emplace( tag );
+	myPriorityCategories.emplace( category );
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -107,12 +107,12 @@ void Lout::Log(const loglevel::ILogLevel& level, const std::string& msg)
 //
 //
 //////////////////////////////////////////////////////////////////////////
-void Lout::LogWithTag(const loglevel::ILogLevel& level, const std::string& tag, const std::string& msg)
+void Lout::LogWithCategory(const loglevel::ILogLevel& level, const std::string& category, const std::string& msg)
 {
-	// First check level and normal tags
-	bool shallLog = IsLevelActive( level ) && myActiveTags.find( tag ) != myActiveTags.end();
-	// Now check mandatory tags
-	shallLog |= myMandatoryTags.find( tag ) != myMandatoryTags.end();
+	// First check level and normal Categorys
+	bool shallLog = IsLevelActive( level ) && myActiveCategories.find( category ) != myActiveCategories.end();
+	// Now check mandatory Categorys
+	shallLog |= myPriorityCategories.find( category ) != myPriorityCategories.end();
 
 	if( shallLog )
 	{
@@ -120,7 +120,7 @@ void Lout::LogWithTag(const loglevel::ILogLevel& level, const std::string& tag, 
 		{
 			try
 			{
-				p.get()->LogWithTag( level, tag, msg );
+				p.get()->LogWithCategory( level, category, msg );
 			}
 			catch( std::exception& e )
 			{
