@@ -73,7 +73,7 @@ void Lout::AddOutput(std::shared_ptr<output::IOutput> output)
 //////////////////////////////////////////////////////////////////////////
 void Lout::RemoveAllOutputs()
 {
-	Locker lock(myLock);
+	Locker lock( myLock );
 	FlushAll();
 	myOutput.erase( myOutput.begin(), myOutput.end() );
 }
@@ -84,7 +84,7 @@ void Lout::RemoveAllOutputs()
 //////////////////////////////////////////////////////////////////////////
 void Lout::Log(const loglevel::ILogLevel& level, const std::string& msg)
 {
-	Locker lock(myLock);
+	Locker lock( myLock );
 
 	if( IsLevelActive( level ) )
 	{
@@ -112,11 +112,13 @@ void Lout::Log(const loglevel::ILogLevel& level, const std::string& msg)
 //////////////////////////////////////////////////////////////////////////
 void Lout::LogWithCategory(const loglevel::ILogLevel& level, const std::string& category, const std::string& msg)
 {
-	Locker lock(myLock);
+	Locker lock( myLock );
 
-	// First check level and normal Categorys
-	bool shallLog = IsLevelActive( level ) && myActiveCategories.find( category ) != myActiveCategories.end();
-	// Now check mandatory Categorys
+	// First check level and normal categories. If no category is set, all are allowed.
+	bool shallLog = IsLevelActive( level )
+	                && (myActiveCategories.empty() || myActiveCategories.find( category ) != myActiveCategories.end());
+
+	// Now check mandatory categories
 	shallLog |= myPriorityCategories.find( category ) != myPriorityCategories.end();
 
 	if( shallLog )
@@ -145,7 +147,7 @@ void Lout::LogWithCategory(const loglevel::ILogLevel& level, const std::string& 
 //////////////////////////////////////////////////////////////////////////
 void Lout::FlushAll()
 {
-	Locker lock(myLock);
+	Locker lock( myLock );
 	for( auto& p : myOutput )
 	{
 		try
@@ -162,7 +164,6 @@ void Lout::FlushAll()
 		}
 	}
 }
-
 
 
 //////////////////////////////////////////////////////////////////////////

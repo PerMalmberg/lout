@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.4)
 project(lout)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 11)
 
 if(${CMAKE_MAKE_PROGRAM} MATCHES ".*(MSBuild|msdev|devenv|nmake).*")
 	# Build at warning level 4 on Windows.

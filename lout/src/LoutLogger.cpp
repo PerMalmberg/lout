@@ -148,7 +148,17 @@ LoutLogger& LoutLogger::operator<<(float value)
 //
 //
 //////////////////////////////////////////////////////////////////////////
-void LoutLogger::AppendMsg( const std::string msg )
+LoutLogger& LoutLogger::operator<<(const lout::Flush&)
+{
+	Flush();
+	return *this;
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//////////////////////////////////////////////////////////////////////////
+void LoutLogger::AppendMsg(const std::string msg)
 {
 	myCurrentMessage << msg;
 }
@@ -157,7 +167,7 @@ void LoutLogger::AppendMsg( const std::string msg )
 //
 //
 //////////////////////////////////////////////////////////////////////////
-void LoutLogger::SetLevel( const loglevel::ILogLevel& level)
+void LoutLogger::SetLevel(const loglevel::ILogLevel& level)
 {
 	myCurrentLevel = level;
 }
@@ -170,13 +180,26 @@ void LoutLogger::Flush()
 {
 	for( auto item : myItems )
 	{
-		item->Log(*this);
+		item->Log( *this );
 	}
 
 	myItems.clear();
 
-	Lout::Get().Log( myCurrentLevel, myCurrentMessage.str() );
-	myCurrentMessage.str("");
+	std::string msg = myCurrentMessage.str();
+
+	if( !msg.empty() )
+	{
+		if( myCategory.empty() )
+		{
+			Lout::Get().Log( myCurrentLevel, msg );
+		}
+		else
+		{
+			Lout::Get().LogWithCategory( myCurrentLevel, myCategory, msg );
+		}
+	}
+
+	myCurrentMessage.str( "" );
 	myCurrentMessage.clear();
 }
 
@@ -186,7 +209,7 @@ void LoutLogger::Flush()
 //////////////////////////////////////////////////////////////////////////
 void LoutLogger::LevelItem::Log(LoutLogger& l)
 {
-	l.SetLevel(myLevel);
+	l.SetLevel( myLevel );
 }
 
 //////////////////////////////////////////////////////////////////////////

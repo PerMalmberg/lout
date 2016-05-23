@@ -8,7 +8,6 @@
 
 #include <output/StdOutput.h>
 #include <thread>
-#include "output/FileOutput.h"
 #include "LoutLogger.h"
 #include "loglevel/defaultLevels.h"
 
@@ -18,6 +17,42 @@ using namespace lout::output;
 
 #define L Lout::Get()
 #define LL LoutLogger()
+
+#define info LoutLogger() << Info()
+#define infoc(category) LoutLogger(category) << Info()
+#define warn LoutLogger() << Warning()
+
+class TestOutput : public lout::output::IOutput
+{
+public:
+	TestOutput() : IOutput( nullptr ), myOutput()
+	{ }
+
+	void Flush() noexcept override
+	{ }
+
+	virtual void LogActual(const loglevel::ILogLevel& level, const std::string& msg)
+	{
+		std::stringstream s;
+		s << "[" << level << "]" << msg;
+		myOutput.push_back( s.str() );
+	}
+
+	virtual void LogWithCategoryActual(const loglevel::ILogLevel& level, const std::string& category,
+	                                   const std::string& msg)
+	{
+		std::stringstream s;
+		s << "[" << level << "/" << category << "]" << msg;
+		myOutput.push_back( s.str() );
+	}
+
+	std::string GetMsg( size_t ix) {
+		return myOutput.at(ix);
+	}
+
+private:
+	std::vector<std::string> myOutput;
+};
 
 SCENARIO( "Setting up a logger" )
 {
@@ -45,7 +80,7 @@ SCENARIO( "Adding a printer" )
 
 		WHEN( "A printer is added" )
 		{
-			std::shared_ptr<IOutput> p = std::make_shared<StdOutPrinter>();
+			std::shared_ptr<IOutput> p = std::make_shared<TestOutput>();
 			Lout::Get().AddOutput( p );
 
 			THEN( "Printer count is increased" )
@@ -61,7 +96,7 @@ SCENARIO( "Regular logging" )
 	GIVEN( "A logger with a printer" )
 	{
 		L.Reset();
-		std::shared_ptr<IOutput> p = std::make_shared<StdOutPrinter>();
+		std::shared_ptr<IOutput> p = std::make_shared<TestOutput>();
 		Lout::Get().AddOutput( p );
 		Lout::Get().SetThreshold( Info() );
 
@@ -97,22 +132,22 @@ SCENARIO( "Regular logging" )
 	}
 }
 
-SCENARIO( "Logging with tag" )
+SCENARIO( "Logging with category" )
 {
 	GIVEN( "A logger with a printer" )
 	{
 		L.Reset();
-		std::shared_ptr<IOutput> p = std::make_shared<StdOutPrinter>();
+		std::shared_ptr<IOutput> p = std::make_shared<TestOutput>();
 		Lout::Get().AddOutput( p );
 		Lout::Get().SetThreshold( Warning() );
 
-		WHEN( "Logging called without activating tag" )
+		WHEN( "Logging called without activating category" )
 		{
 			Lout::Get().LogWithCategory( Info(), "NonActiveTag", "Log message" );
 
-			THEN( "No output performed" )
+			THEN( "output performed because we allow all categories in that case" )
 			{
-				REQUIRE( (*p).GetMessageCount() == 0 );
+				REQUIRE( (*p).GetMessageCount() == 1 );
 			}
 		}
 		AND_WHEN( "Tag activated" )
@@ -153,7 +188,7 @@ SCENARIO( "Using operator to set log level" )
 	GIVEN( "A newly created Lout" )
 	{
 		L.Reset();
-		std::shared_ptr<IOutput> p = std::make_shared<StdOutPrinter>();
+		std::shared_ptr<IOutput> p = std::make_shared<TestOutput>();
 		L.AddOutput( p );
 
 		WHEN( "Level is not set" )
@@ -181,10 +216,10 @@ SCENARIO( "Using operator to set log level" )
 				REQUIRE( p->GetMessageCount() == 1 );
 			}
 		}
-		AND_WHEN("We set log level to Error and log to Verbose" )
+		AND_WHEN( "We set log level to Error and log to Verbose" )
 		{
 			L.SetThreshold( Error() );
-			THEN("nothing is printed")
+			THEN( "nothing is printed" )
 			{
 				LL << Verbose() << "A verbose message";
 				REQUIRE( p->GetMessageCount() == 0 );
@@ -193,7 +228,7 @@ SCENARIO( "Using operator to set log level" )
 		AND_WHEN( "We set log level to verbose" )
 		{
 			L.SetThreshold( Verbose() );
-			THEN("and log to the same level")
+			THEN( "and log to the same level" )
 			{
 				LL << Verbose() << "A verbose message";
 				REQUIRE( p->GetMessageCount() == 1 );
@@ -203,45 +238,45 @@ SCENARIO( "Using operator to set log level" )
 }
 
 
-SCENARIO("Mandatory tags")
+SCENARIO( "Mandatory tags" )
 {
 	GIVEN( "A logger with one output" )
 	{
 		L.Reset();
-		std::shared_ptr<IOutput> p = std::make_shared<StdOutPrinter>();
+		std::shared_ptr<IOutput> p = std::make_shared<TestOutput>();
 		Lout::Get().AddOutput( p );
 		L.SetThreshold( Info() );
 
-		WHEN( "Log with too high level")
+		WHEN( "Log with too high level" )
 		{
-			LL << Warning()  << "Warning message";
-			THEN( "No output")
+			LL << Warning() << "Warning message";
+			THEN( "No output" )
 			{
-				REQUIRE(p->GetMessageCount() == 0);
+				REQUIRE( p->GetMessageCount() == 0 );
 			}
 		}
-		AND_WHEN("A mandatory tag is used")
+		AND_WHEN( "A mandatory tag is used" )
 		{
 			L.ActivatePriorityCategory( "MandatoryTag" );
-			THEN("Message is logged")
+			THEN( "Message is logged" )
 			{
-				L.LogWithCategory(Verbose(), "MandatoryTag", "Mandatory message");
-				REQUIRE(p->GetMessageCount() == 1);
+				L.LogWithCategory( Verbose(), "MandatoryTag", "Mandatory message" );
+				REQUIRE( p->GetMessageCount() == 1 );
 			}
 		}
 	}
 }
 
-SCENARIO("Using operator overloads to log numbers")
+SCENARIO( "Using operator overloads to log numbers" )
 {
 	GIVEN( "A logger with one output" )
 	{
 		L.Reset();
-		std::shared_ptr<IOutput> p = std::make_shared<StdOutPrinter>();
+		std::shared_ptr<IOutput> p = std::make_shared<TestOutput>();
 		Lout::Get().AddOutput( p );
 		L.SetThreshold( Info() );
 
-		WHEN( "Using operator overload")
+		WHEN( "Using operator overload and scoping to force logging to commence" )
 		{
 			{
 				LL << Info() << 1;
@@ -249,26 +284,28 @@ SCENARIO("Using operator overloads to log numbers")
 				LL << Info() << 13.4L << " This text goes on the same line as \"13.4\"";
 				LL << Info() << "Only this text on this line";
 				LL << Info() << int8_t( 4 ) << " only a 4 before this text";
+				LoutLogger("A tag") << Info() << "This text is logged";
+				LL << Warning() << "This text worn't be logged";
 			}
-			THEN( "Output performed")
+			THEN( "Output performed" )
 			{
-				REQUIRE(p->GetMessageCount() == 5);
+				REQUIRE( p->GetMessageCount() == 6 );
 			}
 		}
 	}
 }
 
-SCENARIO("Multi threading")
+SCENARIO( "Multi threading" )
 {
-	GIVEN("A properly setup Lout and multiple threads")
+	GIVEN( "A properly setup Lout and multiple threads" )
 	{
 		L.Reset();
-		L.SetLocker(std::make_shared<threading::Lock>());
-		std::shared_ptr<IOutput> p = std::make_shared<StdOutPrinter>();
+		L.SetLocker( std::make_shared<threading::Lock>() );
+		std::shared_ptr<IOutput> p = std::make_shared<TestOutput>();
 		Lout::Get().AddOutput( p );
 		L.SetThreshold( Warning() );
 
-		WHEN( "Multiple threads are running")
+		WHEN( "Multiple threads are running" )
 		{
 			std::vector<std::thread> threads;
 
@@ -277,10 +314,10 @@ SCENARIO("Multi threading")
 			auto worker_task = [ & ](int id) {
 				for( int i = 0; i < iterations; ++i )
 				{
-					LL << Info() << "Thread: " << id << " sample test" << " Iteraton: " << i;
+					info << "Thread: " << id << " sample test" << " iteration: " << i;
 				}
 
-				LL << Warning() << "Thread id: " << id << " terminating";
+				warn << "Thread id: " << id << " terminating";
 			};
 
 			int threadCount = 100;
@@ -295,10 +332,35 @@ SCENARIO("Multi threading")
 				thread.join();
 			}
 
-			THEN("All outputs accounted for")
+			THEN( "All outputs accounted for" )
 			{
-				REQUIRE(p->GetMessageCount() == ( threadCount * iterations ) + threadCount);
+				REQUIRE( p->GetMessageCount() == (threadCount * iterations) + threadCount );
 			}
 		}
+	}
+}
+
+SCENARIO( "Using categories" )
+{
+	GIVEN( "A properly setup Lout" )
+	{
+		L.Reset();
+		L.SetLocker( std::make_shared<threading::Lock>() );
+		std::shared_ptr<TestOutput> p = std::make_shared<TestOutput>();
+		Lout::Get().AddOutput( p );
+		L.SetThreshold( Warning() );
+
+		WHEN( "Log with category" )
+		{
+			std::string msg = "Text logged with category and level info";
+			infoc( "A category" ) << msg << Flush();
+
+			THEN( "Output performed" )
+			{
+				REQUIRE( p->GetMessageCount() == 1 );
+				REQUIRE( p->GetMsg(0) == ("[Info/A category]" + msg) );
+			}
+		}
+
 	}
 }

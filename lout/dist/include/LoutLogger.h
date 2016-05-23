@@ -4,17 +4,27 @@
 
 #pragma once
 
-#include "Lout.h"
 #include <regex>
+#include "Lout.h"
+#include "Flush.h"
+#include "output/FileOutput.h"
 
 namespace lout {
 
-// Class used to allow chaining of log data via operator << without creating a new log line for each argument.
+// Helper class used to allow chaining of log data via operator << without creating a new log line for each argument.
+// Also guarantees that messages are logged as a single line in multi threaded environments.
 class LoutLogger
 {
 public:
-	LoutLogger() : myItems(), myCurrentMessage(), myCurrentLevel(std::numeric_limits<int>::max(), "NoLevel")
+	LoutLogger()
+			: myItems(), myCurrentMessage(), myCurrentLevel( std::numeric_limits<int>::max(), "NoLevel" ), myCategory()
 	{ }
+
+	LoutLogger(const std::string& category)
+			:  LoutLogger()
+	{
+		myCategory = category;
+	}
 
 	~LoutLogger();
 
@@ -44,8 +54,11 @@ public:
 
 	LoutLogger& operator<<(float value);
 
-	void AppendMsg( const std::string msg);
-	void SetLevel( const loglevel::ILogLevel& level);
+	LoutLogger& operator<<(const lout::Flush&);
+
+	void AppendMsg(const std::string msg);
+
+	void SetLevel(const loglevel::ILogLevel& level);
 
 private:
 
@@ -84,6 +97,7 @@ private:
 	std::vector<std::shared_ptr<LogItem>> myItems;
 	std::stringstream myCurrentMessage;
 	loglevel::ILogLevel myCurrentLevel;
+	std::string myCategory;
 };
 
 

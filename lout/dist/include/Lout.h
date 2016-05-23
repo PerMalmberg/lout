@@ -33,8 +33,8 @@ public:
 	// Gets the singleton instance
 	static Lout& Get()
 	{
-		// This is thread safe in C++11, §6.7.4
-		// http://preshing.com/20130930/double-checked-locking-is-fixed-in-cpp11/
+		// This is thread safe in C++11, §6.7 - 4
+		// Page 137, http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2011/n3242.pdf
 		static Lout instance;
 		return instance;
 	}
