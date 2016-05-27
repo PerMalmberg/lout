@@ -17,10 +17,20 @@ namespace output {
 //
 //////////////////////////////////////////////////////////////////////////
 FileOutput::FileOutput(const std::string& pathToFile)
-		: IOutput( &std::cerr )
+		: FileOutput( pathToFile, &std::cerr )
+{
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//////////////////////////////////////////////////////////////////////////
+FileOutput::FileOutput(const std::string& pathToFile, std::ostream* fallbackStream) :
+		IOutput( fallbackStream ), myFilePath( pathToFile )
 {
 	// Open for output and append mode
-	myFile.open( pathToFile.c_str(), std::ios_base::out | std::ios_base::app );
+	OpenFile();
+	ReadFileSize();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -28,6 +38,15 @@ FileOutput::FileOutput(const std::string& pathToFile)
 //
 //////////////////////////////////////////////////////////////////////////
 FileOutput::~FileOutput()
+{
+	Close();
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//////////////////////////////////////////////////////////////////////////
+void FileOutput::Close()
 {
 	try
 	{
@@ -63,7 +82,9 @@ void FileOutput::Flush() noexcept
 //////////////////////////////////////////////////////////////////////////
 void FileOutput::LogActual(const loglevel::ILogLevel& level, const std::string& msg)
 {
-	Write( FormatForOutput( level, "", msg ) );
+	if( !Write( FormatForOutput( level, "", msg ) ) ) {
+		FallbackLog(level, "", msg );
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -73,18 +94,54 @@ void FileOutput::LogActual(const loglevel::ILogLevel& level, const std::string& 
 void FileOutput::LogWithCategoryActual(const loglevel::ILogLevel& level, const std::string& category,
                                        const std::string& msg)
 {
-	Write( FormatForOutput( level, category, msg ) );
+	if( !Write( FormatForOutput( level, category, msg ) ) ) {
+		FallbackLog(level, category, msg );
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
 //
 //
 //////////////////////////////////////////////////////////////////////////
-void FileOutput::Write(const std::string& data)
+void FileOutput::OpenFile()
 {
+	if( !myFile.is_open()) {
+		myFile.open( myFilePath, std::ios_base::out | std::ios_base::app );
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//////////////////////////////////////////////////////////////////////////
+bool FileOutput::Write(const std::string& data)
+{
+	bool res = false;
+
+	OpenFile();
+
 	if( myFile.is_open() )
 	{
 		myFile << data << std::endl;
+		ReadFileSize();
+		res = true;
+	}
+
+	return res;
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//////////////////////////////////////////////////////////////////////////
+void FileOutput::ReadFileSize()
+{
+	if( myFile.good() && myFile.is_open() )
+	{
+		// Seek output to end of file
+		myFile.seekp(0, std::ios_base::end);
+		myCurrentSize = myFile.tellp();
 	}
 }
 

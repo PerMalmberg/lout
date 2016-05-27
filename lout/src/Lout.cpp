@@ -63,7 +63,7 @@ void Lout::AddOutput(std::shared_ptr<output::IOutput> output)
 {
 	if( output )
 	{
-		myOutput.push_back( std::move( output ) );
+		myOutput.push_back( output );
 	}
 }
 
@@ -73,8 +73,9 @@ void Lout::AddOutput(std::shared_ptr<output::IOutput> output)
 //////////////////////////////////////////////////////////////////////////
 void Lout::RemoveAllOutputs()
 {
-	Locker lock( myLock );
 	FlushAll();
+	Locker lock( myLock );
+	(void)lock;
 	myOutput.erase( myOutput.begin(), myOutput.end() );
 }
 
@@ -85,6 +86,7 @@ void Lout::RemoveAllOutputs()
 void Lout::Log(const loglevel::ILogLevel& level, const std::string& msg)
 {
 	Locker lock( myLock );
+	(void)lock; // Just to silence the warning
 
 	if( IsLevelActive( level ) )
 	{
@@ -113,6 +115,7 @@ void Lout::Log(const loglevel::ILogLevel& level, const std::string& msg)
 void Lout::LogWithCategory(const loglevel::ILogLevel& level, const std::string& category, const std::string& msg)
 {
 	Locker lock( myLock );
+	(void)lock;
 
 	// First check level and normal categories. If no category is set, all are allowed.
 	bool shallLog = IsLevelActive( level )
@@ -148,6 +151,8 @@ void Lout::LogWithCategory(const loglevel::ILogLevel& level, const std::string& 
 void Lout::FlushAll()
 {
 	Locker lock( myLock );
+	(void)lock;
+
 	for( auto& p : myOutput )
 	{
 		try

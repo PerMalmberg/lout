@@ -6,10 +6,13 @@
 
 #include "../externals/Catch/include/catch.hpp"
 
-#include <output/StdOutput.h>
 #include <thread>
+#include "output/StdOutput.h"
+#include "output/RollingFile.h"
+#include "output/DateTimeNameGiver.h"
 #include "LoutLogger.h"
 #include "loglevel/defaultLevels.h"
+#include "util/Sizes.h"
 
 using namespace lout;
 using namespace lout::loglevel;
@@ -46,8 +49,9 @@ public:
 		myOutput.push_back( s.str() );
 	}
 
-	std::string GetMsg( size_t ix) {
-		return myOutput.at(ix);
+	std::string GetMsg(size_t ix)
+	{
+		return myOutput.at( ix );
 	}
 
 private:
@@ -284,7 +288,7 @@ SCENARIO( "Using operator overloads to log numbers" )
 				LL << Info() << 13.4L << " This text goes on the same line as \"13.4\"";
 				LL << Info() << "Only this text on this line";
 				LL << Info() << int8_t( 4 ) << " only a 4 before this text";
-				LoutLogger("A tag") << Info() << "This text is logged";
+				LoutLogger( "A tag" ) << Info() << "This text is logged";
 				LL << Warning() << "This text worn't be logged";
 			}
 			THEN( "Output performed" )
@@ -358,9 +362,34 @@ SCENARIO( "Using categories" )
 			THEN( "Output performed" )
 			{
 				REQUIRE( p->GetMessageCount() == 1 );
-				REQUIRE( p->GetMsg(0) == ("[Info/A category]" + msg) );
+				REQUIRE( p->GetMsg( 0 ) == ("[Info/A category]" + msg) );
 			}
 		}
+
+	}
+}
+
+SCENARIO( "Rolling file" )
+{
+	GIVEN( "A properly setup Lout" )
+	{
+		L.Reset();
+		std::unique_ptr<DateTimeNameGiver> dt = std::make_unique<DateTimeNameGiver>();
+		std::shared_ptr<RollingFile> p = std::make_shared<RollingFile>( ".", std::move( dt ), util::Bytes( 500 ) );
+		Lout::Get().AddOutput( p );
+		L.SetThreshold( Warning() );
+
+		WHEN( "Logged enough data" )
+		{
+			std::string data( 501, 'A');
+			info << data << Flush();
+
+			THEN("Two files are found on the current directory")
+			{
+
+			}
+		}
+
 
 	}
 }

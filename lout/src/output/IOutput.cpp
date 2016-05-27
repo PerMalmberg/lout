@@ -9,6 +9,10 @@
 namespace lout {
 namespace output {
 
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//////////////////////////////////////////////////////////////////////////
 void
 IOutput::Log(const loglevel::ILogLevel& level, const std::string& msg) noexcept
 {
@@ -28,6 +32,10 @@ IOutput::Log(const loglevel::ILogLevel& level, const std::string& msg) noexcept
 	}
 }
 
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//////////////////////////////////////////////////////////////////////////
 void
 IOutput::LogWithCategory(const loglevel::ILogLevel& level, const std::string& category, const std::string& msg) noexcept
 {
@@ -47,6 +55,10 @@ IOutput::LogWithCategory(const loglevel::ILogLevel& level, const std::string& ca
 	}
 }
 
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//////////////////////////////////////////////////////////////////////////
 void
 IOutput::FallbackLog(const loglevel::ILogLevel& level, const std::string& tag, const std::string& msg) noexcept
 {
@@ -54,12 +66,12 @@ IOutput::FallbackLog(const loglevel::ILogLevel& level, const std::string& tag, c
 	{
 		if( myFallbackErrorStream && myFallbackErrorStream->good() )
 		{
-			*myFallbackErrorStream << "[" << level << "]";
+			*myFallbackErrorStream << "[" << level;
 			if( !tag.empty() )
 			{
-				*myFallbackErrorStream << "[" << tag << "]";
+				*myFallbackErrorStream << "/" << tag;
 			}
-			*myFallbackErrorStream << msg << std::endl;
+			*myFallbackErrorStream << "]" << msg << std::endl;
 		}
 	}
 	catch( ... )

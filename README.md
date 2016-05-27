@@ -10,6 +10,7 @@ A lightweight logging framework
 * Filtering - log messages can be categorized with a custom string which enables filtering on that category.
   * Priority categories - if a message is tagged with a priority category, it will be logged regardless of active level.
 * Operator overloading for short-hand logging.
+* Fallback to std::cerr (or custom stream) in case of issues with getting things written to the output.
 
 ## Included in the box
 * Output handlers for [File](https://github.com/PerMalmberg/lout/blob/master/lout/dist/include/output/FileOutput.h) and [`std::cout`](https://github.com/PerMalmberg/lout/blob/master/lout/dist/include/output/StdOutput.h).

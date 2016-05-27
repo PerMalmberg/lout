@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.4)
 project(lout)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 
 if(${CMAKE_MAKE_PROGRAM} MATCHES ".*(MSBuild|msdev|devenv|nmake).*")
 	# Build at warning level 4 on Windows.
@@ -26,8 +26,9 @@ set(SOURCE_FILES
 		src/output/IOutput.cpp
 		src/output/StdOutput.cpp
 		src/output/FileOutput.cpp
+		src/output/RollingFile.cpp
 		src/loglevel/ILogLevel.cpp
-		src/threading/Lock.cpp)
+		src/threading/Lock.cpp src/output/DateTimeNameGiver.cpp)
 
 # Create a static library
 add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})

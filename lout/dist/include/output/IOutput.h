@@ -20,6 +20,8 @@ class IOutput
 {
 public:
 
+	// The fallback parameter is as the name implies, a fallback in case the normal output is non-functioning.
+	// You may pass in a nullptr if you don't want a fallback stream.
 	IOutput(std::ostream* fallback)
 			: myFallbackErrorStream( fallback )
 	{
