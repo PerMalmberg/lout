@@ -1,5 +1,5 @@
 //
-// Created by Pamlmberg on 2016-05-25.
+// Created by Per Malmberg on 2016-05-25.
 //
 
 #pragma once
@@ -17,11 +17,13 @@ namespace output {
 class RollingFile : public IOutput
 {
 public:
-	RollingFile(const std::string& pathToOutputFolder, std::unique_ptr<IRollingFileName> nameGiver, util::Bytes maximumLogSize );
+	RollingFile(const std::string& pathToOutputFolder, std::unique_ptr<IRollingFileName> nameGiver, util::Bytes maximumLogSize, int filesToKeep );
 
-	RollingFile(const std::string& pathToOutputFolder, std::unique_ptr<IRollingFileName> nameGiver, util::Bytes maximumLogSize, std::ostream* fallbackStream);
+	RollingFile(const std::string& pathToOutputFolder, std::unique_ptr<IRollingFileName> nameGiver, util::Bytes maximumLogSize, int filesToKeep, std::ostream* fallbackStream);
 
 	~RollingFile();
+
+	size_t GetCurrentLogCount() const;
 
 protected:
 	void Flush() noexcept override;
@@ -34,10 +36,14 @@ private:
 	std::unique_ptr<FileOutput> myOutput;
 	std::unique_ptr<IRollingFileName> myNameGiver;
 	util::Bytes myMaximumLogSize;
+	const int myFilesToKeep;
 
 	void Roll();
 	void Open();
-	std::string PathCombine( const std::string& p1, const std::string& p2);
+	void Close();
+	//std::string PathCombine( const std::string& p1, const std::string& p2);
+	void CleanOldFiles() const;
+	void GetCurrentLogFiles( std::vector<std::string> &target ) const;
 };
 
 }

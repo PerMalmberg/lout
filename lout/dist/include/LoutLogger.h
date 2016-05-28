@@ -5,6 +5,7 @@
 #pragma once
 
 #include <regex>
+#include <sstream>
 #include "Lout.h"
 #include "Flush.h"
 #include "output/FileOutput.h"

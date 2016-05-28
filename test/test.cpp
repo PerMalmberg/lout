@@ -3,7 +3,6 @@
 //
 
 #define CATCH_CONFIG_MAIN
-
 #include "../externals/Catch/include/catch.hpp"
 
 #include <thread>
@@ -371,22 +370,27 @@ SCENARIO( "Using categories" )
 
 SCENARIO( "Rolling file" )
 {
-	GIVEN( "A properly setup Lout" )
+	GIVEN( "A properly setup Lout with a roll over of 10 files" )
 	{
 		L.Reset();
-		std::unique_ptr<DateTimeNameGiver> dt = std::make_unique<DateTimeNameGiver>();
-		std::shared_ptr<RollingFile> p = std::make_shared<RollingFile>( ".", std::move( dt ), util::Bytes( 500 ) );
+		std::unique_ptr<DateTimeNameGiver> dt = std::make_unique<DateTimeNameGiver>( "FilePrefix-");
+		std::shared_ptr<RollingFile> p = std::make_shared<RollingFile>( ".", std::move( dt ), util::Bytes( 500 ), 5 );
 		Lout::Get().AddOutput( p );
 		L.SetThreshold( Warning() );
 
-		WHEN( "Logged enough data" )
+		WHEN( "Logged enough data to roll ten times" )
 		{
-			std::string data( 501, 'A');
-			info << data << Flush();
+			for( int i = 0; i < 10; ++i ) {
+				std::string data( 501, static_cast<char>( 'A' + i ) );
+				info << data << Flush();
+				// We must wait at least 1s so that the next log will get a new name.
+				using namespace std::chrono_literals;
+				std::this_thread::sleep_for( 1.1s );
+			}
 
-			THEN("Two files are found on the current directory")
+			THEN("Five files are found in the current directory")
 			{
-
+				REQUIRE( p->GetCurrentLogCount() == 5 );
 			}
 		}
 
