@@ -7,6 +7,8 @@ if(${CMAKE_MAKE_PROGRAM} MATCHES ".*(MSBuild|msdev|devenv|nmake).*")
 	# Build at warning level 4 on Windows.
 	# Treat all warnings as errors
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /WX /wd4711 /wd4702")
+	# Setup path for boost headers
+    include_directories("C:/Boost/include/boost-1_61")
 else()
 	# Build with all warnings
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -static-libgcc -static-libstdc++ -pthread")
@@ -36,9 +38,15 @@ set(SOURCE_FILES
 
 # Create a static library
 add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
+
 # Tell linker to link against boost. Note that this doesn't actually take effect until the main executable is linked
 # and thus that target needs to know where to fine the libraries (set via link_directories() )
-target_link_libraries( ${PROJECT_NAME} boost_filesystem boost_system)
+if(${CMAKE_MAKE_PROGRAM} MATCHES ".*(MSBuild|msdev|devenv|nmake).*")
+	target_link_libraries( ${PROJECT_NAME} libboost_filesystem-vc140-mt-1_61 libboost_system-vc140-mt-1_61)
+else()
+	target_link_libraries( ${PROJECT_NAME} boost_filesystem boost_system)
+	
+endif()
 
 # Output final binaries in the dist folder so they easily can be distributed together with the header files.
 set_target_properties(${PROJECT_NAME}
