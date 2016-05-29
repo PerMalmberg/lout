@@ -221,7 +221,7 @@ void RollingFile::CleanOldFiles() const
 		// Sort in decending age order
 		std::sort( allFiles.begin(), allFiles.end(), AgeSorter() );
 		// Remove from back until we have removed as many as we want to save
-		if( allFiles.size() > myFilesToKeep ) 
+		if(static_cast<int>( allFiles.size() ) > myFilesToKeep )
 		{
 			// Remove newest files from the list - we're keeping those.
 			for( int i = 0; i < myFilesToKeep; ++i ) 

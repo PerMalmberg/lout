@@ -3,7 +3,7 @@
 //
 
 #include <iostream>
-#include "output/Stdoutput.h"
+#include "output/StdOutput.h"
 
 
 namespace lout {
