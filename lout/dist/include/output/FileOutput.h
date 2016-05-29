@@ -20,7 +20,7 @@ public:
 
 	~FileOutput();
 
-	fpos_t GetCurrentSize() const { return myCurrentSize; }
+	long GetCurrentSize() const { return myCurrentSize; }
 
 	void Flush() noexcept override;
 	void Close();
@@ -29,12 +29,12 @@ public:
 
 	virtual void LogWithCategoryActual(const loglevel::ILogLevel& level, const std::string& category, const std::string& msg) override;
 
-	fpos_t GetLogSize() const { return myCurrentSize; }
+	long GetLogSize() const { return myCurrentSize; }
 
 private:
 	std::string myFilePath;
 	std::ofstream myFile;
-	fpos_t myCurrentSize = 0;
+	long myCurrentSize = 0;
 
 	std::string FormatForOutput( const loglevel::ILogLevel& level, const std::string& category, const std::string& msg);
 	void OpenFile();

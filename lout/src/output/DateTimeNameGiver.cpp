@@ -2,11 +2,12 @@
 // Created by perma on 2016-05-25.
 //
 
-#include "output/DateTimeNameGiver.h"
-
-//#define __STDC_WANT_LIB_EXT1__ 1 // For localtime_s
+#define __STDC_WANT_LIB_EXT1__ 1 // For localtime_s
 #include <time.h>
 #include <cstring>
+#include <chrono>
+#include <iomanip>
+#include "output/DateTimeNameGiver.h"
 
 namespace lout {
 namespace output {
@@ -25,19 +26,28 @@ DateTimeNameGiver::DateTimeNameGiver( const std::string& prefix)
 //////////////////////////////////////////////////////////////////////////
 std::string DateTimeNameGiver::GetNextName() const
 {
-	time_t now;
-	time( &now );
+	auto now = std::chrono::system_clock::now();
 
-	tm localTime;
+	std::stringstream formatted;
+	formatted << myPrefix;
+
+	time_t time = std::chrono::system_clock::to_time_t( now );
+	tm t;
+
 	// TODO: provide constructor to choose between local time and UTC time. (gmtime_s)
-	localtime_s( &localTime, &now );
 
+	// std::localtime is not thread-safe so we have to use the _r or _s version.
+#if defined(_WIN32)
+	localtime_s( &t, &time );
+#else
+	localtime_r( &time, &t );
+#endif
 	char buff[40];
 	std::memset( buff, 0, sizeof( buff ) );
-	strftime( buff, sizeof( buff ) - 1, "%Y-%m-%d %H%M%S.log", &localTime );
+	strftime( buff, sizeof( buff ) - 1, "%Y-%m-%d %H%M%S.log", &t );
+	formatted << buff;
 
-	return myPrefix + std::string( buff );
-
+	return formatted.str();
 }
 
 //////////////////////////////////////////////////////////////////////////

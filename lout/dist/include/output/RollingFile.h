@@ -41,7 +41,6 @@ private:
 	void Roll();
 	void Open();
 	void Close();
-	//std::string PathCombine( const std::string& p1, const std::string& p2);
 	void CleanOldFiles() const;
 	void GetCurrentLogFiles( std::vector<std::string> &target ) const;
 };

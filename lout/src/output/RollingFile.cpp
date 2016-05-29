@@ -6,13 +6,13 @@
 #include <experimental/filesystem>
 #include <algorithm>
 #include <util/Sizes.h>
+#include <boost/filesystem.hpp>
 #include "output/RollingFile.h"
 
+namespace fs = boost::filesystem;
 
 namespace lout {
 namespace output {
-
-namespace fs = std::experimental::filesystem;
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -67,8 +67,11 @@ void RollingFile::GetCurrentLogFiles( std::vector<std::string> &target ) const
 {
 	try {
 		fs::directory_iterator dir( myPathToOutputFolder );
+		fs::directory_iterator end = fs::directory_iterator();
 
-		for( auto & entry : dir ) {
+		while( dir != end )
+		{
+			auto& entry = *dir;
 			if( fs::is_regular_file( entry.path() ) ) {
 				const fs::path& p = entry.path();
 				const std::string fileName = p.filename().string();
@@ -76,6 +79,7 @@ void RollingFile::GetCurrentLogFiles( std::vector<std::string> &target ) const
 					target.push_back( p.string() );
 				}
 			}
+			++dir;
 		}
 	}
 	catch( ... )
@@ -175,25 +179,6 @@ void RollingFile::Close()
 //
 //
 //////////////////////////////////////////////////////////////////////////
-//std::string RollingFile::PathCombine(const std::string& p1, const std::string& p2)
-//{
-//	std::string path = p1;
-//
-//	if( path.length() > 0 )
-//	{
-//		if( path.at( p1.length() - 1 ) != fs::path::preferred_separator )
-//		{
-//			path += pathSeparator;
-//		}
-//	}
-//
-//	path += p2;
-//
-//	return path;
-//}
-
-
-
 class AgeSorter
 {
 public:
@@ -213,8 +198,6 @@ void RollingFile::CleanOldFiles() const
 {
 	try 
 	{
-		fs::directory_iterator dir( myPathToOutputFolder );
-
 		std::vector<std::string> allFiles;
 		GetCurrentLogFiles( allFiles );
 
@@ -229,7 +212,7 @@ void RollingFile::CleanOldFiles() const
 				allFiles.pop_back();
 			}
 
-			// No delete the files remaining in our list
+			// Now delete the files remaining in our list
 			for( auto fullPath : allFiles ) 
 			{
 				try 

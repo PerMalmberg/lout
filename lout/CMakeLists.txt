@@ -9,7 +9,9 @@ if(${CMAKE_MAKE_PROGRAM} MATCHES ".*(MSBuild|msdev|devenv|nmake).*")
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /WX /wd4711 /wd4702")
 else()
 	# Build with all warnings
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -static-libgcc -static-libstdc++ -static -lpthread")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -static-libgcc -static-libstdc++ -pthread")
+    # Setup path for boost headers
+    include_directories("/usr/local/boost_1_61_0/")
 endif()
 
 # Use CMAKE_CURRENT_LIST_DIR instead of CMAKE_SOURCE_DIR to specify relative to where this CMakeLists.txt is located
@@ -18,6 +20,7 @@ include_directories("${CMAKE_CURRENT_LIST_DIR}/../lout/dist/include")
 
 include_directories("${CMAKE_CURRENT_LIST_DIR}/dist/include")
 include_directories("${CMAKE_CURRENT_LIST_DIR}/src")
+include_directories("${CMAKE_CURRENT_LIST_DIR}/../externals")
 
 
 set(SOURCE_FILES
@@ -28,10 +31,14 @@ set(SOURCE_FILES
 		src/output/FileOutput.cpp
 		src/output/RollingFile.cpp
 		src/loglevel/ILogLevel.cpp
-		src/threading/Lock.cpp src/output/DateTimeNameGiver.cpp)
+		src/threading/Lock.cpp
+		src/output/DateTimeNameGiver.cpp)
 
 # Create a static library
 add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
+# Tell linker to link against boost. Note that this doesn't actually take effect until the main executable is linked
+# and thus that target needs to know where to fine the libraries (set via link_directories() )
+target_link_libraries( ${PROJECT_NAME} boost_filesystem boost_system)
 
 # Output final binaries in the dist folder so they easily can be distributed together with the header files.
 set_target_properties(${PROJECT_NAME}

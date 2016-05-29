@@ -11,7 +11,6 @@
 #include "output/DateTimeNameGiver.h"
 #include "LoutLogger.h"
 #include "loglevel/defaultLevels.h"
-#include "util/Sizes.h"
 
 using namespace lout;
 using namespace lout::loglevel;
@@ -288,7 +287,7 @@ SCENARIO( "Using operator overloads to log numbers" )
 				LL << Info() << "Only this text on this line";
 				LL << Info() << int8_t( 4 ) << " only a 4 before this text";
 				LoutLogger( "A tag" ) << Info() << "This text is logged";
-				LL << Warning() << "This text worn't be logged";
+				LL << Warning() << "This text won't be logged";
 			}
 			THEN( "Output performed" )
 			{
@@ -310,7 +309,7 @@ SCENARIO( "Multi threading" )
 
 		WHEN( "Multiple threads are running" )
 		{
-			std::vector<std::thread> threads;
+			std::vector<std::unique_ptr<std::thread>> threads;
 
 			int iterations = 100;
 
@@ -323,16 +322,16 @@ SCENARIO( "Multi threading" )
 				warn << "Thread id: " << id << " terminating";
 			};
 
-			int threadCount = 100;
+			int threadCount = 1;
 
 			for( int i = 0; i < threadCount; ++i )
 			{
-				threads.emplace_back( worker_task, i );
+				threads.emplace_back( std::move( std::make_unique<std::thread>( worker_task, i ) ) );
 			}
 
 			for( auto& thread : threads )
 			{
-				thread.join();
+				thread->join();
 			}
 
 			THEN( "All outputs accounted for" )
@@ -342,6 +341,7 @@ SCENARIO( "Multi threading" )
 		}
 	}
 }
+
 
 SCENARIO( "Using categories" )
 {
@@ -393,7 +393,5 @@ SCENARIO( "Rolling file" )
 				REQUIRE( p->GetCurrentLogCount() == 5 );
 			}
 		}
-
-
 	}
 }
