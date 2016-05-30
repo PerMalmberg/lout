@@ -40,3 +40,12 @@ cd build
 cmake -G "Visual Studio 14 2015" ..
 </pre>
 then open the generated solution.
+
+## Building boost
+For reference, these are the commands I used to build boost filesystem libraries
+
+### Linux
+./b2 --prefix=/usr/local/boost_1_61_0 --with-libraries=filesystem  link=static threading=multi runtime-link=static variant=release
+
+### Windows
+b2 --with-filesystem variant=release link=static address-model=64 install
