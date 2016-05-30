@@ -40,6 +40,11 @@ add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
 # and thus that target needs to know where to fine the libraries (set via link_directories() )
 target_link_libraries( ${PROJECT_NAME} boost_filesystem boost_system)
 
+# Note if you build your binary using -static in CMAKE_CXX_FLAGS, you must make sure that the entire pthread archive is linked
+# to our target. See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=52590#c4
+# In short, the internet says 'don't use static linking'.
+#target_link_libraries( ${PROJECT_NAME} -Wl,--whole-archive -lpthread -Wl,--no-whole-archive)
+
 # Output final binaries in the dist folder so they easily can be distributed together with the header files.
 set_target_properties(${PROJECT_NAME}
 		PROPERTIES
