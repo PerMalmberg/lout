@@ -141,7 +141,7 @@ void FileOutput::ReadFileSize()
 	{
 		// Seek output to end of file
 		myFile.seekp(0, std::ios_base::end);
-		myCurrentSize = myFile.tellp();
+		myCurrentSize = static_cast<long>( myFile.tellp() );
 	}
 }
 
