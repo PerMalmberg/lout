@@ -92,18 +92,7 @@ void Lout::Log(const loglevel::ILogLevel& level, const std::string& msg)
 	{
 		for( auto& p : myOutput )
 		{
-			try
-			{
-				p.get()->Log( level, msg );
-			}
-			catch( std::exception& e )
-			{
-				std::cerr << e.what() << std::endl;
-			}
-			catch( ... )
-			{
-				std::cerr << "Unknown error while logging" << std::endl;
-			}
+			p.get()->Log( level, msg );
 		}
 	}
 }
@@ -128,18 +117,7 @@ void Lout::LogWithCategory(const loglevel::ILogLevel& level, const std::string& 
 	{
 		for( auto& p : myOutput )
 		{
-			try
-			{
-				p.get()->LogWithCategory( level, category, msg );
-			}
-			catch( std::exception& e )
-			{
-				std::cerr << e.what() << std::endl;
-			}
-			catch( ... )
-			{
-				std::cerr << "Unknown error while logging" << std::endl;
-			}
+			p.get()->LogWithCategory( level, category, msg );
 		}
 	}
 }
@@ -155,18 +133,7 @@ void Lout::FlushAll()
 
 	for( auto& p : myOutput )
 	{
-		try
-		{
-			(*p).Flush();
-		}
-		catch( std::exception& e )
-		{
-			std::cerr << e.what() << std::endl;
-		}
-		catch( ... )
-		{
-			std::cerr << "Unknown error while flushing" << std::endl;
-		}
+		(*p).Flush();
 	}
 }
 

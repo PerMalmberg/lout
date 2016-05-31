@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 14)
 if(${CMAKE_MAKE_PROGRAM} MATCHES ".*(MSBuild|msdev|devenv|nmake).*")
 	# Build at warning level 4 on Windows.
 	# Treat all warnings as errors
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /WX /wd4711 /wd4702")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /WX")
 	# Setup path for boost headers
     include_directories("C:/Boost/include/boost-1_61")
 else()
