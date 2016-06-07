@@ -13,9 +13,9 @@ namespace output {
 class StdOutPrinter : public IOutput
 {
 public:
-	StdOutPrinter();
+	StdOutPrinter(std::shared_ptr<formatting::IFormatter> formatter);
 
-	StdOutPrinter( std::ostream* fallbackStream );
+	StdOutPrinter( std::shared_ptr<formatting::IFormatter> formatter, std::ostream* fallbackStream );
 
 	void LogActual(const loglevel::ILogLevel& level, const std::string& msg) override;
 	void LogWithCategoryActual(const loglevel::ILogLevel& level, const std::string& category, const std::string& msg) override;

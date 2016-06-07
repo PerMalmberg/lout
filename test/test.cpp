@@ -11,6 +11,7 @@
 #include "output/DateTimeNameGiver.h"
 #include "LoutLogger.h"
 #include "loglevel/defaultLevels.h"
+#include "formatting/DefaultFormatter.h"
 
 using namespace lout;
 using namespace lout::loglevel;
@@ -26,7 +27,7 @@ using namespace lout::output;
 class TestOutput : public lout::output::IOutput
 {
 public:
-	TestOutput() : IOutput( nullptr ), myOutput()
+	TestOutput() : IOutput( std::make_shared<formatting::DefaultFormatter>(),  nullptr ), myOutput()
 	{ }
 
 	void Flush() noexcept override
@@ -170,7 +171,7 @@ SCENARIO( "Using FileOutput" )
 	GIVEN( "A logger with a file output  writer" )
 	{
 		L.Reset();
-		std::shared_ptr<IOutput> p = std::make_shared<FileOutput>( "output.log" );
+		std::shared_ptr<IOutput> p = std::make_shared<FileOutput>( std::make_shared<formatting::DefaultFormatter>(), "output.log" );
 		Lout::Get().RemoveAllOutputs();
 		Lout::Get().AddOutput( p );
 		Lout::Get().SetThreshold( Warning() );
@@ -374,7 +375,7 @@ SCENARIO( "Rolling file" )
 	{
 		L.Reset();
 		std::unique_ptr<DateTimeNameGiver> dt = std::make_unique<DateTimeNameGiver>( "FilePrefix-");
-		std::shared_ptr<RollingFile> p = std::make_shared<RollingFile>( ".", std::move( dt ), util::Bytes( 500 ), 5 );
+		std::shared_ptr<RollingFile> p = std::make_shared<RollingFile>( ".", std::move( dt ), std::make_shared<formatting::DefaultFormatter>(), util::Bytes( 500 ), 5 );
 		Lout::Get().AddOutput( p );
 		L.SetThreshold( Warning() );
 

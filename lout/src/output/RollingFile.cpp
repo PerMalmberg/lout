@@ -17,9 +17,9 @@ namespace output {
 //
 //
 //////////////////////////////////////////////////////////////////////////
-RollingFile::RollingFile(const std::string& pathToOutputFolder, std::unique_ptr<IRollingFileName> nameGiver,
+RollingFile::RollingFile(const std::string& pathToOutputFolder, std::unique_ptr<IRollingFileName> nameGiver, std::shared_ptr<formatting::IFormatter> formatter,
                          util::Bytes maximumLogSize, int filesToKeep)
-		: RollingFile( pathToOutputFolder, std::move( nameGiver ), maximumLogSize, filesToKeep, &std::cerr )
+		: RollingFile( pathToOutputFolder, std::move( nameGiver ), formatter, maximumLogSize, filesToKeep, &std::cerr )
 {
 
 }
@@ -28,9 +28,9 @@ RollingFile::RollingFile(const std::string& pathToOutputFolder, std::unique_ptr<
 //
 //
 //////////////////////////////////////////////////////////////////////////
-RollingFile::RollingFile(const std::string& pathToOutputFolder, std::unique_ptr<IRollingFileName> nameGiver,
+RollingFile::RollingFile(const std::string& pathToOutputFolder, std::unique_ptr<IRollingFileName> nameGiver, std::shared_ptr<formatting::IFormatter> formatter,
                          util::Bytes maximumLogSize, int filesToKeep, std::ostream* fallbackStream)
-		: IOutput( fallbackStream ), myPathToOutputFolder( pathToOutputFolder ), myOutput(),
+		: IOutput( formatter, fallbackStream ), myPathToOutputFolder( pathToOutputFolder ), myOutput(),
 		  myNameGiver( std::move( nameGiver ) ),
 		  myMaximumLogSize( maximumLogSize ),
 		  myFilesToKeep( filesToKeep )
@@ -157,7 +157,7 @@ void RollingFile::Open()
 		fs::path file( myPathToOutputFolder );
 		file /= myNameGiver->GetNextName();
 
-		myOutput = std::make_unique<FileOutput>( file.string() );
+		myOutput = std::make_unique<FileOutput>( myFormatter, file.string() );
 	}
 }
 

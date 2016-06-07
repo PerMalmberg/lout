@@ -14,9 +14,9 @@ class FileOutput : public IOutput
 {
 public:
 	// Will use std::cerr as fallback stream
-	FileOutput(const std::string& pathToFile);
+	FileOutput(std::shared_ptr<formatting::IFormatter> formatter, const std::string& pathToFile);
 
-	FileOutput( const std::string& pathToFile, std::ostream* fallbackStream );
+	FileOutput( std::shared_ptr<formatting::IFormatter> formatter, const std::string& pathToFile, std::ostream* fallbackStream );
 
 	~FileOutput();
 

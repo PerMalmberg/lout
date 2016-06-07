@@ -60,18 +60,20 @@ IOutput::LogWithCategory(const loglevel::ILogLevel& level, const std::string& ca
 //
 //////////////////////////////////////////////////////////////////////////
 void
-IOutput::FallbackLog(const loglevel::ILogLevel& level, const std::string& tag, const std::string& msg) noexcept
+IOutput::FallbackLog(const loglevel::ILogLevel& level, const std::string& category, const std::string& msg) noexcept
 {
 	try
 	{
 		if( myFallbackErrorStream && myFallbackErrorStream->good() )
 		{
-			*myFallbackErrorStream << "[" << level;
-			if( !tag.empty() )
-			{
-				*myFallbackErrorStream << "/" << tag;
+			if( category.empty() ) {
+				*myFallbackErrorStream << myFormatter->Format(level, msg );
 			}
-			*myFallbackErrorStream << "]" << msg << std::endl;
+			else {
+				*myFallbackErrorStream << myFormatter->Format(level, category, msg );
+			}
+
+			*myFallbackErrorStream << std::endl;
 		}
 	}
 	catch( ... )

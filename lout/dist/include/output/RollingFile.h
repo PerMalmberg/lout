@@ -17,9 +17,9 @@ namespace output {
 class RollingFile : public IOutput
 {
 public:
-	RollingFile(const std::string& pathToOutputFolder, std::unique_ptr<IRollingFileName> nameGiver, util::Bytes maximumLogSize, int filesToKeep );
+	RollingFile(const std::string& pathToOutputFolder, std::unique_ptr<IRollingFileName> nameGiver, std::shared_ptr<formatting::IFormatter> formatter, util::Bytes maximumLogSize, int filesToKeep );
 
-	RollingFile(const std::string& pathToOutputFolder, std::unique_ptr<IRollingFileName> nameGiver, util::Bytes maximumLogSize, int filesToKeep, std::ostream* fallbackStream);
+	RollingFile(const std::string& pathToOutputFolder, std::unique_ptr<IRollingFileName> nameGiver, std::shared_ptr<formatting::IFormatter> formatter, util::Bytes maximumLogSize, int filesToKeep, std::ostream* fallbackStream);
 
 	~RollingFile();
 

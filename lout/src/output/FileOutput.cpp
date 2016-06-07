@@ -16,8 +16,8 @@ namespace output {
 //
 //
 //////////////////////////////////////////////////////////////////////////
-FileOutput::FileOutput(const std::string& pathToFile)
-		: FileOutput( pathToFile, &std::cerr )
+FileOutput::FileOutput(std::shared_ptr<formatting::IFormatter> formatter, const std::string& pathToFile)
+		: FileOutput( formatter, pathToFile, &std::cerr )
 {
 }
 
@@ -25,8 +25,8 @@ FileOutput::FileOutput(const std::string& pathToFile)
 //
 //
 //////////////////////////////////////////////////////////////////////////
-FileOutput::FileOutput(const std::string& pathToFile, std::ostream* fallbackStream) :
-		IOutput( fallbackStream ), myFilePath( pathToFile )
+FileOutput::FileOutput(std::shared_ptr<formatting::IFormatter> formatter, const std::string& pathToFile, std::ostream* fallbackStream) :
+		IOutput( formatter, fallbackStream ), myFilePath( pathToFile )
 {
 	// Open for output and append mode
 	OpenFile();

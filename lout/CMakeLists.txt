@@ -34,7 +34,8 @@ set(SOURCE_FILES
 		src/output/RollingFile.cpp
 		src/loglevel/ILogLevel.cpp
 		src/threading/Lock.cpp
-		src/output/DateTimeNameGiver.cpp)
+		src/output/DateTimeNameGiver.cpp
+		src/formatting/DefaultFormatter.cpp)
 
 # Create a static library
 add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})

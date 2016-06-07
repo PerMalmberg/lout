@@ -5,7 +5,9 @@
 #pragma once
 
 #include <string>
+#include <memory>
 #include "loglevel/ILogLevel.h"
+#include "formatting/IFormatter.h"
 namespace lout {
 namespace output {
 
@@ -22,8 +24,9 @@ public:
 
 	// The fallback parameter is as the name implies, a fallback in case the normal output is non-functioning.
 	// You may pass in a nullptr if you don't want a fallback stream.
-	IOutput(std::ostream* fallback)
-			: myFallbackErrorStream( fallback )
+	IOutput( std::shared_ptr<formatting::IFormatter> formatter, std::ostream* fallback)
+			: myFormatter( std::move( formatter ) ),
+			myFallbackErrorStream( fallback )
 	{
 	}
 
@@ -50,6 +53,7 @@ protected:
 
 	void FallbackLog(const loglevel::ILogLevel& level, const std::string& category, const std::string& msg) noexcept;
 
+	std::shared_ptr<formatting::IFormatter> myFormatter;
 private:
 	uint64_t myMessageCount = 0;
 	std::ostream* myFallbackErrorStream = nullptr;
