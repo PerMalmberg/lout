@@ -11,8 +11,9 @@ A logging framework
 * Fallback to std::cerr (or custom stream) in case of issues with getting things written to the output.
 
 ## Included in the box
-* Output handlers for [File](https://github.com/PerMalmberg/lout/blob/master/lout/dist/include/output/FileOutput.h) and [`std::cout`](https://github.com/PerMalmberg/lout/blob/master/lout/dist/include/output/StdOutput.h).
+* Output handlers for [File](https://github.com/PerMalmberg/lout/blob/master/lout/dist/include/output/FileOutput.h), [Rolling Files](https://github.com/PerMalmberg/lout/blob/master/lout/dist/include/output/RollingFile.h) and [`std::cout`](https://github.com/PerMalmberg/lout/blob/master/lout/dist/include/output/StdOutput.h).
 * [Ready-to-use log levels](https://github.com/PerMalmberg/lout/blob/master/lout/dist/include/loglevel/defaultLevels.h) (Info, Warning, Error, Vebose, Debug).
+* Customizable [logging output format](https://github.com/PerMalmberg/lout/blob/master/lout/dist/include/formatting/IFormatter.h)
 * Customizable [thread synchronization](https://github.com/PerMalmberg/lout/blob/master/lout/dist/include/threading/Lock.h) mechanism
 
 ##Usage
