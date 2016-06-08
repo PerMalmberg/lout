@@ -1,7 +1,5 @@
-# Lout
-A lightweight logging framework
-
-**Work in progress**
+# Lout - logging output
+A logging framework
 
 ## Features
 * Customizable log-levels
