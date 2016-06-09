@@ -323,7 +323,7 @@ SCENARIO( "Multi threading" )
 				warn << "Thread id: " << id << " terminating";
 			};
 
-			int threadCount = 1;
+			int threadCount = 50;
 
 			for( int i = 0; i < threadCount; ++i )
 			{
