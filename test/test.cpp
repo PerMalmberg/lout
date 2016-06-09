@@ -305,7 +305,9 @@ SCENARIO( "Multi threading" )
 		L.Reset();
 		L.SetLocker( std::make_shared<threading::Lock>() );
 		std::shared_ptr<IOutput> p = std::make_shared<TestOutput>();
+		std::shared_ptr<IOutput> p2 = std::make_shared<FileOutput>(std::make_shared<formatting::DefaultFormatter>(), "./thread.log");
 		Lout::Get().AddOutput( p );
+		Lout::Get().AddOutput(p2);
 		L.SetThreshold( Warning() );
 
 		WHEN( "Multiple threads are running" )
