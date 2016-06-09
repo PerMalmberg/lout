@@ -13,7 +13,7 @@ namespace output {
 //
 //
 //////////////////////////////////////////////////////////////////////////
-StdOutPrinter::StdOutPrinter( std::shared_ptr<formatting::IFormatter> formatter) :
+StdOutput::StdOutput( std::shared_ptr<formatting::IFormatter> formatter) :
 		IOutput( formatter, &std::cerr )
 { }
 
@@ -21,7 +21,7 @@ StdOutPrinter::StdOutPrinter( std::shared_ptr<formatting::IFormatter> formatter)
 //
 //
 //////////////////////////////////////////////////////////////////////////
-StdOutPrinter::StdOutPrinter( std::shared_ptr<formatting::IFormatter> formatter, std::ostream* fallbackStream ) :
+StdOutput::StdOutput( std::shared_ptr<formatting::IFormatter> formatter, std::ostream* fallbackStream ) :
 		IOutput( formatter, fallbackStream )
 { }
 
@@ -29,7 +29,7 @@ StdOutPrinter::StdOutPrinter( std::shared_ptr<formatting::IFormatter> formatter,
 //
 //
 //////////////////////////////////////////////////////////////////////////
-void StdOutPrinter::LogActual(const loglevel::ILogLevel& level, const std::string& msg)
+void StdOutput::LogActual(const loglevel::ILogLevel& level, const std::string& msg)
 {
 	std::cout << myFormatter->Format( level, msg ) << std::endl;
 }
@@ -38,7 +38,7 @@ void StdOutPrinter::LogActual(const loglevel::ILogLevel& level, const std::strin
 //
 //
 //////////////////////////////////////////////////////////////////////////
-void StdOutPrinter::LogWithCategoryActual(const loglevel::ILogLevel& level, const std::string& category,
+void StdOutput::LogWithCategoryActual(const loglevel::ILogLevel& level, const std::string& category,
                                           const std::string& msg){
 	std::cout << myFormatter->Format(level, category, msg ) << std::endl;
 }
@@ -47,7 +47,7 @@ void StdOutPrinter::LogWithCategoryActual(const loglevel::ILogLevel& level, cons
 //
 //
 //////////////////////////////////////////////////////////////////////////
-void StdOutPrinter::Flush() noexcept
+void StdOutput::Flush() noexcept
 {
 	std::cout.flush();
 }
