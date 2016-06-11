@@ -6,12 +6,14 @@
 #include "../externals/Catch/include/catch.hpp"
 
 #include <thread>
+#include <output/ColoredStdOutput.h>
 #include "output/StdOutput.h"
 #include "output/RollingFile.h"
 #include "output/DateTimeNameGiver.h"
 #include "LoutLogger.h"
 #include "loglevel/defaultLevels.h"
 #include "formatting/DefaultFormatter.h"
+#include "../externals/rlutil/rlutil.h"
 
 using namespace lout;
 using namespace lout::loglevel;
@@ -396,5 +398,31 @@ SCENARIO( "Rolling file" )
 				REQUIRE( p->GetCurrentLogCount() == 5 );
 			}
 		}
+	}
+}
+
+SCENARIO( "Colored output" )
+{
+	GIVEN( "A properly setup Lout" )
+	{
+		L.Reset();
+		std::shared_ptr<ColoredStdOutput> p = std::make_shared<ColoredStdOutput>(std::make_shared<formatting::DefaultFormatter>());
+
+		L.AddOutput( p );
+		L.SetThreshold(Debug());
+
+		WHEN( "Level has a color" )
+		{
+			p->SetLevelColor(Error(), rlutil::RED);
+			p->SetLevelColor(Warning(), rlutil::YELLOW);
+
+			THEN( "Output performed" )
+			{
+				LL << Warning() << "Warning message in YELLOW";
+				LL << Error() << "Error message in RED";
+				LL << Debug() << "Debug in normal color";
+			}
+		}
+
 	}
 }

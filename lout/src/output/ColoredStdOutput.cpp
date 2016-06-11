@@ -8,12 +8,16 @@
 namespace lout {
 namespace output {
 
+using namespace rlutil;
+
 //////////////////////////////////////////////////////////////////////////
 //
 //
 //////////////////////////////////////////////////////////////////////////
 ColoredStdOutput::ColoredStdOutput( std::shared_ptr<formatting::IFormatter> formatter )
-		: StdOutput( formatter ) {
+		: StdOutput( formatter )
+{
+	saveDefaultColor();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -21,15 +25,51 @@ ColoredStdOutput::ColoredStdOutput( std::shared_ptr<formatting::IFormatter> form
 //
 //////////////////////////////////////////////////////////////////////////
 ColoredStdOutput::ColoredStdOutput( std::shared_ptr<formatting::IFormatter> formatter, std::ostream *fallbackStream )
-		: StdOutput( formatter, fallbackStream ) {
+		: StdOutput( formatter, fallbackStream )
+{
+	saveDefaultColor();
 }
 
 //////////////////////////////////////////////////////////////////////////
 //
 //
 //////////////////////////////////////////////////////////////////////////
-void ColoredStdOutput::LogActual( const loglevel::ILogLevel &level, const std::string &msg ) {
+void ColoredStdOutput::SetLevelColor( const loglevel::ILogLevel& level, int color )
+{
+	levelToColor.emplace(level.GetLevel(), color);
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//////////////////////////////////////////////////////////////////////////
+bool ColoredStdOutput::SetColorForLevel( const loglevel::ILogLevel &level )
+{
+	auto color = levelToColor.find(level.GetLevel());
+	bool hasColor = color != levelToColor.end();
+
+	if( hasColor ) {
+		setColor( (*color).second );
+	}
+
+	return hasColor;
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//////////////////////////////////////////////////////////////////////////
+void ColoredStdOutput::LogActual( const loglevel::ILogLevel &level, const std::string &msg )
+{
+	bool hadColor = SetColorForLevel( level );
+
 	StdOutput::LogActual( level, msg );
+
+	if( hadColor ) {
+		resetColor();
+	}
+
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -39,7 +79,13 @@ void ColoredStdOutput::LogActual( const loglevel::ILogLevel &level, const std::s
 void ColoredStdOutput::LogWithCategoryActual( const loglevel::ILogLevel &level, const std::string &category,
 											  const std::string &msg )
 {
-	StdOutput::LogWithCategoryActual(level, category, msg );
+	bool hadColor = SetColorForLevel( level );
+
+	StdOutput::LogWithCategoryActual( level, category, msg );
+
+	if( hadColor ) {
+		resetColor();
+	}
 }
 
 }
