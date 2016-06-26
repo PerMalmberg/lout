@@ -7,7 +7,6 @@
 
 #include <thread>
 #include <output/ColoredStdOutput.h>
-#include "output/StdOutput.h"
 #include "output/RollingFile.h"
 #include "output/DateTimeNameGiver.h"
 #include "LoutLogger.h"
@@ -277,24 +276,30 @@ SCENARIO( "Using operator overloads to log numbers" )
 	GIVEN( "A logger with one output" )
 	{
 		L.Reset();
-		std::shared_ptr<IOutput> p = std::make_shared<TestOutput>();
+		std::shared_ptr<TestOutput> p = std::make_shared<TestOutput>();
 		Lout::Get().AddOutput( p );
 		L.SetThreshold( Info() );
 
 		WHEN( "Using operator overload and scoping to force logging to commence" )
 		{
-			{
-				LL << Info() << 1;
-				LL << Info() << 1.2F << " " << "This text goes on the same line as \"1.2\"";
-				LL << Info() << 13.4L << " This text goes on the same line as \"13.4\"";
-				LL << Info() << "Only this text on this line";
-				LL << Info() << int8_t( 4 ) << " only a 4 before this text";
-				LoutLogger( "A tag" ) << Info() << "This text is logged";
-				LL << Warning() << "This text won't be logged";
-			}
+
+			LL << Info() << 1;
+			LL << Info() << 1.2F << " " << "This text goes on the same line as \"1.2\"";
+			LL << Info() << 13.4L << " This text goes on the same line as \"13.4\"";
+			LL << Info() << "Only this text on this line";
+			LL << Info() << int8_t( 4 ) << " only a 4 before this text";
+			LoutLogger( "A tag" ) << Info() << "This text is logged";
+			LL << Warning() << "This text won't be logged";
+
 			THEN( "Output performed" )
 			{
 				REQUIRE( p->GetMessageCount() == 6 );
+				REQUIRE( p->GetMsg(0) == "[Info]1" );
+				REQUIRE( strstr( p->GetMsg(1).c_str(), "This text goes on the same line as \"1.2\"" ) != nullptr );
+				REQUIRE( strstr( p->GetMsg(2).c_str(), "This text goes on the same line as \"13.4\"" ) != nullptr );
+				REQUIRE( strstr( p->GetMsg(3).c_str(), "Only this text on this line" ) != nullptr );
+				REQUIRE( strstr( p->GetMsg(4).c_str(), "4 only a 4 before this text" ) != nullptr );
+				REQUIRE( strstr( p->GetMsg(5).c_str(), "This text is logged" ) != nullptr );
 			}
 		}
 	}
