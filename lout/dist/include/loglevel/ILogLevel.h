@@ -17,7 +17,7 @@ namespace loglevel {
 class ILogLevel
 {
 public:
-	ILogLevel(int level, const std::string levelAsText) : myLevel( level ), myLevelAsText( levelAsText )
+	ILogLevel(int level, const std::string& levelAsText) : myLevel( level ), myLevelAsText( levelAsText )
 	{ }
 
 	bool operator<=(const ILogLevel& rhs) const

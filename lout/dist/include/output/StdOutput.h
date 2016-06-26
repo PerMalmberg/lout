@@ -13,7 +13,7 @@ namespace output {
 class StdOutput : public IOutput
 {
 public:
-	StdOutput(std::shared_ptr<formatting::IFormatter> formatter);
+	explicit StdOutput(std::shared_ptr<formatting::IFormatter> formatter);
 
 	StdOutput( std::shared_ptr<formatting::IFormatter> formatter, std::ostream* fallbackStream );
 
