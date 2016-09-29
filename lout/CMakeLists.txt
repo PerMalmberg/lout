@@ -1,9 +1,10 @@
 cmake_minimum_required(VERSION 3.4)
 project(lout)
+include( ../externals/CMakeUtils/CMakeUtils.txt)
 
 set(CMAKE_CXX_STANDARD 14)
 
-if(${CMAKE_MAKE_PROGRAM} MATCHES ".*(MSBuild|msdev|devenv|nmake).*")
+if( IS_WINDOWS )
 	# Build at warning level 4 on Windows.
 	# Treat all warnings as errors
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /WX")
@@ -11,9 +12,9 @@ if(${CMAKE_MAKE_PROGRAM} MATCHES ".*(MSBuild|msdev|devenv|nmake).*")
     include_directories("C:/Boost/include/boost-1_61")
 else()
 	# Build with all warnings
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -static-libgcc -static-libstdc++ -pthread")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -pthread")
     # Setup path for boost headers
-    include_directories("/usr/local/boost_1_61_0/include/")
+    include_directories("/usr/local/boost/include/")
 endif()
 
 # Use CMAKE_CURRENT_LIST_DIR instead of CMAKE_SOURCE_DIR to specify relative to where this CMakeLists.txt is located

@@ -4,3 +4,6 @@
 [submodule "rlutil"]
 	path = externals/rlutil
 	url = https://github.com/PerMalmberg/rlutil.git
+[submodule "externals/CMakeUtils"]
+	path = externals/CMakeUtils
+	url = https://github.com/PerMalmberg/CMakeUtils.git

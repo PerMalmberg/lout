@@ -27,3 +27,6 @@
 *.out
 *.app
 build/
+
+.idea/workspace.xml
+test/dist/
