@@ -24,7 +24,7 @@ use macros to reduce typing and to define 'named' loggers for different log leve
 ##Getting the source
 The test project uses Catch (https://github.com/philsquared/Catch) for testing and rlutil (https://github.com/tapio/rlutil) for colored output so you need that cloned too.
 
-Use `git clone --recursive https://github.com/PerMalmberg/CmdParser4Cpp.git`
+Use `git clone --recursive https://github.com/PerMalmberg/lout.git`
 
 
 ## Building
