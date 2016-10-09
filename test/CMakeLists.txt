@@ -14,7 +14,11 @@ else()
 	# Build with all warnings
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -static-libgcc -static-libstdc++ -pthread")
 	# Setup path for boost libs
-	link_directories("/usr/local/boost/lib")
+	if (${MINGW})
+		link_directories("c:/Boost/lib/")
+	else ()
+		link_directories("/usr/local/boost/lib")
+	endif ()
 endif()
 
 include_directories(../lout/dist/include)
