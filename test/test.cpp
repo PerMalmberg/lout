@@ -6,12 +6,12 @@
 #include "../externals/Catch/include/catch.hpp"
 
 #include <thread>
-#include <output/ColoredStdOutput.h>
-#include "output/RollingFile.h"
-#include "output/DateTimeNameGiver.h"
-#include "LoutLogger.h"
-#include "loglevel/defaultLevels.h"
-#include "formatting/DefaultFormatter.h"
+#include <lout/output/ColoredStdOutput.h>
+#include <lout/output/RollingFile.h>
+#include <lout/output/DateTimeNameGiver.h>
+#include <lout/LoutLogger.h>
+#include <lout/loglevel/defaultLevels.h>
+#include <lout/formatting/DefaultFormatter.h>
 #include "../externals/rlutil/rlutil.h"
 #include "TestOutput.h"
 

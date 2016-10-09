@@ -4,9 +4,9 @@
 
 #include <iostream>
 #include <algorithm>
-#include <util/Sizes.h>
 #include <boost/filesystem.hpp>
-#include "output/RollingFile.h"
+#include <lout/util/Sizes.h>
+#include <lout/output/RollingFile.h>
 
 namespace fs = boost::filesystem;
 

@@ -4,10 +4,10 @@
 
 #pragma once
 
-#include <output/IOutput.h>
 #include <sstream>
-#include <formatting/DefaultFormatter.h>
 #include <vector>
+#include <lout/output/IOutput.h>
+#include <lout/formatting/DefaultFormatter.h>
 
 class TestOutput : public lout::output::IOutput
 {

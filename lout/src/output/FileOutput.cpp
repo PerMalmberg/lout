@@ -2,9 +2,9 @@
 // Licensed under MIT, see LICENSE file.
 // Give credit where credit is due.
 
-#include "output/FileOutput.h"
 #include <iostream>
 #include <sstream>
+#include <lout/output/FileOutput.h>
 
 
 namespace lout {

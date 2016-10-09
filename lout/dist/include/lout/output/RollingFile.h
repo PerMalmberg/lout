@@ -6,10 +6,10 @@
 
 #include <string>
 #include <memory>
-#include <output/IOutput.h>
-#include <output/FileOutput.h>
-#include <output/IRollingFileName.h>
-#include <util/Sizes.h>
+#include <lout/output/IOutput.h>
+#include <lout/output/FileOutput.h>
+#include <lout/output/IRollingFileName.h>
+#include <lout/util/Sizes.h>
 
 namespace lout {
 namespace output {

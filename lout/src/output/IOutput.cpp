@@ -3,8 +3,8 @@
 // Give credit where credit is due.
 
 #include <string>
-#include <loglevel/ILogLevel.h>
-#include <output/IOutput.h>
+#include <lout/loglevel/ILogLevel.h>
+#include <lout/output/IOutput.h>
 
 namespace lout {
 namespace output {

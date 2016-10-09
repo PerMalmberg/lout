@@ -23,10 +23,8 @@ endif ()
 
 # Use CMAKE_CURRENT_LIST_DIR instead of CMAKE_SOURCE_DIR to specify relative to where this CMakeLists.txt is located
 # as opposed to where the 'main' CMakeLists.txt file is located.
-include_directories("${CMAKE_CURRENT_LIST_DIR}/../lout/dist/include")
-
-include_directories("${CMAKE_CURRENT_LIST_DIR}/dist/include")
-include_directories("${CMAKE_CURRENT_LIST_DIR}/src")
+include_directories("dist/include")
+include_directories("src")
 include_directories("${CMAKE_CURRENT_LIST_DIR}/../externals")
 
 
@@ -52,7 +50,6 @@ if (${CMAKE_MAKE_PROGRAM} MATCHES ".*(MSBuild|msdev|devenv|nmake).*")
 	target_link_libraries(${PROJECT_NAME} libboost_filesystem-vc140-mt-1_61 libboost_system-vc140-mt-1_61)
 else ()
 	target_link_libraries(${PROJECT_NAME} boost_filesystem boost_system)
-
 endif ()
 
 # Note if you build your binary using -static in CMAKE_CXX_FLAGS, you must make sure that the entire pthread archive is linked

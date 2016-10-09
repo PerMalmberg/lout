@@ -2,7 +2,7 @@
 // Licensed under MIT, see LICENSE file.
 // Give credit where credit is due.
 
-#include <formatting/DefaultFormatter.h>
+#include <lout/formatting/DefaultFormatter.h>
 #include <sstream>
 
 namespace lout {

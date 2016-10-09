@@ -2,7 +2,7 @@
 // Licensed under MIT, see LICENSE file.
 // Give credit where credit is due.
 
-#include <Lout.h>
+#include <lout/Lout.h>
 #include <iostream>
 
 namespace lout {

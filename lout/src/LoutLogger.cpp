@@ -2,7 +2,7 @@
 // Licensed under MIT, see LICENSE file.
 // Give credit where credit is due.
 
-#include "LoutLogger.h"
+#include "lout/LoutLogger.h"
 
 
 namespace lout {

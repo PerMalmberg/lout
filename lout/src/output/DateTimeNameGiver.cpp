@@ -2,13 +2,15 @@
 // Licensed under MIT, see LICENSE file.
 // Give credit where credit is due.
 
-#define __STDC_WANT_LIB_EXT1__ 1 // For localtime_s
+#if defined(_WIN32)
+	#define __STDC_WANT_LIB_EXT1__ 1 // For localtime_s
+#endif
+
 #include <time.h>
 #include <cstring>
 #include <chrono>
 #include <iomanip>
-#include <sstream>
-#include "output/DateTimeNameGiver.h"
+#include <lout/output/DateTimeNameGiver.h>
 
 namespace lout {
 namespace output {

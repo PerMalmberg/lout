@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <formatting/IFormatter.h>
+#include "IFormatter.h"
 
 namespace lout {
 namespace formatting {

@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <loglevel/ILogLevel.h>
+#include <lout/loglevel/ILogLevel.h>
 
 namespace lout {
 namespace formatting {

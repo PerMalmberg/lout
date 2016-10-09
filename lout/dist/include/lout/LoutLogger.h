@@ -8,7 +8,7 @@
 #include <sstream>
 #include "Lout.h"
 #include "Flush.h"
-#include "output/FileOutput.h"
+#include "lout/output/FileOutput.h"
 
 namespace lout {
 

@@ -2,8 +2,7 @@
 // Licensed under MIT, see LICENSE file.
 // Give credit where credit is due.
 
-#include <threading/Lock.h>
-/*qqq*/#include <iostream>
+#include <lout/threading/Lock.h>
 
 namespace lout {
 namespace threading {

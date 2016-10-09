@@ -6,8 +6,8 @@
 
 #include <string>
 #include <memory>
-#include "loglevel/ILogLevel.h"
-#include "formatting/IFormatter.h"
+#include "lout/loglevel/ILogLevel.h"
+#include "lout/formatting/IFormatter.h"
 namespace lout {
 namespace output {
 

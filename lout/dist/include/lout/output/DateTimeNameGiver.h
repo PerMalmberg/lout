@@ -6,7 +6,7 @@
 
 #include <string>
 #include <regex>
-#include "output/IRollingFileName.h"
+#include "IRollingFileName.h"
 
 namespace lout {
 namespace output {

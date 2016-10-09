@@ -8,9 +8,9 @@
 #include <vector>
 #include <exception>
 #include <set>
-#include "output/IOutput.h"
-#include "loglevel/ILogLevel.h"
-#include "threading/Lock.h"
+#include "lout/output/IOutput.h"
+#include "lout/loglevel/ILogLevel.h"
+#include "lout/threading/Lock.h"
 
 namespace lout {
 

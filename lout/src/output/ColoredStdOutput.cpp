@@ -2,7 +2,7 @@
 // Licensed under MIT, see LICENSE file.
 // Give credit where credit is due.
 
-#include "output/ColoredStdOutput.h"
+#include <lout/output/ColoredStdOutput.h>
 #include "rlutil/rlutil.h"
 
 namespace lout {

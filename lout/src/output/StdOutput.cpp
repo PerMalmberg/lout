@@ -3,7 +3,7 @@
 // Give credit where credit is due.
 
 #include <iostream>
-#include "output/StdOutput.h"
+#include <lout/output/StdOutput.h>
 
 
 namespace lout {

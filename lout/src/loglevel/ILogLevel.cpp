@@ -3,7 +3,7 @@
 // Give credit where credit is due.
 
 #include <ostream>
-#include <loglevel/ILogLevel.h>
+#include <lout/loglevel/ILogLevel.h>
 
 
 std::ostream& operator<<(std::ostream& stream, const lout::loglevel::ILogLevel& level)
