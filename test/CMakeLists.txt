@@ -25,7 +25,8 @@ include_directories(../lout/dist/include)
 
 set( SOURCE_FILES
 		test.cpp
-		)
+		TestOutput.cpp
+		TestOutput.h)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} lout)

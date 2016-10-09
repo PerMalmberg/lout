@@ -1,6 +1,6 @@
-//
-// Created by perma on 2016-05-25.
-//
+// Copyright (c) 2016 Per Malmberg
+// Licensed under MIT, see LICENSE file.
+// Give credit where credit is due.
 
 #define __STDC_WANT_LIB_EXT1__ 1 // For localtime_s
 #include <time.h>

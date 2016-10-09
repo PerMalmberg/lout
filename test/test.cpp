@@ -1,6 +1,6 @@
-//
-// Created by Per Malmberg on 2016-05-06.
-//
+// Copyright (c) 2016 Per Malmberg
+// Licensed under MIT, see LICENSE file.
+// Give credit where credit is due.
 
 #define CATCH_CONFIG_MAIN
 #include "../externals/Catch/include/catch.hpp"
@@ -13,6 +13,7 @@
 #include "loglevel/defaultLevels.h"
 #include "formatting/DefaultFormatter.h"
 #include "../externals/rlutil/rlutil.h"
+#include "TestOutput.h"
 
 using namespace lout;
 using namespace lout::loglevel;
@@ -25,38 +26,7 @@ using namespace lout::output;
 #define infoc(category) LoutLogger(category) << Info()
 #define warn LoutLogger() << Warning()
 
-class TestOutput : public lout::output::IOutput
-{
-public:
-	TestOutput() : IOutput( std::make_shared<formatting::DefaultFormatter>(),  nullptr ), myOutput()
-	{ }
 
-	void Flush() noexcept override
-	{ }
-
-	virtual void LogActual(const loglevel::ILogLevel& level, const std::string& msg)
-	{
-		std::stringstream s;
-		s << "[" << level << "]" << msg;
-		myOutput.push_back( s.str() );
-	}
-
-	virtual void LogWithCategoryActual(const loglevel::ILogLevel& level, const std::string& category,
-	                                   const std::string& msg)
-	{
-		std::stringstream s;
-		s << "[" << level << "/" << category << "]" << msg;
-		myOutput.push_back( s.str() );
-	}
-
-	std::string GetMsg(size_t ix)
-	{
-		return myOutput.at( ix );
-	}
-
-private:
-	std::vector<std::string> myOutput;
-};
 
 SCENARIO( "Setting up a logger" )
 {

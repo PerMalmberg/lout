@@ -1,6 +1,6 @@
-//
-// Created by perm on 2016-06-09.
-//
+// Copyright (c) 2016 Per Malmberg
+// Licensed under MIT, see LICENSE file.
+// Give credit where credit is due.
 
 #include "output/ColoredStdOutput.h"
 #include "rlutil/rlutil.h"

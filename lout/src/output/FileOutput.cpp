@@ -1,7 +1,6 @@
-//
-// Created by Per Malmberg on 2016-05-17.
-//
-
+// Copyright (c) 2016 Per Malmberg
+// Licensed under MIT, see LICENSE file.
+// Give credit where credit is due.
 
 #include "output/FileOutput.h"
 #include <iostream>
