@@ -306,7 +306,7 @@ SCENARIO( "Multi threading" )
 
 			for( int i = 0; i < threadCount; ++i )
 			{
-				threads.emplace_back( std::move( std::make_unique<std::thread>( worker_task, i ) ) );
+				threads.emplace_back( std::make_unique<std::thread>( worker_task, i ) );
 			}
 
 			for( auto& thread : threads )

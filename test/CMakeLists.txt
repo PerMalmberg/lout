@@ -12,7 +12,7 @@ if( IS_WINDOWS )
 	link_directories("C:/Boost/lib")
 else()
 	# Build with all warnings
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -static-libgcc -static-libstdc++ -pthread")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -pthread")
 	# Setup path for boost libs
 	if (${MINGW})
 		link_directories("c:/Boost/lib/")
