@@ -10,6 +10,7 @@
 #include <cstring>
 #include <chrono>
 #include <iomanip>
+#include <sstream>
 #include <lout/output/DateTimeNameGiver.h>
 
 namespace lout {
