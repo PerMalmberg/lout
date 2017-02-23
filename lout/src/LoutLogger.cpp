@@ -158,7 +158,7 @@ LoutLogger& LoutLogger::operator<<(const lout::Flush&)
 //
 //
 //////////////////////////////////////////////////////////////////////////
-void LoutLogger::AppendMsg(const std::string msg)
+void LoutLogger::AppendMsg(const std::string& msg)
 {
 	myCurrentMessage << msg;
 }

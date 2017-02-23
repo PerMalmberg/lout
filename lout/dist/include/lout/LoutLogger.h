@@ -57,7 +57,7 @@ public:
 
 	LoutLogger& operator<<(const lout::Flush&);
 
-	void AppendMsg(const std::string msg);
+	void AppendMsg(const std::string& msg);
 
 	void SetLevel(const loglevel::ILogLevel& level);
 
