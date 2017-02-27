@@ -8,6 +8,7 @@
 #include <sstream>
 #include "Lout.h"
 #include "Flush.h"
+#include "LogItem.h"
 #include "lout/output/FileOutput.h"
 
 namespace lout {
@@ -62,37 +63,6 @@ public:
 	void SetLevel(const loglevel::ILogLevel& level);
 
 private:
-
-	class LogItem
-	{
-	public:
-		virtual void Log(LoutLogger& l) = 0;
-	};
-
-	class StringItem : public LogItem
-	{
-	public:
-		StringItem(const std::string& msg) : myMsg( msg )
-		{ }
-
-		void Log(LoutLogger& l) override;
-
-	private:
-		std::string myMsg;
-	};
-
-	class LevelItem : public LogItem
-	{
-	public:
-		LevelItem(const loglevel::ILogLevel& level) : myLevel( level )
-		{ }
-
-		void Log(LoutLogger& l) override;
-
-	private:
-		loglevel::ILogLevel myLevel;
-	};
-
 	void Flush();
 
 	std::vector<std::shared_ptr<LogItem>> myItems;

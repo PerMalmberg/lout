@@ -3,6 +3,8 @@
 // Give credit where credit is due.
 
 #include "lout/LoutLogger.h"
+#include "lout/StringItem.h"
+#include "lout/LevelItem.h"
 
 
 namespace lout {
@@ -207,7 +209,7 @@ void LoutLogger::Flush()
 //
 //
 //////////////////////////////////////////////////////////////////////////
-void LoutLogger::LevelItem::Log(LoutLogger& l)
+void LevelItem::Log(LoutLogger& l)
 {
 	l.SetLevel( myLevel );
 }
@@ -216,7 +218,7 @@ void LoutLogger::LevelItem::Log(LoutLogger& l)
 //
 //
 //////////////////////////////////////////////////////////////////////////
-void LoutLogger::StringItem::Log(LoutLogger& l)
+void StringItem::Log(LoutLogger& l)
 {
 	l.AppendMsg( myMsg );
 }
