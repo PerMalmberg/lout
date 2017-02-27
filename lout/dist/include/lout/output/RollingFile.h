@@ -26,9 +26,9 @@ public:
 	size_t GetCurrentLogCount() const;
 
 protected:
-	void Flush() noexcept override;
+	void Flush();
 
-	virtual void LogActual(const loglevel::ILogLevel& level, const std::string& msg) override;
+	virtual void LogActual(const loglevel::ILogLevel& level, const std::string& msg);
 
 	virtual void LogWithCategoryActual(const loglevel::ILogLevel& level, const std::string& category, const std::string& msg) override;
 private:

@@ -47,7 +47,7 @@ void StdOutput::LogWithCategoryActual(const loglevel::ILogLevel& level, const st
 //
 //
 //////////////////////////////////////////////////////////////////////////
-void StdOutput::Flush() noexcept
+void StdOutput::Flush()
 {
 	std::cout.flush();
 }

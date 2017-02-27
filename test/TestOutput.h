@@ -14,7 +14,7 @@ class TestOutput : public lout::output::IOutput
 public:
     TestOutput();
 
-    void Flush() noexcept override
+    void Flush()
     { }
 
     void LogActual(const lout::loglevel::ILogLevel& level, const std::string& msg) override;

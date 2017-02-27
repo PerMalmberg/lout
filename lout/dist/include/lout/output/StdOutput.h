@@ -21,7 +21,7 @@ public:
 
 	void LogWithCategoryActual( const loglevel::ILogLevel &level, const std::string &category,
 								const std::string &msg ) override;
-	void Flush() noexcept override;
+	void Flush();
 };
 
 }

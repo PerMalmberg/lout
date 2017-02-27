@@ -388,8 +388,7 @@ SCENARIO( "Rolling file" )
 				std::string data( 501, static_cast<char>( 'A' + i ) );
 				info << data << Flush();
 				// We must wait at least 1s so that the next log will get a new name.
-				using namespace std::chrono_literals;
-				std::this_thread::sleep_for( 1.1s );
+				std::this_thread::sleep_for( std::chrono::milliseconds( 1100 ) );
 			}
 
 			THEN("Five files are found in the current directory")

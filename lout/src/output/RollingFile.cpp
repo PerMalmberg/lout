@@ -91,7 +91,7 @@ void RollingFile::GetCurrentLogFiles( std::vector<std::string> &target ) const
 //
 //
 //////////////////////////////////////////////////////////////////////////
-void RollingFile::Flush() noexcept
+void RollingFile::Flush()
 {
 	if( myOutput )
 	{

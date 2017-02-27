@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.4)
 project(lout)
 include(../externals/CMakeUtils/CMakeUtils.txt)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 11)
 
 if (IS_WINDOWS)
 	# Build at warning level 4 on Windows.

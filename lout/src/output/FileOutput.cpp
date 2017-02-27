@@ -62,7 +62,7 @@ void FileOutput::Close()
 //
 //
 //////////////////////////////////////////////////////////////////////////
-void FileOutput::Flush() noexcept
+void FileOutput::Flush()
 {
 	try
 	{
