@@ -5,10 +5,10 @@
 #pragma once
 
 #include <string>
-#include <lout/LogItem.h>
+#include <lout/item/ILogItem.h>
 #include <lout/LoutLogger.h>
 
-class TestItem : public lout::LogItem
+class TestItem : public lout::item::ILogItem
 {
 public:
 	TestItem(const std::string& foo, const std::string& bar)

@@ -4,14 +4,18 @@
 
 #pragma once
 
+
 namespace lout {
 
 class LoutLogger;
 
-class LogItem
+namespace item {
+
+class ILogItem
 {
 public:
-	virtual void Log(LoutLogger& l) = 0;
+	virtual void Log( lout::LoutLogger& l ) = 0;
 };
 
+}
 }

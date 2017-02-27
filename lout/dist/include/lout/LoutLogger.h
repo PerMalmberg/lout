@@ -8,7 +8,7 @@
 #include <sstream>
 #include "Lout.h"
 #include "Flush.h"
-#include "LogItem.h"
+#include "lout/item/ILogItem.h"
 #include "lout/output/FileOutput.h"
 
 namespace lout {
@@ -56,7 +56,7 @@ public:
 
 	LoutLogger& operator<<(float value);
 
-	LoutLogger& operator<<( std::shared_ptr<LogItem> item );
+	LoutLogger& operator<<( std::shared_ptr<lout::item::ILogItem> item );
 
 	LoutLogger& operator<<(const lout::Flush&);
 
@@ -67,7 +67,7 @@ public:
 private:
 	void Flush();
 
-	std::vector<std::shared_ptr<LogItem>> myItems;
+	std::vector<std::shared_ptr<lout::item::ILogItem>> myItems;
 	std::stringstream myCurrentMessage;
 	loglevel::ILogLevel myCurrentLevel;
 	std::string myCategory;

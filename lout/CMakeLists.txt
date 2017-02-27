@@ -39,7 +39,8 @@ set(SOURCE_FILES
 		src/threading/StdLock.cpp
 		src/output/DateTimeNameGiver.cpp
 		src/formatting/DefaultFormatter.cpp
-		src/output/ColoredStdOutput.cpp)
+		src/output/ColoredStdOutput.cpp
+		src/item/Hex.cpp)
 
 # Create a static library
 add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})

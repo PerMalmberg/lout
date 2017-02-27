@@ -3,11 +3,13 @@
 // Give credit where credit is due.
 
 #include "lout/LoutLogger.h"
-#include "lout/StringItem.h"
+#include "lout/item/StringItem.h"
 #include "lout/LevelItem.h"
 
 
 namespace lout {
+
+using namespace lout::item;
 
 LoutLogger::~LoutLogger()
 {
@@ -150,7 +152,7 @@ LoutLogger& LoutLogger::operator<<(float value)
 //
 //
 //////////////////////////////////////////////////////////////////////////
-LoutLogger& LoutLogger::operator<<( std::shared_ptr<LogItem> item )
+LoutLogger& LoutLogger::operator<<( std::shared_ptr<lout::item::ILogItem> item )
 {
 	myItems.push_back( item );
 	return *this;

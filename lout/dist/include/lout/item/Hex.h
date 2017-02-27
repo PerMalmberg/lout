@@ -5,20 +5,20 @@
 #pragma once
 
 #include <string>
-#include "LogItem.h"
+#include "ILogItem.h"
 
 namespace lout {
+namespace item {
 
-class StringItem : public LogItem
+class Hex : public lout::item::ILogItem
 {
 public:
-	StringItem(const std::string& msg) : myMsg(msg)
-	{ }
+	explicit Hex( long num ) : number( num ) {}
 
-	void Log(LoutLogger& l) override;
-
+	virtual void Log( lout::LoutLogger& l );
 private:
-	std::string myMsg;
+	long number;
 };
 
+}
 }
