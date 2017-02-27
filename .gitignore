@@ -32,3 +32,4 @@ build/
 test/dist/
 
 /cmake-build-debug
+/.vscode
