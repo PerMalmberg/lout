@@ -181,7 +181,7 @@ void RollingFile::Close()
 class AgeSorter
 {
 public:
-	bool operator()( fs::path a, fs::path b )
+	bool operator()( const fs::path& a, const fs::path& b )
 	{
 		auto timeA = fs::last_write_time( a );
 		auto timeB = fs::last_write_time( b );
