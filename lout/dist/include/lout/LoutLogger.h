@@ -56,6 +56,8 @@ public:
 
 	LoutLogger& operator<<(float value);
 
+	LoutLogger& operator<<( std::shared_ptr<LogItem> item );
+
 	LoutLogger& operator<<(const lout::Flush&);
 
 	void AppendMsg(const std::string& msg);

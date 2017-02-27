@@ -12,6 +12,7 @@
 #include <lout/LoutLogger.h>
 #include <lout/loglevel/defaultLevels.h>
 #include <lout/formatting/DefaultFormatter.h>
+#include "TestItem.h"
 #include "../externals/rlutil/rlutil.h"
 #include "TestOutput.h"
 
@@ -211,6 +212,28 @@ SCENARIO( "Using operator to set log level" )
 	}
 }
 
+SCENARIO("Logging using custom LogItem")
+{
+	GIVEN("A logger with one output")
+	{
+		L.Reset();
+		auto p = std::make_shared<TestOutput>();
+		L.AddOutput( p );
+		L.SetThreshold(Info());
+
+		WHEN("Logging using custom log type")
+		{
+			auto item = std::make_shared<TestItem>( "Foo", "Bar" );
+			LL << Info() << item << Flush();
+
+			THEN( "Output is the two arguments concatenated prefixed by the log level" )
+			{
+				REQUIRE( p->GetMessageCount() == 1 );
+				REQUIRE( p->GetMsg(0) == "[Info]FooBar" );
+			}
+		}
+	}
+}
 
 SCENARIO( "Mandatory tags" )
 {
