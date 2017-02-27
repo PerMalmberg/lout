@@ -10,7 +10,7 @@
 #include <set>
 #include "lout/output/IOutput.h"
 #include "lout/loglevel/ILogLevel.h"
-#include "lout/threading/Lock.h"
+#include "lout/threading/ILock.h"
 
 namespace lout {
 

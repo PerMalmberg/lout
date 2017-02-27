@@ -2,22 +2,22 @@
 // Licensed under MIT, see LICENSE file.
 // Give credit where credit is due.
 
-#include <lout/threading/Lock.h>
+#include <lout/threading/StdLock.h>
 
 namespace lout {
 namespace threading {
 
-Lock::Lock()
+StdLock::StdLock()
 : myMutex()
 {
 }
 
-void Lock::Acquire()
+void StdLock::Acquire()
 {
 	myMutex.lock();
 }
 
-void Lock::Release()
+void StdLock::Release()
 {
 	myMutex.unlock();
 }

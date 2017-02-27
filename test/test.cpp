@@ -12,6 +12,7 @@
 #include <lout/LoutLogger.h>
 #include <lout/loglevel/defaultLevels.h>
 #include <lout/formatting/DefaultFormatter.h>
+#include <lout/threading/StdLock.h>
 #include "TestItem.h"
 #include "../externals/rlutil/rlutil.h"
 #include "TestOutput.h"
@@ -303,7 +304,7 @@ SCENARIO( "Multi threading" )
 	GIVEN( "A properly setup Lout and multiple threads" )
 	{
 		L.Reset();
-		L.SetLocker( std::make_shared<threading::Lock>() );
+		L.SetLocker( std::make_shared<threading::StdLock>() );
 		std::shared_ptr<IOutput> p = std::make_shared<TestOutput>();
 		std::shared_ptr<IOutput> p2 = std::make_shared<FileOutput>(std::make_shared<formatting::DefaultFormatter>(), "./thread.log");
 		Lout::Get().AddOutput( p );
@@ -351,7 +352,7 @@ SCENARIO( "Using categories" )
 	GIVEN( "A properly setup Lout" )
 	{
 		L.Reset();
-		L.SetLocker( std::make_shared<threading::Lock>() );
+		L.SetLocker( std::make_shared<threading::StdLock>() );
 		std::shared_ptr<TestOutput> p = std::make_shared<TestOutput>();
 		Lout::Get().AddOutput( p );
 		L.SetThreshold( Warning() );

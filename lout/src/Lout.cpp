@@ -3,6 +3,7 @@
 // Give credit where credit is due.
 
 #include <lout/Lout.h>
+#include <lout/threading/NoLock.h>
 #include <iostream>
 
 namespace lout {
