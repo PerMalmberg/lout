@@ -36,7 +36,7 @@ set(SOURCE_FILES
 		src/output/FileOutput.cpp
 		src/output/RollingFile.cpp
 		src/loglevel/ILogLevel.cpp
-		src/threading/Lock.cpp
+		src/threading/StdLock.cpp
 		src/output/DateTimeNameGiver.cpp
 		src/formatting/DefaultFormatter.cpp
 		src/output/ColoredStdOutput.cpp)
