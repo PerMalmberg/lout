@@ -5,18 +5,19 @@
 #pragma once
 
 
-#include "LogItem.h"
-#include "loglevel/ILogLevel.h"
+#include <lout/item/ILogItem.h>
+#include <lout/loglevel/ILogLevel.h>
+#include <lout/LoutLogger.h>
 
 namespace lout {
 
-class LevelItem : public LogItem
+class LevelItem : public lout::item::ILogItem
 {
 public:
 	LevelItem(const loglevel::ILogLevel& level) : myLevel(level)
 	{ }
 
-	void Log(LoutLogger& l) override;
+	void Log(lout::LoutLogger& l) override;
 
 private:
 	loglevel::ILogLevel myLevel;

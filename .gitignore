@@ -30,3 +30,5 @@ build/
 
 .idea/workspace.xml
 test/dist/
+
+/cmake-build-debug

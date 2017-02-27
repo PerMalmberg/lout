@@ -13,6 +13,7 @@
 #include <lout/loglevel/defaultLevels.h>
 #include <lout/formatting/DefaultFormatter.h>
 #include <lout/threading/StdLock.h>
+#include <lout/item/Hex.h>
 #include "TestItem.h"
 #include "../externals/rlutil/rlutil.h"
 #include "TestOutput.h"
@@ -231,6 +232,29 @@ SCENARIO("Logging using custom LogItem")
 			{
 				REQUIRE( p->GetMessageCount() == 1 );
 				REQUIRE( p->GetMsg(0) == "[Info]FooBar" );
+			}
+		}
+	}
+}
+
+SCENARIO( "Logging using custom Hex item" )
+{
+	GIVEN( "A logger with one output" )
+	{
+		L.Reset();
+		auto p = std::make_shared<TestOutput>();
+		L.AddOutput( p );
+		L.SetThreshold( Info() );
+
+		WHEN( "Logging using custom log type" )
+		{
+			auto item = std::make_shared<lout::item::Hex>( 0x123abc );
+			LL << Info() << item << Flush();
+
+			THEN( "Output is the value, as a hex string" )
+			{
+				REQUIRE( p->GetMessageCount() == 1 );
+				REQUIRE( p->GetMsg( 0 ) == "[Info]123abc" );
 			}
 		}
 	}
