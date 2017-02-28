@@ -35,11 +35,13 @@ SCENARIO( "Setting up a logger" )
 {
 	GIVEN( "A clean slate" )
 	{
+		time_t now;
+		time( &now );
 		L.Reset();
 		THEN( "Program compiles" )
 		{
 			REQUIRE( L.GetThreshold().GetLevel() == 0 );
-			L.Log( Verbose(), "Goes nowhere" );
+			L.Log( now, Verbose(), "Goes nowhere" );
 		}
 		AND_THEN( "Can set log level" )
 		{
@@ -77,9 +79,12 @@ SCENARIO( "Regular logging" )
 		Lout::Get().AddOutput( p );
 		Lout::Get().SetThreshold( Info() );
 
+		time_t now;
+		time( &now );
+
 		WHEN( "Logging on too high level" )
 		{
-			Lout::Get().Log( Warning(), "Log message" );
+			Lout::Get().Log( now, Warning(), "Log message" );
 
 			THEN( "No output performed" )
 			{
@@ -88,7 +93,7 @@ SCENARIO( "Regular logging" )
 		}
 		WHEN( "Logging on correct level" )
 		{
-			Lout::Get().Log( Info(), "Log message" );
+			Lout::Get().Log( now, Info(), "Log message" );
 
 			THEN( "Output performed" )
 			{
@@ -102,7 +107,7 @@ SCENARIO( "Regular logging" )
 			THEN( "We can log on that level too" )
 			{
 				std::string s = "Warning message";
-				L.Log( Warning(), s );
+				L.Log( now, Warning(), s );
 				REQUIRE( (*p).GetMessageCount() == 1 );
 			}
 		}
@@ -118,9 +123,12 @@ SCENARIO( "Logging with category" )
 		Lout::Get().AddOutput( p );
 		Lout::Get().SetThreshold( Warning() );
 
+		time_t now;
+		time( &now );
+
 		WHEN( "Logging called without activating category" )
 		{
-			Lout::Get().LogWithCategory( Info(), "NonActiveTag", "Log message" );
+			Lout::Get().LogWithCategory( now, Info(), "NonActiveTag", "Log message" );
 
 			THEN( "output performed because we allow all categories in that case" )
 			{
@@ -130,7 +138,7 @@ SCENARIO( "Logging with category" )
 		AND_WHEN( "Tag activated" )
 		{
 			Lout::Get().ActivateCategory( "ActiveTag" );
-			Lout::Get().LogWithCategory( Info(), "ActiveTag", "Log message" );
+			Lout::Get().LogWithCategory( now, Info(), "ActiveTag", "Log message" );
 
 			THEN( "Output performed" )
 			{
@@ -150,11 +158,14 @@ SCENARIO( "Using FileOutput" )
 		Lout::Get().AddOutput( p );
 		Lout::Get().SetThreshold( Warning() );
 
+		time_t now;
+		time( &now );
+
 		WHEN( "Log with enabled level" )
 		{
 			for( int i = 0; i < 1000; ++i )
 			{
-				Lout::Get().Log( Info(), "Goes to file" + std::to_string( i ) );
+				Lout::Get().Log( now, Info(), "Goes to file" + std::to_string( i ) );
 			}
 		}
 	}
@@ -184,7 +195,7 @@ SCENARIO( "Using operator to set log level" )
 			}
 			AND_THEN( "Logging to a higher level, doesn't give an output" )
 			{
-				L.Log( Error(), "Error message" );
+				LL << Error() << "Error message";
 				REQUIRE( p->GetMessageCount() == 0 );
 			}
 			AND_THEN( "We can log to that level" )
@@ -231,7 +242,7 @@ SCENARIO("Logging using custom LogItem")
 			THEN( "Output is the two arguments concatenated prefixed by the log level" )
 			{
 				REQUIRE( p->GetMessageCount() == 1 );
-				REQUIRE( p->GetMsg(0) == "[Info]FooBar" );
+				REQUIRE( strstr( p->GetMsg(0).c_str(), "[Info]FooBar" ) != nullptr );
 			}
 		}
 	}
@@ -254,7 +265,7 @@ SCENARIO( "Logging using custom Hex item" )
 			THEN( "Output is the value, as a hex string" )
 			{
 				REQUIRE( p->GetMessageCount() == 1 );
-				REQUIRE( p->GetMsg( 0 ) == "[Info]123abc" );
+				REQUIRE( strstr( p->GetMsg( 0 ).c_str(), "[Info]123abc" ) != nullptr );
 			}
 		}
 	}
@@ -269,6 +280,9 @@ SCENARIO( "Mandatory tags" )
 		Lout::Get().AddOutput( p );
 		L.SetThreshold( Info() );
 
+		time_t now;
+		time( &now );
+
 		WHEN( "Log with too high level" )
 		{
 			LL << Warning() << "Warning message";
@@ -282,7 +296,7 @@ SCENARIO( "Mandatory tags" )
 			L.ActivatePriorityCategory( "MandatoryTag" );
 			THEN( "Message is logged" )
 			{
-				L.LogWithCategory( Verbose(), "MandatoryTag", "Mandatory message" );
+				L.LogWithCategory( now, Verbose(), "MandatoryTag", "Mandatory message" );
 				REQUIRE( p->GetMessageCount() == 1 );
 			}
 		}
@@ -312,7 +326,7 @@ SCENARIO( "Using operator overloads to log numbers" )
 			THEN( "Output performed" )
 			{
 				REQUIRE( p->GetMessageCount() == 6 );
-				REQUIRE( p->GetMsg(0) == "[Info]1" );
+				REQUIRE( strstr( p->GetMsg(0).c_str(), "[Info]1" ) != nullptr );
 				REQUIRE( strstr( p->GetMsg(1).c_str(), "This text goes on the same line as \"1.2\"" ) != nullptr );
 				REQUIRE( strstr( p->GetMsg(2).c_str(), "This text goes on the same line as \"13.4\"" ) != nullptr );
 				REQUIRE( strstr( p->GetMsg(3).c_str(), "Only this text on this line" ) != nullptr );
@@ -389,7 +403,7 @@ SCENARIO( "Using categories" )
 			THEN( "Output performed" )
 			{
 				REQUIRE( p->GetMessageCount() == 1 );
-				REQUIRE( p->GetMsg( 0 ) == ("[Info/A category]" + msg) );
+				REQUIRE( strstr( p->GetMsg( 0 ).c_str(), ("[Info/A category]" + msg).c_str() ) != nullptr );
 			}
 		}
 

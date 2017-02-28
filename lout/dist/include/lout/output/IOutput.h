@@ -38,20 +38,20 @@ public:
 	virtual void Flush() noexcept = 0;
 
 	// Logs the message using the provided log level
-	void Log(const loglevel::ILogLevel& level, const std::string& msg) noexcept;
+	void Log( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& msg) noexcept;
 
 	// Logs the message using the provided category and log level
-	void LogWithCategory(const loglevel::ILogLevel& level, const std::string& category, const std::string& msg) noexcept;
+	void LogWithCategory( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& category, const std::string& msg) noexcept;
 
 	uint64_t GetMessageCount() const
 	{ return myMessageCount; }
 
 protected:
-	virtual void LogActual(const loglevel::ILogLevel& level, const std::string& msg) = 0;
+	virtual void LogActual( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& msg) = 0;
 
-	virtual void LogWithCategoryActual(const loglevel::ILogLevel& level, const std::string& category, const std::string& msg) = 0;
+	virtual void LogWithCategoryActual( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& category, const std::string& msg) = 0;
 
-	void FallbackLog(const loglevel::ILogLevel& level, const std::string& category, const std::string& msg) noexcept;
+	void FallbackLog( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& category, const std::string& msg) noexcept;
 
 	std::shared_ptr<formatting::IFormatter> myFormatter;
 private:

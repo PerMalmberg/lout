@@ -11,6 +11,12 @@ namespace lout {
 
 using namespace lout::item;
 
+LoutLogger::LoutLogger()
+	: myItems(), myCurrentMessage(), myCurrentLevel( std::numeric_limits<int>::max(), "NoLevel" ), myCategory()
+{
+	timestamp = time(nullptr);
+}
+
 LoutLogger::~LoutLogger()
 {
 	Flush();
@@ -205,16 +211,19 @@ void LoutLogger::Flush()
 	{
 		if( myCategory.empty() )
 		{
-			Lout::Get().Log( myCurrentLevel, msg );
+			Lout::Get().Log( timestamp, myCurrentLevel, msg );
 		}
 		else
 		{
-			Lout::Get().LogWithCategory( myCurrentLevel, myCategory, msg );
+			Lout::Get().LogWithCategory( timestamp, myCurrentLevel, myCategory, msg );
 		}
 	}
 
 	myCurrentMessage.str( "" );
 	myCurrentMessage.clear();
+
+	// Set a new time in case this instance is reused.
+	time( &timestamp );
 }
 
 //////////////////////////////////////////////////////////////////////////

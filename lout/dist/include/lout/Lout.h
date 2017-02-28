@@ -46,10 +46,10 @@ public:
 	void RemoveAllOutputs();
 
 	// Logs using the provided level
-	void Log(const loglevel::ILogLevel& level, const std::string& msg);
+	void Log( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& msg);
 
 	// Logs using the provided level and category. Only categories that have been activated will be logged.
-	void LogWithCategory(const loglevel::ILogLevel& level, const std::string& category, const std::string& msg);
+	void LogWithCategory( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& category, const std::string& msg);
 
 	// Sets the log level threshold. No level higher than the one set will be allowed.
 	void SetThreshold(const loglevel::ILogLevel& newLevel);

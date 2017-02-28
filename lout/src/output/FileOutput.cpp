@@ -79,10 +79,10 @@ void FileOutput::Flush() noexcept
 //
 //
 //////////////////////////////////////////////////////////////////////////
-void FileOutput::LogActual(const loglevel::ILogLevel& level, const std::string& msg)
+void FileOutput::LogActual( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& msg)
 {
-	if( !Write( FormatForOutput( level, "", msg ) ) ) {
-		FallbackLog(level, "", msg );
+	if( !Write( myFormatter->Format( timestamp, level, "", msg ) ) ) {
+		FallbackLog(timestamp, level, "", msg );
 	}
 }
 
@@ -90,11 +90,11 @@ void FileOutput::LogActual(const loglevel::ILogLevel& level, const std::string& 
 //
 //
 //////////////////////////////////////////////////////////////////////////
-void FileOutput::LogWithCategoryActual(const loglevel::ILogLevel& level, const std::string& category,
+void FileOutput::LogWithCategoryActual( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& category,
                                        const std::string& msg)
 {
-	if( !Write( FormatForOutput( level, category, msg ) ) ) {
-		FallbackLog(level, category, msg );
+	if( !Write( myFormatter->Format( timestamp, level, category, msg ) ) ) {
+		FallbackLog(timestamp, level, category, msg );
 	}
 }
 
@@ -142,28 +142,6 @@ void FileOutput::ReadFileSize()
 		myFile.seekp(0, std::ios_base::end);
 		myCurrentSize = static_cast<long>( myFile.tellp() );
 	}
-}
-
-
-//////////////////////////////////////////////////////////////////////////
-//
-//
-//////////////////////////////////////////////////////////////////////////
-std::string FileOutput::FormatForOutput(const loglevel::ILogLevel& level, const std::string& category,
-                                        const std::string& msg)
-{
-	std::stringstream s;
-
-	s << "[" << level;
-
-	if( !category.empty() )
-	{
-		s << "/" << category;
-	}
-
-	s << "]" << msg;
-
-	return s.str();
 }
 
 }
