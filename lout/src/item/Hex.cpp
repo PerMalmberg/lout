@@ -2,8 +2,6 @@
 // Licensed under MIT, see LICENSE file.
 // Give credit where credit is due.
 
-#pragma once
-
 #include <string>
 #include <lout/item/Hex.h>
 #include <lout/LoutLogger.h>

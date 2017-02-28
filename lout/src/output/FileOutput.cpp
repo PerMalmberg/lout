@@ -81,7 +81,7 @@ void FileOutput::Flush() noexcept
 //////////////////////////////////////////////////////////////////////////
 void FileOutput::LogActual( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& msg)
 {
-	if( !Write( myFormatter->Format( timestamp, level, "", msg ) ) ) {
+	if( !Write( myFormatter->Format( timestamp, level, msg ) ) ) {
 		FallbackLog(timestamp, level, "", msg );
 	}
 }
