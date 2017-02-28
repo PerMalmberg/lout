@@ -84,7 +84,7 @@ void Lout::RemoveAllOutputs()
 //
 //
 //////////////////////////////////////////////////////////////////////////
-void Lout::Log(const loglevel::ILogLevel& level, const std::string& msg)
+void Lout::Log( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& msg)
 {
 	Locker lock( myLock );
 	(void)lock; // Just to silence the warning
@@ -93,7 +93,7 @@ void Lout::Log(const loglevel::ILogLevel& level, const std::string& msg)
 	{
 		for( auto& p : myOutput )
 		{
-			p.get()->Log( level, msg );
+			p.get()->Log( timestamp, level, msg );
 		}
 	}
 }
@@ -102,7 +102,7 @@ void Lout::Log(const loglevel::ILogLevel& level, const std::string& msg)
 //
 //
 //////////////////////////////////////////////////////////////////////////
-void Lout::LogWithCategory(const loglevel::ILogLevel& level, const std::string& category, const std::string& msg)
+void Lout::LogWithCategory( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& category, const std::string& msg)
 {
 	Locker lock( myLock );
 	(void)lock;
@@ -118,7 +118,7 @@ void Lout::LogWithCategory(const loglevel::ILogLevel& level, const std::string& 
 	{
 		for( auto& p : myOutput )
 		{
-			p.get()->LogWithCategory( level, category, msg );
+			p.get()->LogWithCategory( timestamp, level, category, msg );
 		}
 	}
 }

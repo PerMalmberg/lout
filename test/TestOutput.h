@@ -12,18 +12,20 @@
 class TestOutput : public lout::output::IOutput
 {
 public:
-    TestOutput();
+	TestOutput();
 
     void Flush()
     { }
 
-    void LogActual(const lout::loglevel::ILogLevel& level, const std::string& msg) override;
+	void LogActual( const time_t& timestamp, const lout::loglevel::ILogLevel& level, const std::string& msg);
 
-    void LogWithCategoryActual(const lout::loglevel::ILogLevel& level, const std::string& category,
-                                       const std::string& msg) override;
+	void LogWithCategoryActual( const time_t& timestamp, const lout::loglevel::ILogLevel& level, const std::string& category,
+									   const std::string& msg) override;
 
-    std::string GetMsg(size_t ix);
+	std::string GetMsg(size_t ix);
 
 private:
-    std::vector<std::string> myOutput;
+	std::vector<std::string> myOutput;
+
+	std::string GetTimestamp( const time_t& timestamp ) const;
 };

@@ -28,9 +28,9 @@ public:
 protected:
 	void Flush();
 
-	virtual void LogActual(const loglevel::ILogLevel& level, const std::string& msg);
+	virtual void LogActual( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& msg);
 
-	virtual void LogWithCategoryActual(const loglevel::ILogLevel& level, const std::string& category, const std::string& msg) override;
+	virtual void LogWithCategoryActual( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& category, const std::string& msg);
 private:
 	std::string myPathToOutputFolder;
 	std::unique_ptr<FileOutput> myOutput;

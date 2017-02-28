@@ -60,11 +60,11 @@ bool ColoredStdOutput::SetColorForLevel( const loglevel::ILogLevel &level )
 //
 //
 //////////////////////////////////////////////////////////////////////////
-void ColoredStdOutput::LogActual( const loglevel::ILogLevel &level, const std::string &msg )
+void ColoredStdOutput::LogActual( const time_t& timestamp, const loglevel::ILogLevel &level, const std::string &msg )
 {
 	bool hadColor = SetColorForLevel( level );
 
-	StdOutput::LogActual( level, msg );
+	StdOutput::LogActual( timestamp, level, msg );
 
 	if( hadColor ) {
 		resetColor();
@@ -76,12 +76,12 @@ void ColoredStdOutput::LogActual( const loglevel::ILogLevel &level, const std::s
 //
 //
 //////////////////////////////////////////////////////////////////////////
-void ColoredStdOutput::LogWithCategoryActual( const loglevel::ILogLevel &level, const std::string &category,
+void ColoredStdOutput::LogWithCategoryActual( const time_t& timestamp, const loglevel::ILogLevel &level, const std::string &category,
 											  const std::string &msg )
 {
 	bool hadColor = SetColorForLevel( level );
 
-	StdOutput::LogWithCategoryActual( level, category, msg );
+	StdOutput::LogWithCategoryActual( timestamp, level, category, msg );
 
 	if( hadColor ) {
 		resetColor();

@@ -103,13 +103,13 @@ void RollingFile::Flush()
 //
 //
 //////////////////////////////////////////////////////////////////////////
-void RollingFile::LogActual(const loglevel::ILogLevel& level, const std::string& msg)
+void RollingFile::LogActual( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& msg)
 {
 	Open();
 
 	if( myOutput )
 	{
-		myOutput->Log( level, msg );
+		myOutput->Log( timestamp, level, msg );
 	}
 
 	Roll();
@@ -119,14 +119,14 @@ void RollingFile::LogActual(const loglevel::ILogLevel& level, const std::string&
 //
 //
 //////////////////////////////////////////////////////////////////////////
-void RollingFile::LogWithCategoryActual(const loglevel::ILogLevel& level, const std::string& category,
+void RollingFile::LogWithCategoryActual( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& category,
                                         const std::string& msg)
 {
 	Open();
 
 	if( myOutput )
 	{
-		myOutput->LogWithCategory( level, category, msg );
+		myOutput->LogWithCategory( timestamp, level, category, msg );
 	}
 
 	Roll();

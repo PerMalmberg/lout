@@ -18,9 +18,8 @@ namespace lout {
 class LoutLogger
 {
 public:
-	LoutLogger()
-			: myItems(), myCurrentMessage(), myCurrentLevel( std::numeric_limits<int>::max(), "NoLevel" ), myCategory()
-	{ }
+	LoutLogger();
+			
 
 	LoutLogger(const std::string& category)
 			:  LoutLogger()
@@ -71,6 +70,7 @@ private:
 	std::stringstream myCurrentMessage;
 	loglevel::ILogLevel myCurrentLevel;
 	std::string myCategory;
+	time_t timestamp;
 };
 
 

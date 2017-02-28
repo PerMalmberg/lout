@@ -25,9 +25,9 @@ public:
 	void Flush();
 	void Close();
 
-	virtual void LogActual(const loglevel::ILogLevel& level, const std::string& msg);
+	virtual void LogActual( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& msg);
 
-	virtual void LogWithCategoryActual(const loglevel::ILogLevel& level, const std::string& category, const std::string& msg);
+	virtual void LogWithCategoryActual( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& category, const std::string& msg);
 
 	long GetLogSize() const { return myCurrentSize; }
 
@@ -36,7 +36,6 @@ private:
 	std::ofstream myFile;
 	long myCurrentSize = 0;
 
-	std::string FormatForOutput( const loglevel::ILogLevel& level, const std::string& category, const std::string& msg);
 	void OpenFile();
 	bool Write( const std::string& data);
 	void ReadFileSize();

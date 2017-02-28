@@ -14,21 +14,21 @@ namespace output {
 //
 //////////////////////////////////////////////////////////////////////////
 void
-IOutput::Log(const loglevel::ILogLevel& level, const std::string& msg)
+IOutput::Log( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& msg)
 {
 	try
 	{
 		++myMessageCount;
-		LogActual( level, msg );
+		LogActual( timestamp, level, msg );
 	}
 	catch( std::exception& e )
 	{
-		FallbackLog( level, "", e.what() );
-		FallbackLog( level, "", msg );
+		FallbackLog( timestamp, level, "", e.what() );
+		FallbackLog( timestamp, level, "", msg );
 	}
 	catch( ... )
 	{
-		FallbackLog( level, "", msg );
+		FallbackLog( timestamp, level, "", msg );
 	}
 }
 
@@ -37,21 +37,21 @@ IOutput::Log(const loglevel::ILogLevel& level, const std::string& msg)
 //
 //////////////////////////////////////////////////////////////////////////
 void
-IOutput::LogWithCategory(const loglevel::ILogLevel& level, const std::string& category, const std::string& msg)
+IOutput::LogWithCategory( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& category, const std::string& msg)
 {
 	try
 	{
 		++myMessageCount;
-		LogWithCategoryActual( level, category, msg );
+		LogWithCategoryActual( timestamp, level, category, msg );
 	}
 	catch( std::exception& e )
 	{
-		FallbackLog( level, category, e.what() );
-		FallbackLog( level, category, msg );
+		FallbackLog( timestamp, level, category, e.what() );
+		FallbackLog( timestamp, level, category, msg );
 	}
 	catch( ... )
 	{
-		FallbackLog( level, category, msg );
+		FallbackLog( timestamp, level, category, msg );
 	}
 }
 
@@ -60,17 +60,17 @@ IOutput::LogWithCategory(const loglevel::ILogLevel& level, const std::string& ca
 //
 //////////////////////////////////////////////////////////////////////////
 void
-IOutput::FallbackLog(const loglevel::ILogLevel& level, const std::string& category, const std::string& msg)
+IOutput::FallbackLog( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& category, const std::string& msg)
 {
 	try
 	{
 		if( myFallbackErrorStream && myFallbackErrorStream->good() )
 		{
 			if( category.empty() ) {
-				*myFallbackErrorStream << myFormatter->Format(level, msg );
+				*myFallbackErrorStream << myFormatter->Format( timestamp, level, msg );
 			}
 			else {
-				*myFallbackErrorStream << myFormatter->Format(level, category, msg );
+				*myFallbackErrorStream << myFormatter->Format( timestamp, level, category, msg );
 			}
 
 			*myFallbackErrorStream << std::endl;

@@ -29,18 +29,18 @@ StdOutput::StdOutput( std::shared_ptr<formatting::IFormatter> formatter, std::os
 //
 //
 //////////////////////////////////////////////////////////////////////////
-void StdOutput::LogActual(const loglevel::ILogLevel& level, const std::string& msg)
+void StdOutput::LogActual( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& msg)
 {
-	std::cout << myFormatter->Format( level, msg ) << std::endl;
+	std::cout << myFormatter->Format( timestamp, level, msg ) << std::endl;
 }
 
 //////////////////////////////////////////////////////////////////////////
 //
 //
 //////////////////////////////////////////////////////////////////////////
-void StdOutput::LogWithCategoryActual(const loglevel::ILogLevel& level, const std::string& category,
+void StdOutput::LogWithCategoryActual( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& category,
                                           const std::string& msg){
-	std::cout << myFormatter->Format(level, category, msg ) << std::endl;
+	std::cout << myFormatter->Format(timestamp, level, category, msg ) << std::endl;
 }
 
 //////////////////////////////////////////////////////////////////////////

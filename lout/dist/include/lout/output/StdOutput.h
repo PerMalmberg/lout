@@ -17,9 +17,9 @@ public:
 
 	StdOutput( std::shared_ptr<formatting::IFormatter> formatter, std::ostream* fallbackStream );
 
-	void LogActual( const loglevel::ILogLevel &level, const std::string &msg ) override;
+	void LogActual( const time_t& timestamp, const loglevel::ILogLevel &level, const std::string &msg ) override;
 
-	void LogWithCategoryActual( const loglevel::ILogLevel &level, const std::string &category,
+	void LogWithCategoryActual( const time_t& timestamp, const loglevel::ILogLevel &level, const std::string &category,
 								const std::string &msg ) override;
 	void Flush();
 };

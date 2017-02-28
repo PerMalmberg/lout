@@ -38,20 +38,20 @@ public:
 	virtual void Flush() = 0;
 
 	// Logs the message using the provided log level
-	void Log(const loglevel::ILogLevel& level, const std::string& msg);
+	void Log( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& msg);
 
 	// Logs the message using the provided category and log level
-	void LogWithCategory(const loglevel::ILogLevel& level, const std::string& category, const std::string& msg);
+	void LogWithCategory( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& category, const std::string& msg);
 
 	uint64_t GetMessageCount() const
 	{ return myMessageCount; }
 
 protected:
-	virtual void LogActual(const loglevel::ILogLevel& level, const std::string& msg) = 0;
+	virtual void LogActual( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& msg) = 0;
 
-	virtual void LogWithCategoryActual(const loglevel::ILogLevel& level, const std::string& category, const std::string& msg) = 0;
+	virtual void LogWithCategoryActual( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& category, const std::string& msg) = 0;
 
-	void FallbackLog(const loglevel::ILogLevel& level, const std::string& category, const std::string& msg);
+	void FallbackLog( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& category, const std::string& msg);
 
 	std::shared_ptr<formatting::IFormatter> myFormatter;
 private:

@@ -12,8 +12,10 @@ namespace formatting {
 class DefaultFormatter : public IFormatter
 {
 public:
-	std::string Format(const loglevel::ILogLevel &level, const std::string &msg) override;
-	std::string Format(const loglevel::ILogLevel &level, const std::string &category, const std::string &msg) override;
+	std::string Format( const time_t& timestamp, const loglevel::ILogLevel &level, const std::string &msg) override;
+	std::string Format( const time_t& timestamp, const loglevel::ILogLevel &level, const std::string &category, const std::string &msg) override;
+private:
+	std::string GetTimestamp( const time_t& timestamp ) const;
 };
 
 }
