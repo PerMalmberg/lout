@@ -28,7 +28,7 @@ DateTimeNameGiver::DateTimeNameGiver( const std::string& prefix)
 //
 //
 //////////////////////////////////////////////////////////////////////////
-std::string DateTimeNameGiver::GetNextName() const
+std::string DateTimeNameGiver::GetNextName()
 {
 	auto now = std::chrono::system_clock::now();
 

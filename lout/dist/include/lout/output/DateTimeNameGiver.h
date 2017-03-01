@@ -17,7 +17,7 @@ public:
 	DateTimeNameGiver(const std::string& prefix);
 
 	// Returns the next log name to use
-	std::string GetNextName() const override;
+	std::string GetNextName() override;
 
 	bool Matches(const std::string& fileName) override;
 
