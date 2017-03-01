@@ -11,22 +11,22 @@ namespace util {
 
 class Bytes {
 public:
-	Bytes( long bytes ) : myBytes( bytes ) {}
+	Bytes( uint64_t bytes ) : myBytes( bytes ) {}
 
-	long GetBytes() const { return myBytes; }
+	uint64_t GetBytes() const { return myBytes; }
 private:
-	long myBytes = 0;
+	uint64_t myBytes = 0;
 };
 
 class KiloBytes : public Bytes
 {
 public:
-	KiloBytes( long kiloBytes ) : Bytes( kiloBytes * 1024 ) {}
+	KiloBytes( uint64_t kiloBytes ) : Bytes( kiloBytes * 1024 ) {}
 };
 
 class MegaBytes : public KiloBytes
 {
-	MegaBytes( long megaBytes ) : KiloBytes( megaBytes * 1024 ) {}
+	MegaBytes( uint64_t megaBytes ) : KiloBytes( megaBytes * 1024 ) {}
 };
 
 
