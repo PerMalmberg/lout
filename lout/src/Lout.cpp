@@ -132,17 +132,18 @@ void Lout::LogWithCategory( const time_t& timestamp, const loglevel::ILogLevel& 
 	Locker lock( myLock );
 	(void)lock;
 
-	// First check level and normal categories. If no category is set, all are allowed.
+	// First check normal categories. If no category is set, all are allowed.
 	bool shallLog = myActiveCategories.empty() || myActiveCategories.find( category ) != myActiveCategories.end();
 
-	// Now check mandatory categories
-	shallLog |= myPriorityCategories.find( category ) != myPriorityCategories.end();
+	// Now check priority categories
+	bool priority = myPriorityCategories.find( category ) != myPriorityCategories.end();
 
-	if( shallLog )
+	if( shallLog || priority )
 	{
 		for( auto& p : myOutput )
 		{
-			if( shallLog || p->IsLevelActive( level ) )
+			// The message should be logged if a priority category is used, or if the output has the level active.
+			if( priority || p->IsLevelActive( level ) )
 			{
 				p.get()->LogWithCategory( timestamp, level, category, msg );
 			}
