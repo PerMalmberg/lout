@@ -14,7 +14,7 @@ namespace output {
 //
 //////////////////////////////////////////////////////////////////////////
 void
-IOutput::Log( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& msg) noexcept
+IOutput::Log( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& msg)
 {
 	try
 	{
@@ -37,7 +37,7 @@ IOutput::Log( const time_t& timestamp, const loglevel::ILogLevel& level, const s
 //
 //////////////////////////////////////////////////////////////////////////
 void
-IOutput::LogWithCategory( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& category, const std::string& msg) noexcept
+IOutput::LogWithCategory( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& category, const std::string& msg)
 {
 	try
 	{
@@ -60,7 +60,7 @@ IOutput::LogWithCategory( const time_t& timestamp, const loglevel::ILogLevel& le
 //
 //////////////////////////////////////////////////////////////////////////
 void
-IOutput::FallbackLog( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& category, const std::string& msg) noexcept
+IOutput::FallbackLog( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& category, const std::string& msg)
 {
 	try
 	{
