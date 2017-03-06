@@ -30,27 +30,6 @@ using namespace lout::output;
 #define warn LoutLogger() << Warning()
 
 
-
-SCENARIO( "Setting up a logger" )
-{
-	GIVEN( "A clean slate" )
-	{
-		time_t now;
-		time( &now );
-		L.Reset();
-		THEN( "Program compiles" )
-		{
-			REQUIRE( L.GetThreshold().GetLevel() == 0 );
-			L.Log( now, Verbose(), "Goes nowhere" );
-		}
-		AND_THEN( "Can set log level" )
-		{
-			L.SetThreshold( Warning() );
-			REQUIRE( L.GetThreshold() == Warning() );
-		}
-	}
-}
-
 SCENARIO( "Adding a printer" )
 {
 	GIVEN( "A clean slate" )
@@ -103,6 +82,50 @@ SCENARIO( "Regular logging" )
 		WHEN( "Increasing log level" )
 		{
 			Lout::Get().SetThreshold( Warning() );
+
+			THEN( "We can log on that level too" )
+			{
+				std::string s = "Warning message";
+				L.Log( now, Warning(), s );
+				REQUIRE( (*p).GetMessageCount() == 1 );
+			}
+		}
+	}
+}
+
+SCENARIO( "Specific log level on output" )
+{
+	GIVEN( "A logger with a printer" )
+	{
+		L.Reset();
+		std::shared_ptr<IOutput> p = std::make_shared<TestOutput>();
+		Lout::Get().AddOutput( p );
+		Lout::Get().SetThreshold( Info() );
+
+		time_t now;
+		time( &now );
+
+		WHEN( "Logging on too high level" )
+		{
+			Lout::Get().Log( now, Warning(), "Log message" );
+
+			THEN( "No output performed" )
+			{
+				REQUIRE( p.get()->GetMessageCount() == 0 );
+			}
+		}
+		WHEN( "Logging on correct level" )
+		{
+			Lout::Get().Log( now, Info(), "Log message" );
+
+			THEN( "Output performed" )
+			{
+				REQUIRE( (*p).GetMessageCount() == 1 );
+			}
+		}
+		WHEN( "Setting log level on output specifically" )
+		{
+			L.OverrideThreshold( p, Warning() );
 
 			THEN( "We can log on that level too" )
 			{
@@ -183,7 +206,7 @@ SCENARIO( "Using operator to set log level" )
 		{
 			THEN( "Log level is 0" )
 			{
-				REQUIRE( L.GetThreshold().GetLevel() == 0 );
+				REQUIRE( p->GetThreshold() == NoLogging() );
 			}
 		}
 		AND_WHEN( "Level is set" )
@@ -191,7 +214,7 @@ SCENARIO( "Using operator to set log level" )
 			L.SetThreshold( Warning() );
 			THEN( "Level matches set level" )
 			{
-				REQUIRE( L.GetThreshold() == Warning() );
+				REQUIRE( p->GetThreshold() == Warning() );
 			}
 			AND_THEN( "Logging to a higher level, doesn't give an output" )
 			{

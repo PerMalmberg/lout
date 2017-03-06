@@ -16,6 +16,9 @@ namespace output {
 void
 IOutput::Log( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& msg)
 {
+	// When we get here, we expect the level to be checked already - an output does not have knowledge about
+	// categories so it has be be done by the callee.
+
 	try
 	{
 		++myMessageCount;
@@ -39,6 +42,9 @@ IOutput::Log( const time_t& timestamp, const loglevel::ILogLevel& level, const s
 void
 IOutput::LogWithCategory( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& category, const std::string& msg)
 {
+	// When we get here, we expect the level to be checked already - an output does not have knowledge about
+	// categories so it has be be done by the callee.
+
 	try
 	{
 		++myMessageCount;

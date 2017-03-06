@@ -17,6 +17,12 @@ namespace loglevel {
 //
 ///////////////////////////////////////////////////////////////////////////////
 
+class NoLogging : public ILogLevel
+{
+public:
+	NoLogging() : ILogLevel( std::numeric_limits<int>::min(), "NoLogging" ) {}
+};
+
 class Info : public ILogLevel
 {
 public:

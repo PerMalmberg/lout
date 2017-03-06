@@ -25,7 +25,7 @@ public:
 	void Reset()
 	{
 		RemoveAllOutputs();
-		SetThreshold( loglevel::ILogLevel( 0, "NoLevel" ) );
+		SetThreshold( loglevel::NoLogging() );
 		myActiveCategories.clear();
 		myPriorityCategories.clear();
 	}
@@ -63,18 +63,16 @@ public:
 		myLock = lock;
 	}
 
-	// Gets the current threshold level
-	const loglevel::ILogLevel& GetThreshold() const
-	{
-		return myCurrentThreshold;
-	}
-
 	// Activates a category
 	void ActivateCategory(const std::string& category);
 
 	// Activates a mandatory category, meaning that any log message with this category will be logged
 	// regardless of level threshold.
 	void ActivatePriorityCategory(const std::string& category);
+
+	// Overrides the threshold on the specified output with the specified level.
+	// The override will be active until Lout::SetThreshold() is called.
+	void OverrideThreshold( std::shared_ptr<output::IOutput> output, const loglevel::ILogLevel& level );
 
 	// Returns the number of outputs currently in use
 	size_t GetPrinterCount() const
@@ -98,17 +96,10 @@ protected:
 	};
 
 private:
-	loglevel::ILogLevel myCurrentThreshold;
 	std::vector<std::shared_ptr<output::IOutput>> myOutput;
 	std::set<std::string> myActiveCategories;
 	std::set<std::string> myPriorityCategories;
 	std::shared_ptr<threading::ILock> myLock;
-
-	bool IsLevelActive(const loglevel::ILogLevel& level)
-	{
-		// We allow logging up to and including the currently set level.
-		return level <= myCurrentThreshold;
-	}
 
 	void FlushAll();
 };
