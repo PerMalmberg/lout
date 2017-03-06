@@ -158,10 +158,31 @@ SCENARIO( "Logging with category" )
 				REQUIRE( (*p).GetMessageCount() == 1 );
 			}
 		}
-		AND_WHEN( "Tag activated" )
+		AND_WHEN( "Category activated" )
 		{
 			Lout::Get().ActivateCategory( "ActiveTag" );
 			Lout::Get().LogWithCategory( now, Info(), "ActiveTag", "Log message" );
+
+			THEN( "Output performed" )
+			{
+				REQUIRE( (*p).GetMessageCount() == 1 );
+			}
+		}
+		AND_WHEN( "Priority category NOT activated" )
+		{
+			Lout::Get().SetThreshold( Warning() );
+			Lout::Get().LogWithCategory( now, Debug(), "Prio", "Log message" );
+
+			THEN( "Output not performed" )
+			{
+				REQUIRE( (*p).GetMessageCount() == 0 );
+			}
+		}
+		AND_WHEN( "Priority category activated" )
+		{
+			Lout::Get().SetThreshold( Warning() );
+			Lout::Get().ActivatePriorityCategory( "Prio" );
+			Lout::Get().LogWithCategory( now, Debug(), "Prio", "Log message" );
 
 			THEN( "Output performed" )
 			{
