@@ -43,6 +43,9 @@ public:
 	// Logs the message using the provided category and log level
 	void LogWithCategory( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& category, const std::string& msg);
 
+	// Clear the log, if applicable for the output type.
+	virtual void Clear() {}
+
 	uint64_t GetMessageCount() const
 	{ return myMessageCount; }
 
