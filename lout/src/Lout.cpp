@@ -13,8 +13,7 @@ namespace lout {
 //
 //////////////////////////////////////////////////////////////////////////
 Lout::Lout()
-		: myCurrentThreshold( 0, "NoLevel" ),
-		  myActiveCategories(),
+		: myActiveCategories(),
 		  myPriorityCategories(),
 		  myLock( std::make_shared<threading::NoLock>() )
 {
@@ -35,7 +34,24 @@ Lout::~Lout()
 //////////////////////////////////////////////////////////////////////////
 void Lout::SetThreshold(const loglevel::ILogLevel& newLevel)
 {
-	myCurrentThreshold = newLevel;
+	Locker lock( myLock );
+	(void) lock;
+
+	for( auto p : myOutput )
+	{
+		p->SetThreshold( newLevel );
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//////////////////////////////////////////////////////////////////////////
+void Lout::OverrideThreshold( std::shared_ptr<output::IOutput> output, const loglevel::ILogLevel& level )
+{
+	Locker lock( myLock );
+	(void) lock;
+	output->SetThreshold( level );
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -44,6 +60,9 @@ void Lout::SetThreshold(const loglevel::ILogLevel& newLevel)
 //////////////////////////////////////////////////////////////////////////
 void Lout::ActivateCategory(const std::string& category)
 {
+	Locker lock( myLock );
+	(void) lock;
+
 	myActiveCategories.emplace( category );
 }
 
@@ -53,6 +72,9 @@ void Lout::ActivateCategory(const std::string& category)
 //////////////////////////////////////////////////////////////////////////
 void Lout::ActivatePriorityCategory(const std::string& category)
 {
+	Locker lock( myLock );
+	(void) lock;
+
 	myPriorityCategories.emplace( category );
 }
 
@@ -62,6 +84,9 @@ void Lout::ActivatePriorityCategory(const std::string& category)
 //////////////////////////////////////////////////////////////////////////
 void Lout::AddOutput(std::shared_ptr<output::IOutput> output)
 {
+	Locker lock( myLock );
+	(void) lock;
+
 	if( output )
 	{
 		myOutput.push_back( output );
@@ -87,11 +112,11 @@ void Lout::RemoveAllOutputs()
 void Lout::Log( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& msg)
 {
 	Locker lock( myLock );
-	(void)lock; // Just to silence the warning
+	(void)lock;
 
-	if( IsLevelActive( level ) )
+	for( auto& p : myOutput )
 	{
-		for( auto& p : myOutput )
+		if( p->IsLevelActive( level) )
 		{
 			p.get()->Log( timestamp, level, msg );
 		}
@@ -108,8 +133,7 @@ void Lout::LogWithCategory( const time_t& timestamp, const loglevel::ILogLevel& 
 	(void)lock;
 
 	// First check level and normal categories. If no category is set, all are allowed.
-	bool shallLog = IsLevelActive( level )
-	                && (myActiveCategories.empty() || myActiveCategories.find( category ) != myActiveCategories.end());
+	bool shallLog = myActiveCategories.empty() || myActiveCategories.find( category ) != myActiveCategories.end();
 
 	// Now check mandatory categories
 	shallLog |= myPriorityCategories.find( category ) != myPriorityCategories.end();
@@ -118,7 +142,10 @@ void Lout::LogWithCategory( const time_t& timestamp, const loglevel::ILogLevel& 
 	{
 		for( auto& p : myOutput )
 		{
-			p.get()->LogWithCategory( timestamp, level, category, msg );
+			if( shallLog || p->IsLevelActive( level ) )
+			{
+				p.get()->LogWithCategory( timestamp, level, category, msg );
+			}
 		}
 	}
 }
@@ -130,7 +157,7 @@ void Lout::LogWithCategory( const time_t& timestamp, const loglevel::ILogLevel& 
 void Lout::ClearLog() const
 {
 	Locker lock(myLock);
-	(void)lock; // Just to silence the warning
+	(void)lock;
 
 	for (auto& p : myOutput)
 	{

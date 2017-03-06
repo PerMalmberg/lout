@@ -7,8 +7,14 @@
 #include <string>
 #include <memory>
 #include "lout/loglevel/ILogLevel.h"
+#include "lout/loglevel/defaultLevels.h"
 #include "lout/formatting/IFormatter.h"
+
 namespace lout {
+
+class Lout;
+
+
 namespace output {
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -26,7 +32,8 @@ public:
 	// You may pass in a nullptr if you don't want a fallback stream.
 	IOutput( std::shared_ptr<formatting::IFormatter> formatter, std::ostream* fallback)
 			: myFormatter( std::move( formatter ) ),
-			myFallbackErrorStream( fallback )
+			myFallbackErrorStream( fallback ),
+			myThreshold( loglevel::NoLogging() )
 	{
 	}
 
@@ -49,6 +56,8 @@ public:
 	uint64_t GetMessageCount() const
 	{ return myMessageCount; }
 
+	const lout::loglevel::ILogLevel& GetThreshold() const { return myThreshold; }
+
 protected:
 	virtual void LogActual( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& msg) = 0;
 
@@ -60,6 +69,15 @@ protected:
 private:
 	uint64_t myMessageCount = 0;
 	std::ostream* myFallbackErrorStream = nullptr;
+	loglevel::ILogLevel myThreshold;
+	
+	// The method is private because it should only be called from an instance of Lout to ensure threadsafety
+	void SetThreshold( const loglevel::ILogLevel& level ) { myThreshold = level; }
+	
+	bool IsLevelActive( const loglevel::ILogLevel& level ) { return level <= myThreshold; }
+
+	// We're best friends with Lout so that it can call SetThreshold in a threadsafe manner.
+	friend class lout::Lout;
 };
 
 
