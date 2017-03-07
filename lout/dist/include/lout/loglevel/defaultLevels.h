@@ -5,7 +5,7 @@
 #pragma once
 
 #include "ILogLevel.h"
-
+#include <limits>
 
 namespace lout {
 namespace loglevel {
