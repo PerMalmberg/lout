@@ -49,6 +49,8 @@ public:
 
 	LoutLogger& operator<<(uint64_t value);
 
+	LoutLogger& operator<<(unsigned long value);
+
 	LoutLogger& operator<<(double value);
 
 	LoutLogger& operator<<(long double value);

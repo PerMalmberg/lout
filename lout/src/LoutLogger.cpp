@@ -127,6 +127,16 @@ LoutLogger& LoutLogger::operator<<(uint64_t value)
 //
 //
 //////////////////////////////////////////////////////////////////////////
+LoutLogger& LoutLogger::operator<<(unsigned long value)
+{
+	myItems.push_back(std::make_shared<StringItem>(std::to_string(value)));
+	return *this;
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//
+//////////////////////////////////////////////////////////////////////////
 LoutLogger& LoutLogger::operator<<(double value)
 {
 	myItems.push_back( std::make_shared<StringItem>( std::to_string( value ) ) );
