@@ -49,7 +49,10 @@ public:
 
 	LoutLogger& operator<<(uint64_t value);
 
+#if ULONG_MAX == (0xFFFFFFFFUL)
+	// Don't compile this on 64 bit platforms since it is the same as uint64_t
 	LoutLogger& operator<<(unsigned long value);
+#endif
 
 	LoutLogger& operator<<(double value);
 
