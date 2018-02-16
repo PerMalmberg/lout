@@ -12,7 +12,10 @@ if (IS_WINDOWS)
 	include_directories("C:/Boost/include/boost-1_61")
 else ()
 	# Build with all warnings
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -pthread")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")
+	if (NOT IS_OSX)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+	endif ()
 	# Setup path for boost headers
 	if (${MINGW})
 		include_directories("C:/Boost/include/boost-1_61")
