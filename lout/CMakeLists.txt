@@ -8,21 +8,25 @@ if (IS_WINDOWS)
 	# Build at warning level 4 on Windows.
 	# Treat all warnings as errors
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /WX")
-	# Setup path for boost headers
-	include_directories("C:/Boost/include/boost-1_61")
 else ()
 	# Build with all warnings
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")
 	if (NOT IS_OSX)
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 	endif ()
-	# Setup path for boost headers
-	if (${MINGW})
-		include_directories("C:/Boost/include/boost-1_61")
-	else ()
-		include_directories("/usr/local/boost/include/")
-	endif ()
 endif ()
+
+# Defined in top-level project?
+if( NOT BOOST_LOCATION )
+	if( ${IS_WINDOWS} OR ${MINGW})
+		# Setup path for boost headers
+        include_directories("C:/Boost/include/boost-1_61")
+	else()
+		include_directories("/usr/local/boost/include/")
+	endif()
+else()
+	include_directories(${BOOST_LOCATION})
+endif()
 
 # Use CMAKE_CURRENT_LIST_DIR instead of CMAKE_SOURCE_DIR to specify relative to where this CMakeLists.txt is located
 # as opposed to where the 'main' CMakeLists.txt file is located.
@@ -53,7 +57,7 @@ add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
 if (${CMAKE_MAKE_PROGRAM} MATCHES ".*(MSBuild|msdev|devenv|nmake).*")
 	target_link_libraries(${PROJECT_NAME} libboost_filesystem-vc140-mt-1_61 libboost_system-vc140-mt-1_61)
 else ()
-	target_link_libraries(${PROJECT_NAME} boost_filesystem boost_system)
+	target_link_libraries(${PROJECT_NAME} ${BOOST_LIB_LOCATION}/libboost_filesystem.a ${BOOST_LIB_LOCATION}/libboost_system.a)
 endif ()
 
 # Note if you build your binary using -static in CMAKE_CXX_FLAGS, you must make sure that the entire pthread archive is linked
