@@ -4,6 +4,8 @@ include(../externals/CMakeUtils/CMakeUtils.txt)
 
 set(CMAKE_CXX_STANDARD 14)
 
+add_definitions(-DBOOST_ALL_NO_LIB)
+
 if (IS_WINDOWS)
 	# Build at warning level 4 on Windows.
 	# Treat all warnings as errors
@@ -52,18 +54,7 @@ set(SOURCE_FILES
 # Create a static library
 add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
 
-# Tell linker to link against boost. Note that this doesn't actually take effect until the main executable is linked
-# and thus that target needs to know where to fine the libraries (set via link_directories() )
-if (${CMAKE_MAKE_PROGRAM} MATCHES ".*(MSBuild|msdev|devenv|nmake).*")
-	target_link_libraries(${PROJECT_NAME} libboost_filesystem-vc140-mt-1_61 libboost_system-vc140-mt-1_61)
-else ()
-	target_link_libraries(${PROJECT_NAME} ${BOOST_LIB_LOCATION}/libboost_filesystem.a ${BOOST_LIB_LOCATION}/libboost_system.a)
-endif ()
-
-# Note if you build your binary using -static in CMAKE_CXX_FLAGS, you must make sure that the entire pthread archive is linked
-# to our target. See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=52590#c4
-# In short, the internet says 'don't use static linking'.
-#target_link_libraries( ${PROJECT_NAME} -Wl,--whole-archive -lpthread -Wl,--no-whole-archive)
+# Tell your linker to link against boost.
 
 # Output final binaries in the dist folder so they easily can be distributed together with the header files.
 set_target_properties(${PROJECT_NAME}
