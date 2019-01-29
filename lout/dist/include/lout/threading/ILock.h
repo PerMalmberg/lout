@@ -12,6 +12,8 @@ namespace threading {
 class ILock
 {
 public:
+	virtual ~ILock() = default;
+
 	virtual void Acquire() = 0;
 
 	virtual void Release() = 0;

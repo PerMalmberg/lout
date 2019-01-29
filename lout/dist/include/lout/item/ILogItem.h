@@ -14,6 +14,7 @@ namespace item {
 class ILogItem
 {
 public:
+	virtual ~ILogItem() = default;
 	virtual void Log( lout::LoutLogger& l ) = 0;
 };
 
