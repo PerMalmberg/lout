@@ -14,7 +14,7 @@ namespace lout {
 class LevelItem : public lout::item::ILogItem
 {
 public:
-	LevelItem(const loglevel::ILogLevel& level) : myLevel(level)
+	explicit LevelItem(const loglevel::ILogLevel& level) : myLevel(level)
 	{ }
 
 	void Log(lout::LoutLogger& l) override;
