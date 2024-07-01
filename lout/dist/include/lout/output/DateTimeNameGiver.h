@@ -4,27 +4,24 @@
 
 #pragma once
 
-#include <string>
-#include <regex>
 #include "IRollingFileName.h"
+#include <regex>
+#include <string>
 
-namespace lout {
-namespace output {
-
-class DateTimeNameGiver : public IRollingFileName
+namespace lout::output
 {
-public:
-	DateTimeNameGiver(const std::string& prefix);
+	class DateTimeNameGiver : public IRollingFileName
+	{
+	  public:
+		explicit DateTimeNameGiver(const std::string& prefix);
 
-	// Returns the next log name to use
-	std::string GetNextName() override;
+		// Returns the next log name to use
+		std::string GetNextName() override;
 
-	bool Matches(const std::string& fileName) override;
+		bool Matches(const std::string& fileName) override;
 
-private:
-	std::string myPrefix;
-	std::regex myMatcher;
-};
-
-}
-}
+	  private:
+		std::string myPrefix;
+		std::regex myMatcher;
+	};
+} // namespace lout::output

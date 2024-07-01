@@ -4,105 +4,115 @@
 
 #pragma once
 
-#include <memory>
-#include <vector>
-#include <exception>
-#include <set>
-#include "lout/output/IOutput.h"
 #include "lout/loglevel/ILogLevel.h"
+#include "lout/output/IOutput.h"
 #include "lout/threading/ILock.h"
+#include <memory>
+#include <set>
+#include <utility>
+#include <vector>
 
-namespace lout {
-
-class Lout
+namespace lout
 {
-public:
-	Lout();
-
-	virtual ~Lout();
-
-	// Resets the logger
-	void Reset()
+	class Lout
 	{
-		RemoveAllOutputs();
-		SetThreshold( loglevel::NoLogging() );
-		myActiveCategories.clear();
-		myPriorityCategories.clear();
-	}
+	  public:
+		Lout();
 
-	// Gets the singleton instance
-	static Lout& Get()
-	{
-		// This is thread safe in C++11, §6.7 - 4
-		// Page 137, http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2011/n3242.pdf
-		static Lout instance;
-		return instance;
-	}
+		Lout(Lout&&) = delete;
+		Lout& operator=(Lout&&) = delete;
+		virtual ~Lout();
 
-	// Adds an output to the logger
-	void AddOutput(std::shared_ptr<output::IOutput> output);
+		// Resets the logger
+		void Reset()
+		{
+			RemoveAllOutputs();
+			SetThreshold(loglevel::NoLogging());
+			myActiveCategories.clear();
+			myPriorityCategories.clear();
+		}
 
-	// Removes all outputs
-	void RemoveAllOutputs();
+		// Gets the singleton instance
+		static Lout& Get()
+		{
+			// This is thread safe in C++11, §6.7 - 4
+			// Page 137, http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2011/n3242.pdf
+			static Lout instance;
+			return instance;
+		}
 
-	// Logs using the provided level
-	void Log( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& msg);
+		// Adds an output to the logger
+		void AddOutput(std::shared_ptr<output::IOutput> output);
 
-	// Logs using the provided level and category. Only categories that have been activated will be logged.
-	void LogWithCategory( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& category, const std::string& msg);
+		// Removes all outputs
+		void RemoveAllOutputs();
 
-	// Asks the outputs to clear their logs, if applicable.
-	void ClearLog() const;
+		// Logs using the provided level
+		void Log(const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& msg);
 
-	// Sets the log level threshold. No level higher than the one set will be allowed.
-	void SetThreshold(const loglevel::ILogLevel& newLevel);
+		// Logs using the provided level and category. Only categories that have been activated will be logged.
+		void LogWithCategory(const time_t& timestamp,
+		                     const loglevel::ILogLevel& level,
+		                     const std::string& category,
+		                     const std::string& msg);
 
-	// Sets the locker used by Lout.
-	// Note: Must be called before multiple threads uses the Lout instance.
-	void SetLocker( std::shared_ptr<threading::ILock> lock ) {
-		myLock = lock;
-	}
+		// Asks the outputs to clear their logs, if applicable.
+		void ClearLog() const;
 
-	// Activates a category
-	void ActivateCategory(const std::string& category);
+		// Sets the log level threshold. No level higher than the one set will be allowed.
+		void SetThreshold(const loglevel::ILogLevel& newLevel);
 
-	// Activates a mandatory category, meaning that any log message with this category will be logged
-	// regardless of level threshold.
-	void ActivatePriorityCategory(const std::string& category);
+		// Sets the locker used by Lout.
+		// Note: Must be called before multiple threads uses the Lout instance.
+		void SetLocker(std::shared_ptr<threading::ILock> lock)
+		{
+			myLock = std::move(lock);
+		}
 
-	// Overrides the threshold on the specified output with the specified level.
-	// The override will be active until Lout::SetThreshold() is called.
-	void OverrideThreshold( std::shared_ptr<output::IOutput> output, const loglevel::ILogLevel& level );
+		// Activates a category
+		void ActivateCategory(const std::string& category);
 
-	// Returns the number of outputs currently in use
-	size_t GetPrinterCount() const
-	{
-		return myOutput.size();
-	}
+		// Activates a mandatory category, meaning that any log message with this category will be logged
+		// regardless of level threshold.
+		void ActivatePriorityCategory(const std::string& category);
 
-	Lout(const Lout&) = delete;
+		// Overrides the threshold on the specified output with the specified level.
+		// The override will be active until Lout::SetThreshold() is called.
+		void OverrideThreshold(std::shared_ptr<output::IOutput> output, const loglevel::ILogLevel& level);
 
-	Lout& operator=(Lout&) = delete;
+		// Returns the number of outputs currently in use
+		[[nodiscard]] size_t GetPrinterCount() const
+		{
+			return myOutput.size();
+		}
 
-protected:
-	class Locker
-	{
-	public:
-		Locker(std::shared_ptr<threading::ILock>);
+		Lout(const Lout&) = delete;
 
-		~Locker();
-	private:
+		Lout& operator=(Lout&) = delete;
+
+	  protected:
+		class Locker
+		{
+		  public:
+			Locker(const Locker&) = delete;
+			Locker(Locker&&) = delete;
+			Locker& operator=(const Locker&) = delete;
+			Locker& operator=(Locker&&) = delete;
+			explicit Locker(std::shared_ptr<threading::ILock>);
+
+			~Locker();
+
+		  private:
+			std::shared_ptr<threading::ILock> myLock;
+		};
+
+	  private:
+		std::vector<std::shared_ptr<output::IOutput>> myOutput;
+		std::set<std::string> myActiveCategories;
+		std::set<std::string> myPriorityCategories;
 		std::shared_ptr<threading::ILock> myLock;
+
+		void FlushAll();
 	};
 
-private:
-	std::vector<std::shared_ptr<output::IOutput>> myOutput;
-	std::set<std::string> myActiveCategories;
-	std::set<std::string> myPriorityCategories;
-	std::shared_ptr<threading::ILock> myLock;
-
-	void FlushAll();
-};
-
-
-}
+} // namespace lout

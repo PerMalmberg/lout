@@ -6,8 +6,8 @@
 
 namespace lout
 {
+	// Used as a flush trigger in a log statement.
 	class Flush
 	{
-
 	};
-}
+} // namespace lout

@@ -5,47 +5,47 @@
 #pragma once
 
 #include <ostream>
+#include <utility>
 
-namespace lout {
-namespace loglevel {
-
-///////////////////////////////////////////////////////////////////////////////
-//
-// Base class for log levels used by Lout. Inherit from this to provide custom levels
-//
-///////////////////////////////////////////////////////////////////////////////
-class ILogLevel
+namespace lout::loglevel
 {
-public:
-	ILogLevel(int level, const std::string& levelAsText) : myLevel( level ), myLevelAsText( levelAsText )
-	{ }
 
-	bool operator<=(const ILogLevel& rhs) const
+	///////////////////////////////////////////////////////////////////////////////
+	//
+	// Base class for log levels used by Lout. Inherit from this to provide custom levels
+	//
+	///////////////////////////////////////////////////////////////////////////////
+	class ILogLevel
 	{
-		return myLevel <= rhs.myLevel;
-	}
+	  public:
+		ILogLevel(int level, std::string levelAsText) : myLevel(level), myLevelAsText(std::move(levelAsText))
+		{
+		}
 
-	bool operator==(const ILogLevel& rhs) const
-	{
-		return myLevel == rhs.GetLevel();
-	}
+		bool operator<=(const ILogLevel& rhs) const
+		{
+			return myLevel <= rhs.myLevel;
+		}
 
-	int GetLevel() const
-	{
-		return myLevel;
-	}
+		bool operator==(const ILogLevel& rhs) const
+		{
+			return myLevel == rhs.GetLevel();
+		}
 
-	const std::string& GetText() const
-	{
-		return myLevelAsText;
-	}
+		[[nodiscard]] int GetLevel() const
+		{
+			return myLevel;
+		}
 
-private:
-	int myLevel;
-	std::string myLevelAsText;
-};
+		[[nodiscard]] const std::string& GetText() const
+		{
+			return myLevelAsText;
+		}
 
-}
-}
+	  private:
+		int myLevel;
+		std::string myLevelAsText;
+	};
+} // namespace lout::loglevel
 
-std::ostream& operator<<(std::ostream& stream, const lout::loglevel::ILogLevel& );
+std::ostream& operator<<(std::ostream& stream, const lout::loglevel::ILogLevel&);

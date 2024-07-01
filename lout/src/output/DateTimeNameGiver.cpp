@@ -3,65 +3,63 @@
 // Give credit where credit is due.
 
 #if defined(_WIN32)
-	#define __STDC_WANT_LIB_EXT1__ 1 // For localtime_s
+#define __STDC_WANT_LIB_EXT1__ 1 // For localtime_s
 #endif
 
-#include <time.h>
-#include <cstring>
 #include <chrono>
-#include <iomanip>
-#include <sstream>
+#include <cstring>
+#include <ctime>
 #include <lout/output/DateTimeNameGiver.h>
+#include <regex>
+#include <sstream>
 
-namespace lout {
-namespace output {
-
-
-DateTimeNameGiver::DateTimeNameGiver( const std::string& prefix)
-		: myPrefix( prefix), myMatcher()
+namespace lout::output
 {
-	std::string expr = prefix + R"!!(\d{4}-\d{2}-\d{2}\ \d{6}\.log)!!";
-	myMatcher = std::regex( expr );
-}
 
-//////////////////////////////////////////////////////////////////////////
-//
-//
-//////////////////////////////////////////////////////////////////////////
-std::string DateTimeNameGiver::GetNextName()
-{
-	auto now = std::chrono::system_clock::now();
+	DateTimeNameGiver::DateTimeNameGiver(const std::string& prefix) : myPrefix(prefix)
+	{
+		std::string expr = prefix + R"!!(\d{4}-\d{2}-\d{2}\ \d{6}\.log)!!";
+		myMatcher = std::regex(expr);
+	}
 
-	std::stringstream formatted;
-	formatted << myPrefix;
+	//////////////////////////////////////////////////////////////////////////
+	//
+	//
+	//////////////////////////////////////////////////////////////////////////
+	std::string DateTimeNameGiver::GetNextName()
+	{
+		auto now = std::chrono::system_clock::now();
 
-	time_t time = std::chrono::system_clock::to_time_t( now );
-	tm t;
+		std::stringstream formatted;
+		formatted << myPrefix;
 
-	// TODO: provide constructor to choose between local time and UTC time. (gmtime_s)
+		time_t time = std::chrono::system_clock::to_time_t(now);
+		tm t{};
 
-	// std::localtime is not thread-safe so we have to use the _r or _s version.
+		// TODO: provide constructor to choose between local time and UTC time. (gmtime_s)
+
+		// std::localtime is not thread-safe so we have to use the _r or _s version.
 #if defined(_WIN32)
-	localtime_s( &t, &time );
+		localtime_s(&t, &time);
 #else
-	localtime_r( &time, &t );
+		localtime_r(&time, &t);
 #endif
-	char buff[40];
-	std::memset( buff, 0, sizeof( buff ) );
-	strftime( buff, sizeof( buff ) - 1, "%Y-%m-%d %H%M%S.log", &t );
-	formatted << buff;
+		char buff[40];
+		std::memset(buff, 0, sizeof(buff));
+		strftime(buff, sizeof(buff) - 1, "%Y-%m-%d %H%M%S.log", &t);
+		formatted << buff;
 
-	return formatted.str();
-}
+		return formatted.str();
+	}
 
-//////////////////////////////////////////////////////////////////////////
-//
-//
-//////////////////////////////////////////////////////////////////////////
-bool DateTimeNameGiver::Matches(const std::string& fileName)
-{
-	return std::regex_match( fileName, myMatcher );	
-}
+	//////////////////////////////////////////////////////////////////////////
+	//
+	//
+	//////////////////////////////////////////////////////////////////////////
+	bool DateTimeNameGiver::Matches(const std::string& fileName)
+	{
+		return std::regex_match(fileName, myMatcher);
+	}
 
-}
-}
+} // namespace lout::output
+

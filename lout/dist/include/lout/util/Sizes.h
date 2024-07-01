@@ -4,31 +4,41 @@
 
 #pragma once
 
-#include <stdint.h>
-
-namespace lout {
-namespace util {
-
-class Bytes {
-public:
-	Bytes( long bytes ) : myBytes( bytes ) {}
-
-	long GetBytes() const { return myBytes; }
-private:
-	long myBytes = 0;
-};
-
-class KiloBytes : public Bytes
+namespace lout::util
 {
-public:
-	KiloBytes( long kiloBytes ) : Bytes( kiloBytes * 1024 ) {}
-};
+	class Bytes
+	{
+	  public:
+		explicit Bytes(long bytes) : myBytes(bytes)
+		{
+		}
 
-class MegaBytes : public KiloBytes
-{
-	MegaBytes( long megaBytes ) : KiloBytes( megaBytes * 1024 ) {}
-};
+		[[nodiscard]] long GetBytes() const
+		{
+			return myBytes;
+		}
 
+	  protected:
+		static constexpr int multiplier = 1024;
 
-}
-}
+	  private:
+		long myBytes = 0;
+	};
+
+	class KiloBytes : public Bytes
+	{
+	  public:
+		explicit KiloBytes(long kiloBytes) : Bytes(kiloBytes * multiplier)
+		{
+		}
+	};
+
+	class MegaBytes : public KiloBytes
+	{
+		explicit MegaBytes(long megaBytes) : KiloBytes(megaBytes * multiplier)
+		{
+		}
+	};
+
+} // namespace lout::util
+

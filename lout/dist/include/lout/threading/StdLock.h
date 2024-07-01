@@ -3,22 +3,19 @@
 // Give credit where credit is due.
 
 #pragma once
-#include <mutex>
 #include "ILock.h"
+#include <mutex>
 
-namespace lout {
-namespace threading {
-
-// A class that provides lock via a mutex for use in multi-threaded applications
-class StdLock : public ILock
+namespace lout::threading
 {
-public:
-	StdLock();
-	void Acquire() override;
-	void Release() override;
-private:
-	std::recursive_mutex myMutex;
-};
+	// A class that provides lock via a mutex for use in multi-threaded applications
+	class StdLock : public ILock
+	{
+	  public:
+		void Acquire() override;
+		void Release() override;
 
-}
-}
+	  private:
+		std::recursive_mutex myMutex;
+	};
+} // namespace lout::threading

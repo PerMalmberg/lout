@@ -7,51 +7,67 @@
 #include "ILogLevel.h"
 #include <limits>
 
-namespace lout {
-namespace loglevel {
-
-
-///////////////////////////////////////////////////////////////////////////////
-//
-// Default log levels provided for convenience
-//
-///////////////////////////////////////////////////////////////////////////////
-
-class NoLogging : public ILogLevel
+namespace lout::loglevel
 {
-public:
-	NoLogging() : ILogLevel( std::numeric_limits<int>::min(), "NoLogging" ) {}
-};
+	static constexpr int level_info = 10;
+	static constexpr int level_warn = 20;
+	static constexpr int level_error = 30;
+	static constexpr int level_verbose = 40;
+	static constexpr int level_debug = 50;
 
-class Info : public ILogLevel
-{
-public:
-	Info() : ILogLevel(10, "Info") {}
-};
+	///////////////////////////////////////////////////////////////////////////////
+	//
+	// Default log levels provided for convenience
+	//
+	///////////////////////////////////////////////////////////////////////////////
 
-class Warning : public ILogLevel
-{
-public:
-	Warning() : ILogLevel(20, "Warning") {}
-};
+	class NoLogging : public ILogLevel
+	{
+	  public:
+		NoLogging() : ILogLevel(std::numeric_limits<int>::min(), "NoLogging")
+		{
+		}
+	};
 
-class Error : public ILogLevel
-{
-public:
-	Error() : ILogLevel(30, "Error") {}
-};
+	class Info : public ILogLevel
+	{
+	  public:
+		Info() : ILogLevel(level_info, "Info")
+		{
+		}
+	};
 
-class Verbose : public ILogLevel
-{
-public:
-	Verbose() : ILogLevel(40, "Verbose") {}
-};
+	class Warning : public ILogLevel
+	{
+	  public:
+		Warning() : ILogLevel(level_warn, "Warning")
+		{
+		}
+	};
 
-class Debug : public ILogLevel
-{
-public:
-	Debug() : ILogLevel(50, "Debug") {}
-};
+	class Error : public ILogLevel
+	{
+	  public:
+		Error() : ILogLevel(level_error, "Error")
+		{
+		}
+	};
 
-}
-}
+	class Verbose : public ILogLevel
+	{
+	  public:
+		Verbose() : ILogLevel(level_verbose, "Verbose")
+		{
+		}
+	};
+
+	class Debug : public ILogLevel
+	{
+	  public:
+		Debug() : ILogLevel(level_debug, "Debug")
+		{
+		}
+	};
+
+} // namespace lout::loglevel
+

@@ -6,17 +6,27 @@
 
 #include "IFormatter.h"
 
-namespace lout {
-namespace formatting {
-
-class DefaultFormatter : public IFormatter
+namespace lout::formatting
 {
-public:
-	std::string Format( const time_t& timestamp, const loglevel::ILogLevel &level, const std::string &msg) override;
-	std::string Format( const time_t& timestamp, const loglevel::ILogLevel &level, const std::string &category, const std::string &msg) override;
-private:
-	std::string GetTimestamp( const time_t& timestamp ) const;
-};
 
-}
-}
+	class DefaultFormatter : public IFormatter
+	{
+	  public:
+		DefaultFormatter() = default;
+		DefaultFormatter(const DefaultFormatter&) = delete;
+		DefaultFormatter(DefaultFormatter&&) = delete;
+		DefaultFormatter& operator=(const DefaultFormatter&) = delete;
+		DefaultFormatter& operator=(DefaultFormatter&&) = delete;
+		~DefaultFormatter() override = default;
+
+		std::string Format(const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& msg) override;
+		std::string Format(const time_t& timestamp,
+		                   const loglevel::ILogLevel& level,
+		                   const std::string& category,
+		                   const std::string& msg) override;
+
+	  private:
+		[[nodiscard]] std::string GetTimestamp(const time_t& timestamp) const;
+	};
+
+} // namespace lout::formatting

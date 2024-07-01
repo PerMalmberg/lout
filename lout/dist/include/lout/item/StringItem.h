@@ -4,24 +4,24 @@
 
 #pragma once
 
-#include <string>
 #include "ILogItem.h"
+#include <string>
+#include <utility>
 
-namespace lout {
-namespace item {
-
-class StringItem : public ILogItem
+namespace lout::item
 {
-public:
-	StringItem( const std::string& msg ) : myMsg( msg )
+	class StringItem : public ILogItem
 	{
-	}
+	  public:
+		explicit StringItem(std::string msg) : myMsg(std::move(msg))
+		{
+		}
 
-	void Log( lout::LoutLogger& l ) override;
+		void Log(lout::LoutLogger& log) override;
 
-private:
-	std::string myMsg;
-};
+	  private:
+		std::string myMsg;
+	};
 
-}
-}
+} // namespace lout::item
+

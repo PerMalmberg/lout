@@ -7,39 +7,54 @@
 #include "IOutput.h"
 #include <fstream>
 
-namespace lout {
-namespace output {
-
-class FileOutput : public IOutput
+namespace lout::output
 {
-public:
-	// Will use std::cerr as fallback stream
-	FileOutput(std::shared_ptr<formatting::IFormatter> formatter, const std::string& pathToFile);
 
-	FileOutput( std::shared_ptr<formatting::IFormatter> formatter, const std::string& pathToFile, std::ostream* fallbackStream );
+	class FileOutput : public IOutput
+	{
+	  public:
+		// Will use std::cerr as fallback stream
+		FileOutput(std::shared_ptr<formatting::IFormatter> formatter, const std::string& pathToFile);
 
-	~FileOutput();
+		FileOutput(std::shared_ptr<formatting::IFormatter> formatter,
+		           const std::string& pathToFile,
+		           std::ostream* fallbackStream);
 
-	long GetCurrentSize() const { return myCurrentSize; }
+		~FileOutput() override;
 
-	void Flush() noexcept override;
-	void Close();
+		FileOutput(const FileOutput&) = delete;
+		FileOutput(FileOutput&&) = delete;
+		FileOutput& operator=(const FileOutput&) = delete;
+		FileOutput& operator=(FileOutput&&) = delete;
 
-	virtual void LogActual( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& msg) override;
+		long GetCurrentSize() const
+		{
+			return myCurrentSize;
+		}
 
-	virtual void LogWithCategoryActual( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& category, const std::string& msg) override;
+		void Flush() noexcept override;
+		void Close();
 
-	long GetLogSize() const { return myCurrentSize; }
+		void LogActual(const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& msg) override;
 
-private:
-	std::string myFilePath;
-	std::ofstream myFile;
-	long myCurrentSize = 0;
+		void LogWithCategoryActual(const time_t& timestamp,
+		                           const loglevel::ILogLevel& level,
+		                           const std::string& category,
+		                           const std::string& msg) override;
 
-	void OpenFile();
-	bool Write( const std::string& data);
-	void ReadFileSize();
-};
+		long GetLogSize() const
+		{
+			return myCurrentSize;
+		}
 
-}
-}
+	  private:
+		std::string myFilePath;
+		std::ofstream myFile;
+		long myCurrentSize = 0;
+
+		void OpenFile();
+		bool Write(const std::string& data);
+		void ReadFileSize();
+	};
+
+} // namespace lout::output

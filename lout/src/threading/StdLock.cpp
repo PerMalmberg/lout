@@ -4,24 +4,16 @@
 
 #include <lout/threading/StdLock.h>
 
-namespace lout {
-namespace threading {
-
-StdLock::StdLock()
-: myMutex()
+namespace lout::threading
 {
-}
+	void StdLock::Acquire()
+	{
+		myMutex.lock();
+	}
 
-void StdLock::Acquire()
-{
-	myMutex.lock();
-}
+	void StdLock::Release()
+	{
+		myMutex.unlock();
+	}
 
-void StdLock::Release()
-{
-	myMutex.unlock();
-}
-
-
-}
-}
+} // namespace lout::threading

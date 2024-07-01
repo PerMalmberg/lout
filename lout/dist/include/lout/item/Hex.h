@@ -4,21 +4,23 @@
 
 #pragma once
 
-#include <string>
 #include "ILogItem.h"
 
-namespace lout {
-namespace item {
-
-class Hex : public lout::item::ILogItem
+namespace lout::item
 {
-public:
-	explicit Hex( long num ) : number( num ) {}
 
-	virtual void Log( lout::LoutLogger& l );
-private:
-	long number;
-};
+	class Hex : public lout::item::ILogItem
+	{
+	  public:
+		explicit Hex(long num) : number(num)
+		{
+		}
 
-}
-}
+		void Log(lout::LoutLogger& log) override;
+
+	  private:
+		long number;
+	};
+
+} // namespace lout::item
+

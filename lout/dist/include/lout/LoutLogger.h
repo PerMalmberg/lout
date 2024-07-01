@@ -4,79 +4,81 @@
 
 #pragma once
 
-#include <regex>
-#include <sstream>
-#include "Lout.h"
 #include "Flush.h"
 #include "lout/item/ILogItem.h"
-#include "lout/output/FileOutput.h"
+#include "lout/loglevel/ILogLevel.h"
+#include <memory>
+#include <sstream>
+#include <vector>
 
-namespace lout {
-
-// Helper class used to allow chaining of log data via operator << without creating a new log line for each argument.
-// Also guarantees that messages are logged as a single line in multi threaded environments.
-class LoutLogger
+namespace lout
 {
-public:
-	LoutLogger();
-			
 
-	LoutLogger(const std::string& category)
-			:  LoutLogger()
+	// Helper class used to allow chaining of log data via operator << without creating a new log line for each
+	// argument. Also guarantees that messages are logged as a single line in multi threaded environments.
+	class LoutLogger
 	{
-		myCategory = category;
-	}
+	  public:
+		LoutLogger();
 
-	~LoutLogger();
+		LoutLogger(const LoutLogger&) = delete;
+		LoutLogger(LoutLogger&&) = delete;
+		LoutLogger& operator=(const LoutLogger&) = delete;
+		LoutLogger& operator=(LoutLogger&&) = delete;
 
-	LoutLogger& operator<<(const loglevel::ILogLevel& level);
+		explicit LoutLogger(const std::string& category) : LoutLogger()
+		{
+			myCategory = category;
+		}
 
-	LoutLogger& operator<<(const std::string& msg);
+		~LoutLogger();
 
-	LoutLogger& operator<<(int8_t value);
+		LoutLogger& operator<<(const loglevel::ILogLevel& level);
 
-	LoutLogger& operator<<(int16_t value);
+		LoutLogger& operator<<(const std::string& msg);
 
-	LoutLogger& operator<<(int32_t value);
+		LoutLogger& operator<<(int8_t value);
 
-	LoutLogger& operator<<(int64_t value);
+		LoutLogger& operator<<(int16_t value);
 
-	LoutLogger& operator<<(uint8_t value);
+		LoutLogger& operator<<(int32_t value);
 
-	LoutLogger& operator<<(uint16_t value);
+		LoutLogger& operator<<(int64_t value);
 
-	LoutLogger& operator<<(uint32_t value);
+		LoutLogger& operator<<(uint8_t value);
 
-	LoutLogger& operator<<(uint64_t value);
+		LoutLogger& operator<<(uint16_t value);
+
+		LoutLogger& operator<<(uint32_t value);
+
+		LoutLogger& operator<<(uint64_t value);
 
 #if ULONG_MAX == (0xFFFFFFFFUL) || __APPLE__
-	// Don't compile this on 64 bit platforms since it is the same as uint64_t
-	LoutLogger& operator<<(unsigned long value);
+		// Don't compile this on 64 bit platforms since it is the same as uint64_t
+		LoutLogger& operator<<(unsigned long value);
 #endif
 
-	LoutLogger& operator<<(double value);
+		LoutLogger& operator<<(double value);
 
-	LoutLogger& operator<<(long double value);
+		LoutLogger& operator<<(long double value);
 
-	LoutLogger& operator<<(float value);
+		LoutLogger& operator<<(float value);
 
-	LoutLogger& operator<<( std::shared_ptr<lout::item::ILogItem> item );
+		LoutLogger& operator<<(const std::shared_ptr<lout::item::ILogItem>& item);
 
-	LoutLogger& operator<<(const lout::Flush&);
+		LoutLogger& operator<<(const lout::Flush&);
 
-	void AppendMsg(const std::string& msg);
+		void AppendMsg(const std::string& msg);
 
-	void SetLevel(const loglevel::ILogLevel& level);
+		void SetLevel(const loglevel::ILogLevel& level);
 
-private:
-	void Flush();
+	  private:
+		void Flush();
 
-	std::vector<std::shared_ptr<lout::item::ILogItem>> myItems;
-	std::stringstream myCurrentMessage;
-	loglevel::ILogLevel myCurrentLevel;
-	std::string myCategory;
-	time_t timestamp;
-};
-
-
-}
+		std::vector<std::shared_ptr<lout::item::ILogItem>> myItems;
+		std::stringstream myCurrentMessage;
+		loglevel::ILogLevel myCurrentLevel;
+		std::string myCategory;
+		time_t timestamp;
+	};
+} // namespace lout

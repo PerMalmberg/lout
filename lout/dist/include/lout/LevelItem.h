@@ -4,23 +4,26 @@
 
 #pragma once
 
-
+#include <lout/LoutLogger.h>
 #include <lout/item/ILogItem.h>
 #include <lout/loglevel/ILogLevel.h>
-#include <lout/LoutLogger.h>
 
-namespace lout {
+#include <utility>
 
-class LevelItem : public lout::item::ILogItem
+namespace lout
 {
-public:
-	explicit LevelItem(const loglevel::ILogLevel& level) : myLevel(level)
-	{ }
 
-	void Log(lout::LoutLogger& l) override;
+	class LevelItem : public lout::item::ILogItem
+	{
+	  public:
+		explicit LevelItem(loglevel::ILogLevel level) : myLevel(std::move(level))
+		{
+		}
 
-private:
-	loglevel::ILogLevel myLevel;
-};
+		void Log(lout::LoutLogger& log) override;
 
-}
+	  private:
+		loglevel::ILogLevel myLevel;
+	};
+
+} // namespace lout

@@ -3,21 +3,23 @@
 // Give credit where credit is due.
 
 #pragma once
-#include <mutex>
 
-namespace lout {
-namespace threading {
-
-// Interface for thread synchronization used by Lout
-class ILock
+namespace lout::threading
 {
-public:
-	virtual ~ILock() = default;
 
-	virtual void Acquire() = 0;
+	// Interface for thread synchronization used by Lout
+	class ILock
+	{
+	  public:
+		ILock() = default;
+		ILock(const ILock&) = delete;
+		ILock(ILock&&) = delete;
+		ILock& operator=(const ILock&) = delete;
+		ILock& operator=(ILock&&) = delete;
+		virtual ~ILock() = default;
 
-	virtual void Release() = 0;
-};
+		virtual void Acquire() = 0;
 
-}
-}
+		virtual void Release() = 0;
+	};
+} // namespace lout::threading
