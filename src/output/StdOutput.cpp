@@ -4,10 +4,10 @@
 
 #include <ctime>
 #include <iostream>
-#include <lout/formatting/IFormatter.h>
-#include <lout/loglevel/ILogLevel.h>
-#include <lout/output/IOutput.h>
-#include <lout/output/StdOutput.h>
+#include "formatting/IFormatter.h"
+#include "loglevel/ILogLevel.h"
+#include "output/IOutput.h"
+#include "output/StdOutput.h"
 #include <memory>
 #include <string>
 #include <utility>

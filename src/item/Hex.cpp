@@ -3,8 +3,8 @@
 // Give credit where credit is due.
 
 #include <ios>
-#include <lout/LoutLogger.h>
-#include <lout/item/Hex.h>
+#include "LoutLogger.h"
+#include "item/Hex.h"
 #include <sstream>
 
 namespace lout::item

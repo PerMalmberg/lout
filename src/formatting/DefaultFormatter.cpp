@@ -2,10 +2,10 @@
 // Licensed under MIT, see LICENSE file.
 // Give credit where credit is due.
 
+#include "formatting/DefaultFormatter.h"
+#include "loglevel/ILogLevel.h"
 #include <array>
 #include <ctime>
-#include <lout/formatting/DefaultFormatter.h>
-#include <lout/loglevel/ILogLevel.h>
 #include <sstream>
 #include <string>
 
@@ -47,4 +47,3 @@ namespace lout::formatting
 	}
 
 } // namespace lout::formatting
-

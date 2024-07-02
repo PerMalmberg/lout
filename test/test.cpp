@@ -6,15 +6,15 @@
 
 #include "TestItem.h"
 #include "TestOutput.h"
-#include "lout/Lout.h"
+#include "Lout.h"
 #include <cstdint>
-#include <lout/LoutLogger.h>
-#include <lout/formatting/DefaultFormatter.h>
-#include <lout/item/Hex.h>
-#include <lout/loglevel/defaultLevels.h>
-#include <lout/output/DateTimeNameGiver.h>
-#include <lout/output/RollingFile.h>
-#include <lout/threading/StdLock.h>
+#include "LoutLogger.h"
+#include "formatting/DefaultFormatter.h"
+#include "item/Hex.h"
+#include "loglevel/defaultLevels.h"
+#include "output/DateTimeNameGiver.h"
+#include "output/RollingFile.h"
+#include "threading/StdLock.h"
 #include <thread>
 
 using namespace lout;

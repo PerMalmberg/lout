@@ -22,17 +22,17 @@ include_directories("dist/include")
 include_directories("src")
 
 set(SOURCE_FILES
-		src/Lout.cpp
-		src/LoutLogger.cpp
-		src/output/IOutput.cpp
-		src/output/StdOutput.cpp
-		src/output/FileOutput.cpp
-		src/output/RollingFile.cpp
-		src/loglevel/ILogLevel.cpp
-		src/threading/StdLock.cpp
-		src/output/DateTimeNameGiver.cpp
-		src/formatting/DefaultFormatter.cpp
-		src/item/Hex.cpp)
+		Lout.cpp
+		LoutLogger.cpp
+		output/IOutput.cpp
+		output/StdOutput.cpp
+		output/FileOutput.cpp
+		output/RollingFile.cpp
+		loglevel/ILogLevel.cpp
+		threading/StdLock.cpp
+		output/DateTimeNameGiver.cpp
+		formatting/DefaultFormatter.cpp
+		item/Hex.cpp)
 
 # Create a static library
 add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
@@ -46,7 +46,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE Boost::filesystem)
 
 # Add include directories
 target_include_directories(${PROJECT_NAME} PUBLIC
-				$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>/dist/include/ # for headers when building
+				$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
 				$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>  # for client in install mode
 )
 
@@ -56,10 +56,6 @@ install(TARGETS ${PROJECT_NAME}
 		ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
 		LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
 		RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
-
-# Trailing / is important to make file *inside* the lout
-# folder end up in the destination, instead of the lout folder itself.
-install(DIRECTORY dist/include/lout/ DESTINATION include)
 
 # Generate and install *-targets.cmake
 install(EXPORT ${PROJECT_NAME}_targets

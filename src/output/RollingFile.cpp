@@ -2,11 +2,11 @@
 // Licensed under MIT, see LICENSE file.
 // Give credit where credit is due.
 
-#include "lout/output/RollingFile.h"
-#include "lout/formatting/IFormatter.h"
-#include "lout/output/IOutput.h"
-#include "lout/output/IRollingFileName.h"
-#include "lout/util/Sizes.h"
+#include "output/RollingFile.h"
+#include "formatting/IFormatter.h"
+#include "output/IOutput.h"
+#include "output/IRollingFileName.h"
+#include "util/Sizes.h"
 #include <algorithm>
 #include <boost/filesystem.hpp>
 #include <cstddef>

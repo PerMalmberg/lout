@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include "lout/loglevel/ILogLevel.h"
-#include "lout/output/IOutput.h"
-#include "lout/threading/ILock.h"
+#include "loglevel/ILogLevel.h"
+#include "output/IOutput.h"
+#include "threading/ILock.h"
 #include <memory>
 #include <set>
 #include <utility>

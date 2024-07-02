@@ -2,11 +2,11 @@
 // Licensed under MIT, see LICENSE file.
 // Give credit where credit is due.
 
-#include "lout/Lout.h"
-#include "lout/loglevel/ILogLevel.h"
-#include "lout/output/IOutput.h"
-#include "lout/threading/ILock.h"
-#include "lout/threading/NoLock.h"
+#include "Lout.h"
+#include "loglevel/ILogLevel.h"
+#include "output/IOutput.h"
+#include "threading/ILock.h"
+#include "threading/NoLock.h"
 #include <ctime>
 #include <memory>
 #include <string>

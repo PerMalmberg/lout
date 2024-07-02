@@ -4,8 +4,8 @@
 
 #include <ctime>
 #include <exception>
-#include <lout/loglevel/ILogLevel.h>
-#include <lout/output/IOutput.h>
+#include "loglevel/ILogLevel.h"
+#include "output/IOutput.h"
 #include <string>
 
 namespace lout::output

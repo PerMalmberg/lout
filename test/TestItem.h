@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include <lout/LoutLogger.h>
-#include <lout/item/ILogItem.h>
+#include "LoutLogger.h"
+#include "item/ILogItem.h"
 #include <string>
 #include <utility>
 

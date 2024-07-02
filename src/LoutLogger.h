@@ -5,8 +5,8 @@
 #pragma once
 
 #include "Flush.h"
-#include "lout/item/ILogItem.h"
-#include "lout/loglevel/ILogLevel.h"
+#include "item/ILogItem.h"
+#include "loglevel/ILogLevel.h"
 #include <memory>
 #include <sstream>
 #include <vector>

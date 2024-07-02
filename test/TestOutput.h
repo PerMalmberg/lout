@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include <lout/formatting/DefaultFormatter.h>
-#include <lout/output/IOutput.h>
+#include "formatting/DefaultFormatter.h"
+#include "output/IOutput.h"
 #include <vector>
 
 class TestOutput : public lout::output::IOutput

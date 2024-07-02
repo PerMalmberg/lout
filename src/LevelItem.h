@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include <lout/LoutLogger.h>
-#include <lout/item/ILogItem.h>
-#include <lout/loglevel/ILogLevel.h>
+#include "LoutLogger.h"
+#include "item/ILogItem.h"
+#include "loglevel/ILogLevel.h"
 
 #include <utility>
 

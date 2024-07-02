@@ -2,7 +2,7 @@
 // Licensed under MIT, see LICENSE file.
 // Give credit where credit is due.
 
-#include <lout/threading/StdLock.h>
+#include "threading/StdLock.h"
 
 namespace lout::threading
 {

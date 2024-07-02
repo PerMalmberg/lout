@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include "lout/formatting/IFormatter.h"
-#include "lout/loglevel/ILogLevel.h"
-#include "lout/loglevel/defaultLevels.h"
+#include "formatting/IFormatter.h"
+#include "loglevel/ILogLevel.h"
+#include "loglevel/defaultLevels.h"
 #include <memory>
 #include <string>
 

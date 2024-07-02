@@ -2,12 +2,12 @@
 // Licensed under MIT, see LICENSE file.
 // Give credit where credit is due.
 
-#include "lout/LoutLogger.h"
-#include "lout/Flush.h"
-#include "lout/LevelItem.h"
-#include "lout/Lout.h"
-#include "lout/item/ILogItem.h"
-#include "lout/item/StringItem.h"
+#include "LoutLogger.h"
+#include "Flush.h"
+#include "LevelItem.h"
+#include "Lout.h"
+#include "item/ILogItem.h"
+#include "item/StringItem.h"
 #include <climits>
 #include <cstdint>
 #include <ctime>
