@@ -16,11 +16,6 @@ else ()
 	endif ()
 endif ()
 
-# Use CMAKE_CURRENT_LIST_DIR instead of CMAKE_SOURCE_DIR to specify relative to where this CMakeLists.txt is located
-# as opposed to where the 'main' CMakeLists.txt file is located.
-include_directories("dist/include")
-include_directories("src")
-
 set(SOURCE_FILES
 		Lout.cpp
 		LoutLogger.cpp
