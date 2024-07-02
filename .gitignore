@@ -34,3 +34,4 @@ test/dist/
 /cmake-build-*/
 /.vscode
 .cache/*
+compile_commands.json
