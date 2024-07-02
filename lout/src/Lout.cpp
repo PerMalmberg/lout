@@ -2,9 +2,14 @@
 // Licensed under MIT, see LICENSE file.
 // Give credit where credit is due.
 
-#include <iostream>
-#include <lout/Lout.h>
-#include <lout/threading/NoLock.h>
+#include "lout/Lout.h"
+#include "lout/loglevel/ILogLevel.h"
+#include "lout/output/IOutput.h"
+#include "lout/threading/ILock.h"
+#include "lout/threading/NoLock.h"
+#include <ctime>
+#include <memory>
+#include <string>
 #include <utility>
 
 namespace lout
@@ -14,7 +19,7 @@ namespace lout
 	//
 	//
 	//////////////////////////////////////////////////////////////////////////
-	Lout::Lout() : myActiveCategories(), myPriorityCategories(), myLock(std::make_shared<threading::NoLock>())
+	Lout::Lout() : myLock(std::make_shared<threading::NoLock>())
 	{
 	}
 
@@ -33,12 +38,12 @@ namespace lout
 	//////////////////////////////////////////////////////////////////////////
 	void Lout::SetThreshold(const loglevel::ILogLevel& newLevel)
 	{
-		Locker lock(myLock);
+		const Locker lock(myLock);
 		(void)lock;
 
-		for(auto p : myOutput)
+		for(const auto& out : myOutput)
 		{
-			p->SetThreshold(newLevel);
+			out->SetThreshold(newLevel);
 		}
 	}
 
@@ -46,9 +51,9 @@ namespace lout
 	//
 	//
 	//////////////////////////////////////////////////////////////////////////
-	void Lout::OverrideThreshold(std::shared_ptr<output::IOutput> output, const loglevel::ILogLevel& level)
+	void Lout::OverrideThreshold(const std::shared_ptr<output::IOutput>& output, const loglevel::ILogLevel& level)
 	{
-		Locker lock(myLock);
+		const Locker lock(myLock);
 		(void)lock;
 		output->SetThreshold(level);
 	}
@@ -59,7 +64,7 @@ namespace lout
 	//////////////////////////////////////////////////////////////////////////
 	void Lout::ActivateCategory(const std::string& category)
 	{
-		Locker lock(myLock);
+		const Locker lock(myLock);
 		(void)lock;
 
 		myActiveCategories.emplace(category);
@@ -71,7 +76,7 @@ namespace lout
 	//////////////////////////////////////////////////////////////////////////
 	void Lout::ActivatePriorityCategory(const std::string& category)
 	{
-		Locker lock(myLock);
+		const Locker lock(myLock);
 		(void)lock;
 
 		myPriorityCategories.emplace(category);
@@ -81,9 +86,9 @@ namespace lout
 	//
 	//
 	//////////////////////////////////////////////////////////////////////////
-	void Lout::AddOutput(std::shared_ptr<output::IOutput> output)
+	void Lout::AddOutput(const std::shared_ptr<output::IOutput>& output)
 	{
-		Locker lock(myLock);
+		const Locker lock(myLock);
 		(void)lock;
 
 		if(output)
@@ -99,7 +104,7 @@ namespace lout
 	void Lout::RemoveAllOutputs()
 	{
 		FlushAll();
-		Locker lock(myLock);
+		const Locker lock(myLock);
 		(void)lock;
 		myOutput.erase(myOutput.begin(), myOutput.end());
 	}
@@ -110,14 +115,14 @@ namespace lout
 	//////////////////////////////////////////////////////////////////////////
 	void Lout::Log(const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& msg)
 	{
-		Locker lock(myLock);
+		const Locker lock(myLock);
 		(void)lock;
 
-		for(auto& p : myOutput)
+		for(auto& out : myOutput)
 		{
-			if(p->IsLevelActive(level))
+			if(out->IsLevelActive(level))
 			{
-				p.get()->Log(timestamp, level, msg);
+				out->Log(timestamp, level, msg);
 			}
 		}
 	}
@@ -131,23 +136,24 @@ namespace lout
 	                           const std::string& category,
 	                           const std::string& msg)
 	{
-		Locker lock(myLock);
+		const Locker lock(myLock);
 		(void)lock;
 
 		// First check normal categories. If no category is set, all are allowed.
-		bool shallLog = myActiveCategories.empty() || myActiveCategories.find(category) != myActiveCategories.end();
+		const bool shallLog =
+		myActiveCategories.empty() || myActiveCategories.find(category) != myActiveCategories.end();
 
 		// Now check priority categories
-		bool priority = myPriorityCategories.find(category) != myPriorityCategories.end();
+		const bool priority = myPriorityCategories.find(category) != myPriorityCategories.end();
 
 		if(shallLog || priority)
 		{
-			for(auto& p : myOutput)
+			for(auto& out : myOutput)
 			{
 				// The message should be logged if a priority category is used, or if the output has the level active.
-				if(priority || p->IsLevelActive(level))
+				if(priority || out->IsLevelActive(level))
 				{
-					p.get()->LogWithCategory(timestamp, level, category, msg);
+					out->LogWithCategory(timestamp, level, category, msg);
 				}
 			}
 		}
@@ -159,12 +165,12 @@ namespace lout
 	//////////////////////////////////////////////////////////////////////////
 	void Lout::ClearLog() const
 	{
-		Locker lock(myLock);
+		const Locker lock(myLock);
 		(void)lock;
 
-		for(auto& p : myOutput)
+		for(const auto& out : myOutput)
 		{
-			p.get()->Clear();
+			out->Clear();
 		}
 	}
 
@@ -174,7 +180,7 @@ namespace lout
 	//////////////////////////////////////////////////////////////////////////
 	void Lout::FlushAll()
 	{
-		Locker lock(myLock);
+		const Locker lock(myLock);
 		(void)lock;
 
 		for(auto& out : myOutput)
@@ -206,5 +212,4 @@ namespace lout
 			myLock->Release();
 		}
 	}
-
 } // END namespace lout

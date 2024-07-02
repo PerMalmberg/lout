@@ -2,92 +2,95 @@
 // Licensed under MIT, see LICENSE file.
 // Give credit where credit is due.
 
-#include <string>
+#include <ctime>
+#include <exception>
 #include <lout/loglevel/ILogLevel.h>
 #include <lout/output/IOutput.h>
+#include <string>
 
-namespace lout {
-namespace output {
-
-//////////////////////////////////////////////////////////////////////////
-//
-//
-//////////////////////////////////////////////////////////////////////////
-void
-IOutput::Log( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& msg)
+namespace lout::output
 {
-	// When we get here, we expect the level to be checked already - an output does not have knowledge about
-	// categories so it has be be done by the callee.
+	//////////////////////////////////////////////////////////////////////////
+	//
+	//
+	//////////////////////////////////////////////////////////////////////////
+	void IOutput::Log(const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& msg)
+	{
+		// When we get here, we expect the level to be checked already - an output does not have knowledge about
+		// categories so it has be be done by the callee.
 
-	try
-	{
-		++myMessageCount;
-		LogActual( timestamp, level, msg );
-	}
-	catch( std::exception& e )
-	{
-		FallbackLog( timestamp, level, "", e.what() );
-		FallbackLog( timestamp, level, "", msg );
-	}
-	catch( ... )
-	{
-		FallbackLog( timestamp, level, "", msg );
-	}
-}
-
-//////////////////////////////////////////////////////////////////////////
-//
-//
-//////////////////////////////////////////////////////////////////////////
-void
-IOutput::LogWithCategory( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& category, const std::string& msg)
-{
-	// When we get here, we expect the level to be checked already - an output does not have knowledge about
-	// categories so it has be be done by the callee.
-
-	try
-	{
-		++myMessageCount;
-		LogWithCategoryActual( timestamp, level, category, msg );
-	}
-	catch( std::exception& e )
-	{
-		FallbackLog( timestamp, level, category, e.what() );
-		FallbackLog( timestamp, level, category, msg );
-	}
-	catch( ... )
-	{
-		FallbackLog( timestamp, level, category, msg );
-	}
-}
-
-//////////////////////////////////////////////////////////////////////////
-//
-//
-//////////////////////////////////////////////////////////////////////////
-void
-IOutput::FallbackLog( const time_t& timestamp, const loglevel::ILogLevel& level, const std::string& category, const std::string& msg)
-{
-	try
-	{
-		if( myFallbackErrorStream && myFallbackErrorStream->good() )
+		try
 		{
-			if( category.empty() ) {
-				*myFallbackErrorStream << myFormatter->Format( timestamp, level, msg );
-			}
-			else {
-				*myFallbackErrorStream << myFormatter->Format( timestamp, level, category, msg );
-			}
-
-			*myFallbackErrorStream << std::endl;
+			++myMessageCount;
+			LogActual(timestamp, level, msg);
+		}
+		catch(std::exception& e)
+		{
+			FallbackLog(timestamp, level, "", e.what());
+			FallbackLog(timestamp, level, "", msg);
+		}
+		catch(...)
+		{
+			FallbackLog(timestamp, level, "", msg);
 		}
 	}
-	catch( ... )
+
+	//////////////////////////////////////////////////////////////////////////
+	//
+	//
+	//////////////////////////////////////////////////////////////////////////
+	void IOutput::LogWithCategory(const time_t& timestamp,
+	                              const loglevel::ILogLevel& level,
+	                              const std::string& category,
+	                              const std::string& msg)
 	{
-		// If we're having issues this deep down, we can't do anything about it.
+		// When we get here, we expect the level to be checked already - an output does not have knowledge about
+		// categories so it has be be done by the callee.
+
+		try
+		{
+			++myMessageCount;
+			LogWithCategoryActual(timestamp, level, category, msg);
+		}
+		catch(std::exception& e)
+		{
+			FallbackLog(timestamp, level, category, e.what());
+			FallbackLog(timestamp, level, category, msg);
+		}
+		catch(...)
+		{
+			FallbackLog(timestamp, level, category, msg);
+		}
 	}
-}
 
+	//////////////////////////////////////////////////////////////////////////
+	//
+	//
+	//////////////////////////////////////////////////////////////////////////
+	void IOutput::FallbackLog(const time_t& timestamp,
+	                          const loglevel::ILogLevel& level,
+	                          const std::string& category,
+	                          const std::string& msg)
+	{
+		try
+		{
+			if((myFallbackErrorStream != nullptr) && myFallbackErrorStream->good())
+			{
+				if(category.empty())
+				{
+					*myFallbackErrorStream << myFormatter->Format(timestamp, level, msg);
+				}
+				else
+				{
+					*myFallbackErrorStream << myFormatter->Format(timestamp, level, category, msg);
+				}
 
-}
-}
+				*myFallbackErrorStream << std::endl;
+			}
+		}
+		catch(...)
+		{
+			// If we're having issues this deep down, we can't do anything about it.
+		}
+	}
+} // namespace lout::output

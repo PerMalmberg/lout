@@ -14,10 +14,10 @@ namespace lout::output
 	{
 	  public:
 		// Will use std::cerr as fallback stream
-		FileOutput(std::shared_ptr<formatting::IFormatter> formatter, const std::string& pathToFile);
+		FileOutput(std::shared_ptr<formatting::IFormatter> formatter, std::string pathToFile);
 
 		FileOutput(std::shared_ptr<formatting::IFormatter> formatter,
-		           const std::string& pathToFile,
+		           std::string pathToFile,
 		           std::ostream* fallbackStream);
 
 		~FileOutput() override;

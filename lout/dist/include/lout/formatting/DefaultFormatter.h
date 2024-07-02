@@ -26,7 +26,7 @@ namespace lout::formatting
 		                   const std::string& msg) override;
 
 	  private:
-		[[nodiscard]] std::string GetTimestamp(const time_t& timestamp) const;
+		[[nodiscard]] static std::string GetTimestamp(const time_t& timestamp);
 	};
 
 } // namespace lout::formatting

@@ -2,43 +2,49 @@
 // Licensed under MIT, see LICENSE file.
 // Give credit where credit is due.
 
+#include <array>
+#include <ctime>
 #include <lout/formatting/DefaultFormatter.h>
+#include <lout/loglevel/ILogLevel.h>
 #include <sstream>
-#include <time.h>
+#include <string>
 
-namespace lout {
-namespace formatting {
-
-std::string
-DefaultFormatter::Format( const time_t& timestamp, const lout::loglevel::ILogLevel &level, const std::string &msg)
+namespace lout::formatting
 {
-	std::stringstream s;
-	s << "[" << GetTimestamp( timestamp ) << "][" << level << "]" << msg;
-	return s.str();
-}
 
-std::string
-DefaultFormatter::Format( const time_t& timestamp, const lout::loglevel::ILogLevel &level, const std::string &category, const std::string &msg)
-{	
-	std::stringstream s;
-	s << "[" << GetTimestamp( timestamp ) << "][" << level << "/" << category << "]" << msg;
-	return s.str();
-}
+	std::string DefaultFormatter::Format(const time_t& timestamp,
+	                                     const lout::loglevel::ILogLevel& level,
+	                                     const std::string& msg)
+	{
+		std::stringstream sstr;
+		sstr << "[" << GetTimestamp(timestamp) << "][" << level << "]" << msg;
+		return sstr.str();
+	}
 
-std::string
-DefaultFormatter::GetTimestamp( const time_t& timestamp ) const
-{
-	tm t;
+	std::string DefaultFormatter::Format(const time_t& timestamp,
+	                                     const lout::loglevel::ILogLevel& level,
+	                                     const std::string& category,
+	                                     const std::string& msg)
+	{
+		std::stringstream sstr;
+		sstr << "[" << GetTimestamp(timestamp) << "][" << level << "/" << category << "]" << msg;
+		return sstr.str();
+	}
+
+	std::string DefaultFormatter::GetTimestamp(const time_t& timestamp)
+	{
+		tm now{};
 #ifdef _WIN32
-	localtime_s( &t, &timestamp );
+		localtime_s(&now, &timestamp);
 #else
-	localtime_r( &timestamp, &t );
+		localtime_r(&timestamp, &now);
 #endif
+		const int buffSize = 50;
+		const int dateSize = 20;
+		std::array<char, buffSize> buff{};
+		(void)strftime(buff.data(), dateSize, "%Y-%m-%d %H:%M:%S", &now);
+		return {buff.data()};
+	}
 
-	char buff[50];
-	strftime( buff, 20, "%Y-%m-%d %H:%M:%S", &t );
-	return std::string( buff );
-}
+} // namespace lout::formatting
 
-}
-}

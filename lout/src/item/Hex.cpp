@@ -2,19 +2,18 @@
 // Licensed under MIT, see LICENSE file.
 // Give credit where credit is due.
 
-#include <string>
-#include <lout/item/Hex.h>
+#include <ios>
 #include <lout/LoutLogger.h>
+#include <lout/item/Hex.h>
+#include <sstream>
 
-namespace lout {
-namespace item {
-
-void Hex::Log( lout::LoutLogger& l )
+namespace lout::item
 {
-	std::stringstream ss;
-	ss << std::hex << number;
-	l.AppendMsg( ss.str() );
-}
+	void Hex::Log(lout::LoutLogger& log)
+	{
+		std::stringstream sstr;
+		sstr << std::hex << number;
+		log.AppendMsg(sstr.str());
+	}
+} // namespace lout::item
 
-}
-}

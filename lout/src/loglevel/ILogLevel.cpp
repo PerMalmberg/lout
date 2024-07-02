@@ -2,9 +2,8 @@
 // Licensed under MIT, see LICENSE file.
 // Give credit where credit is due.
 
-#include <ostream>
 #include <lout/loglevel/ILogLevel.h>
-
+#include <ostream>
 
 std::ostream& operator<<(std::ostream& stream, const lout::loglevel::ILogLevel& level)
 {

@@ -6,6 +6,7 @@
 #define __STDC_WANT_LIB_EXT1__ 1 // For localtime_s
 #endif
 
+#include <array>
 #include <chrono>
 #include <cstring>
 #include <ctime>
@@ -28,26 +29,26 @@ namespace lout::output
 	//////////////////////////////////////////////////////////////////////////
 	std::string DateTimeNameGiver::GetNextName()
 	{
-		auto now = std::chrono::system_clock::now();
+		using std::chrono::system_clock;
+		time_t now = system_clock::to_time_t(system_clock::now());
 
 		std::stringstream formatted;
 		formatted << myPrefix;
 
-		time_t time = std::chrono::system_clock::to_time_t(now);
-		tm t{};
+		tm local{};
 
 		// TODO: provide constructor to choose between local time and UTC time. (gmtime_s)
 
 		// std::localtime is not thread-safe so we have to use the _r or _s version.
 #if defined(_WIN32)
-		localtime_s(&t, &time);
+		localtime_s(&local, &now);
 #else
-		localtime_r(&time, &t);
+		localtime_r(&now, &local);
 #endif
-		char buff[40];
-		std::memset(buff, 0, sizeof(buff));
-		strftime(buff, sizeof(buff) - 1, "%Y-%m-%d %H%M%S.log", &t);
-		formatted << buff;
+		std::array<char, 40> buff; // NOLINT
+		std::fill(buff.begin(), buff.end(), 0);
+		(void)strftime(buff.data(), buff.size() - 1, "%Y-%m-%d %H%M%S.log", &local);
+		formatted << buff.data();
 
 		return formatted.str();
 	}
@@ -62,4 +63,3 @@ namespace lout::output
 	}
 
 } // namespace lout::output
-

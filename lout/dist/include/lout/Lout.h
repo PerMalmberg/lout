@@ -42,7 +42,7 @@ namespace lout
 		}
 
 		// Adds an output to the logger
-		void AddOutput(std::shared_ptr<output::IOutput> output);
+		void AddOutput(const std::shared_ptr<output::IOutput>& output);
 
 		// Removes all outputs
 		void RemoveAllOutputs();
@@ -78,7 +78,7 @@ namespace lout
 
 		// Overrides the threshold on the specified output with the specified level.
 		// The override will be active until Lout::SetThreshold() is called.
-		void OverrideThreshold(std::shared_ptr<output::IOutput> output, const loglevel::ILogLevel& level);
+		void OverrideThreshold(const std::shared_ptr<output::IOutput>& output, const loglevel::ILogLevel& level);
 
 		// Returns the number of outputs currently in use
 		[[nodiscard]] size_t GetPrinterCount() const

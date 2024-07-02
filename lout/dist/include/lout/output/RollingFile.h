@@ -22,13 +22,13 @@ namespace lout::output
 		RollingFile& operator=(const RollingFile&) = delete;
 		RollingFile& operator=(RollingFile&&) = delete;
 
-		RollingFile(const std::string& pathToOutputFolder,
+		RollingFile(std::string pathToOutputFolder,
 		            std::unique_ptr<IRollingFileName> nameGiver,
 		            std::shared_ptr<formatting::IFormatter> formatter,
 		            util::Bytes maximumLogSize,
 		            int filesToKeep);
 
-		RollingFile(const std::string& pathToOutputFolder,
+		RollingFile(std::string pathToOutputFolder,
 		            std::unique_ptr<IRollingFileName> nameGiver,
 		            std::shared_ptr<formatting::IFormatter> formatter,
 		            util::Bytes maximumLogSize,

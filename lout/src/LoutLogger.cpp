@@ -3,13 +3,20 @@
 // Give credit where credit is due.
 
 #include "lout/LoutLogger.h"
+#include "lout/Flush.h"
 #include "lout/LevelItem.h"
 #include "lout/Lout.h"
+#include "lout/item/ILogItem.h"
 #include "lout/item/StringItem.h"
+#include <climits>
+#include <cstdint>
+#include <ctime>
+#include <limits>
+#include <memory>
+#include <string>
 
 namespace lout
 {
-
 	using namespace lout::item;
 
 	LoutLogger::LoutLogger() : myCurrentLevel(std::numeric_limits<int>::max(), "NoLevel"), timestamp(time(nullptr))
@@ -215,7 +222,7 @@ namespace lout
 
 		myItems.clear();
 
-		std::string msg = myCurrentMessage.str();
+		const std::string msg = myCurrentMessage.str();
 
 		if(!msg.empty())
 		{
@@ -233,25 +240,24 @@ namespace lout
 		myCurrentMessage.clear();
 
 		// Set a new time in case this instance is reused.
-		time(&timestamp);
+		(void)time(&timestamp);
 	}
 
 	//////////////////////////////////////////////////////////////////////////
 	//
 	//
 	//////////////////////////////////////////////////////////////////////////
-	void LevelItem::Log(LoutLogger& l)
+	void LevelItem::Log(LoutLogger& log)
 	{
-		l.SetLevel(myLevel);
+		log.SetLevel(myLevel);
 	}
 
 	//////////////////////////////////////////////////////////////////////////
 	//
 	//
 	//////////////////////////////////////////////////////////////////////////
-	void StringItem::Log(LoutLogger& l)
+	void StringItem::Log(LoutLogger& log)
 	{
-		l.AppendMsg(myMsg);
+		log.AppendMsg(myMsg);
 	}
-
 } // namespace lout
