@@ -29,6 +29,29 @@ set(SOURCE_FILES
 		formatting/DefaultFormatter.cpp
 		item/Hex.cpp)
 
+set(HEADERS
+	Flush.h
+	LevelItem.h
+	Lout.h
+	LoutLogger.h
+	formatting/IFormatter.h
+	formatting/DefaultFormatter.h
+	item/Hex.h
+	item/ILogItem.h
+	item/StringItem.h
+	loglevel/ILoglevel.h
+	loglevel/defaultLevels.h
+	output/DateTimeNameGiver.h
+	output/FileOutput.h
+	output/IOutput.h
+	output/IRollingFileName.h
+	output/IRollingFile.h
+	output/StdOutput.h
+	threading/ILock.h
+	threading/StdLock.h
+	util/Sizes.h)
+
+
 # Create a static library
 add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
 
@@ -52,7 +75,7 @@ install(TARGETS ${PROJECT_NAME}
 		LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
 		RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
 
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src/ DESTINATION include/lout FILES_MATCHING PATTERN "*.h")
+install(FILES ${HEADERS} DESTINATION include/lout)
 
 # Generate and install *-targets.cmake
 install(EXPORT ${PROJECT_NAME}_targets
