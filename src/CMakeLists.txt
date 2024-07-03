@@ -69,13 +69,14 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 )
 
 # Install the library and its headers
+target_sources(${PROJECT_NAME} PUBLIC FILE_SET headers TYPE HEADERS FILES ${HEADERS})
 install(TARGETS ${PROJECT_NAME}
 		EXPORT ${PROJECT_NAME}_targets
 		ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
 		LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-		RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
+		RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+		FILE_SET headers DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/lout)
 
-install(FILES ${HEADERS} DESTINATION include/lout)
 
 # Generate and install *-targets.cmake
 install(EXPORT ${PROJECT_NAME}_targets
