@@ -45,7 +45,7 @@ set(HEADERS
 	output/FileOutput.h
 	output/IOutput.h
 	output/IRollingFileName.h
-	output/IRollingFile.h
+	output/RollingFile.h
 	output/StdOutput.h
 	threading/ILock.h
 	threading/StdLock.h
