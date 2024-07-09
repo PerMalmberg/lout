@@ -10,6 +10,7 @@
 #include "util/Sizes.h"
 #include <memory>
 #include <string>
+#include <vector>
 
 namespace lout::output
 {
