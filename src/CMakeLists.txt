@@ -39,7 +39,7 @@ set(HEADERS
 	item/Hex.h
 	item/ILogItem.h
 	item/StringItem.h
-	loglevel/ILoglevel.h
+	loglevel/ILogLevel.h
 	loglevel/defaultLevels.h
 	output/DateTimeNameGiver.h
 	output/FileOutput.h
