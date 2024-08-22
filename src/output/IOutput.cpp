@@ -7,6 +7,7 @@
 #include "loglevel/ILogLevel.h"
 #include "output/IOutput.h"
 #include <string>
+#include <ostream>
 
 namespace lout::output
 {
