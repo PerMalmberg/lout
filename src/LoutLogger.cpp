@@ -8,7 +8,6 @@
 #include "Lout.h"
 #include "item/ILogItem.h"
 #include "item/StringItem.h"
-#include <climits>
 #include <cstdint>
 #include <ctime>
 #include <limits>
