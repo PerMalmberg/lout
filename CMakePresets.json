@@ -27,8 +27,8 @@
 				"build-type-release"
 			],
 			"condition": {
-				"type": "equals",
 				"lhs": "${hostSystemName}",
+				"type": "equals",
 				"rhs": "Linux"
 			},
 			"cacheVariables": {
@@ -56,6 +56,25 @@
 					"type": "STRING",
 					"value": "x64-linux-static"
 				}
+			}
+		},
+		{
+			"name": "x86-linux-static-dev",
+			"inherits": [
+				"base-default",
+				"base-linux",
+				"base-dev",
+				"build-type-debug"
+			],
+			"condition": {
+				"type": "equals",
+				"lhs": "${hostSystemName}",
+				"rhs": "Linux"
+			},
+			"cacheVariables": {
+				"VCPKG_TARGET_TRIPLET": "x86-linux-static",
+				"CMAKE_CXX_FLAGS": "-m32",
+				"CMAKE_C_FLAGS": "-m32"
 			}
 		},
 		{

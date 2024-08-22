@@ -132,7 +132,7 @@ namespace lout
 //
 //
 //////////////////////////////////////////////////////////////////////////
-#if ULONG_MAX == (0xFFFFFFFFUL) || __APPLE__
+#if !__x86_64__ || __APPLE__
 	// Don't compile this on 64 bit platforms since it is the same as uint64_t
 	LoutLogger& LoutLogger::operator<<(unsigned long value)
 	{
