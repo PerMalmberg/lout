@@ -7,6 +7,7 @@
 #include "formatting/IFormatter.h"
 #include "loglevel/ILogLevel.h"
 #include "loglevel/defaultLevels.h"
+#include <cstdint>
 #include <memory>
 #include <string>
 

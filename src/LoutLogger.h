@@ -7,6 +7,7 @@
 #include "Flush.h"
 #include "item/ILogItem.h"
 #include "loglevel/ILogLevel.h"
+#include <cstdint>
 #include <memory>
 #include <sstream>
 #include <vector>
@@ -53,8 +54,8 @@ namespace lout
 
 		LoutLogger& operator<<(uint64_t value);
 
-#if !__x86_64__ || __APPLE__
-		// Don't compile this on 64 bit platforms since it is the same as uint64_t
+#if !(__x86_64__ || __aarch64__) || __APPLE__
+		// Don't compile this on 64-bit LP64 platforms (x86_64/aarch64) since unsigned long == uint64_t there
 		LoutLogger& operator<<(unsigned long value);
 #endif
 
