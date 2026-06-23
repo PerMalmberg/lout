@@ -23,12 +23,8 @@ jobs:
             preset: x86-linux-static-dev
             apt-extra: gcc-multilib g++-multilib
 
-          - name: macOS x86_64
-            os: macos-13
-            preset: osx-static-dev
-
           - name: macOS arm64
-            os: macos-14
+            os: macos-26
             preset: arm64-osx-static-dev
 
           - name: Windows x86_64
