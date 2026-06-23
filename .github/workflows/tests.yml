@@ -34,10 +34,12 @@ jobs:
           - name: Windows x86_64
             os: windows-latest
             preset: win-static-dev
+            msvc-arch: amd64
 
           - name: Windows arm64
             os: [windows-11-arm]
             preset: arm64-win-static-dev
+            msvc-arch: arm64
 
     steps:
       - name: Checkout
@@ -65,9 +67,13 @@ jobs:
         run: brew install ninja
 
       # Exposes cl.exe, link.exe and ninja to subsequent steps.
+      # arch must match the target: arm64 selects the native ARM64 toolchain
+      # (no cross-compilation); amd64 selects the standard x64 toolchain.
       - name: Set up MSVC environment
         if: runner.os == 'Windows'
         uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: ${{ matrix.msvc-arch }}
 
       - name: Bootstrap vcpkg (Unix)
         if: runner.os != 'Windows'
