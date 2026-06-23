@@ -131,8 +131,8 @@ namespace lout
 //
 //
 //////////////////////////////////////////////////////////////////////////
-#if !__x86_64__ || __APPLE__
-	// Don't compile this on 64 bit platforms since it is the same as uint64_t
+#if !(__x86_64__ || __aarch64__) || __APPLE__
+	// Don't compile this on 64-bit LP64 platforms (x86_64/aarch64) since unsigned long == uint64_t there
 	LoutLogger& LoutLogger::operator<<(unsigned long value)
 	{
 		myItems.push_back(std::make_shared<StringItem>(std::to_string(value)));

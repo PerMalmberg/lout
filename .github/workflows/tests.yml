@@ -1,0 +1,104 @@
+name: Tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Linux x86_64
+            os: ubuntu-latest
+            preset: linux-static-dev
+
+          - name: Linux aarch64
+            os: ubuntu-24.04-arm
+            preset: arm64-linux-static-dev
+
+          - name: Linux x86
+            os: ubuntu-latest
+            preset: x86-linux-static-dev
+            apt-extra: gcc-multilib g++-multilib
+
+          - name: macOS x86_64
+            os: macos-13
+            preset: osx-static-dev
+
+          - name: macOS arm64
+            os: macos-14
+            preset: arm64-osx-static-dev
+
+          - name: Windows x86_64
+            os: windows-latest
+            preset: win-static-dev
+
+          - name: Windows arm64
+            os: [windows-11-arm]
+            preset: arm64-win-static-dev
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Initialise submodules manually so we can rewrite SSH URLs to
+          # HTTPS first — the .gitmodules file uses git@ URLs which require
+          # an SSH key that is not available on hosted runners.
+          submodules: false
+
+      - name: Use HTTPS for submodule URLs
+        run: git config --global url."https://github.com/".insteadOf "git@github.com:"
+
+      - name: Initialise submodules
+        run: git submodule update --init --recursive
+
+      - name: Install dependencies (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y ninja-build ${{ matrix.apt-extra }}
+
+      - name: Install dependencies (macOS)
+        if: runner.os == 'macOS'
+        run: brew install ninja
+
+      # Exposes cl.exe, link.exe and ninja to subsequent steps.
+      - name: Set up MSVC environment
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Bootstrap vcpkg (Unix)
+        if: runner.os != 'Windows'
+        run: ./externals/vcpkg/bootstrap-vcpkg.sh -disableMetrics
+
+      - name: Bootstrap vcpkg (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: .\externals\vcpkg\bootstrap-vcpkg.bat -disableMetrics
+
+      # Cache the installed packages so re-runs don't rebuild everything from
+      # source. The key covers the triplet (via preset name), the dependency
+      # manifest and any custom triplet files.
+      - name: Cache vcpkg packages
+        uses: actions/cache@v4
+        with:
+          path: build/vcpkg_installed
+          key: vcpkg-${{ matrix.preset }}-${{ hashFiles('vcpkg.json', 'vcpkg_triplets/**') }}
+          restore-keys: vcpkg-${{ matrix.preset }}-
+
+      # clang-tidy is not installed on hosted runners; disable it so the
+      # build preset's CMAKE_CXX_CLANG_TIDY setting does not break configure.
+      - name: Configure
+        run: cmake --preset ${{ matrix.preset }} -DCMAKE_CXX_CLANG_TIDY=
+
+      - name: Build
+        run: cmake --build --preset ${{ matrix.preset }}
+
+      # Catch2WithMain makes the executable its own test runner; invoke it
+      # directly. shell: bash is used on all platforms so the path syntax is
+      # consistent (Git Bash on Windows resolves Test → Test.exe automatically).
+      - name: Test
+        shell: bash
+        run: ./build/test/Test

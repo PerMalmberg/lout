@@ -22,7 +22,7 @@
 				},
 				"CMAKE_TOOLCHAIN_FILE": {
 					"type": "PATH",
-					"value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+					"value": "${sourceDir}/externals/vcpkg/scripts/buildsystems/vcpkg.cmake"
 				},
 				"VCPKG_OVERLAY_TRIPLETS": {
 					"type": "PATH",
@@ -81,6 +81,20 @@
 			}
 		},
 		{
+			"name": "base-win-arm64",
+			"hidden": true,
+			"description": "Base Windows ARM64",
+			"inherits": [
+				"base-win"
+			],
+			"cacheVariables": {
+				"VCPKG_TARGET_TRIPLET": {
+					"type": "STRING",
+					"value": "arm64-windows-static"
+				}
+			}
+		},
+		{
 			"name": "base-linux",
 			"hidden": true,
 			"description": "Base Linux",
@@ -91,6 +105,14 @@
 			},
 			"inherits": [
 				"nix-compiler-options"
+			]
+		},
+		{
+			"name": "base-linux-arm64",
+			"hidden": true,
+			"description": "Base Linux ARM64",
+			"inherits": [
+				"base-linux"
 			]
 		},
 		{
@@ -109,6 +131,20 @@
 				"VCPKG_TARGET_TRIPLET": {
 					"type": "STRING",
 					"value": "x64-osx"
+				}
+			}
+		},
+		{
+			"name": "base-osx-arm64",
+			"hidden": true,
+			"description": "Base OSX ARM64",
+			"inherits": [
+				"base-osx"
+			],
+			"cacheVariables": {
+				"VCPKG_TARGET_TRIPLET": {
+					"type": "STRING",
+					"value": "arm64-osx"
 				}
 			}
 		},
@@ -152,5 +188,3 @@
 		}
 	]
 }
-
-
