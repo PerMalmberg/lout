@@ -41,7 +41,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           # Initialise submodules manually so we can rewrite SSH URLs to
           # HTTPS first — the .gitmodules file uses git@ URLs which require
@@ -82,7 +82,7 @@ jobs:
       # source. The key covers the triplet (via preset name), the dependency
       # manifest and any custom triplet files.
       - name: Cache vcpkg packages
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: build/vcpkg_installed
           key: vcpkg-${{ matrix.preset }}-${{ hashFiles('vcpkg.json', 'vcpkg_triplets/**') }}
